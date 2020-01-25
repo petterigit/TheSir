@@ -1,0 +1,16 @@
+{
+  "name": "thesir",
+  "version": "1.0.0",
+  "description": "It's a discord bot.",
+  "main": "main.js",
+  "dependencies": {
+    "discord.js": "github:discordjs/discord.js",
+    "dotenv": "^8.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main.js"
+  },
+  "author": "petterigit",
+  "license": "ISC"
+}
