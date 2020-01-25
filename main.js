@@ -31,6 +31,9 @@ client.on('message', message => {
 		case 'pong':
 			message.channel.send("Ping!");
 			break;
+		case 'help':
+			message.channel.send("https://github.com/petterigit/TheSir");
+			break;
 	//	case 'messsage_X':
 		break;
 	 }
