@@ -7,10 +7,6 @@ const client = new Discord.Client();
 const token = process.env.TOKEN;
 
 /* stuff */
-let msgCounter = 1;
-let activated = false;
-let policeSiren = 0;
-//let blocklist = [];
 const prefix = "sir ";
 
 
