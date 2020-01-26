@@ -6,6 +6,9 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const token = process.env.TOKEN;
 
+/* Scripts */
+const nextMeme = require('./scripts/nextmeme/main.js');
+
 /* stuff */
 const prefix = "sir ";
 
@@ -15,9 +18,11 @@ client.on('ready', () => {
     client.user.setActivity('Fucking', {type: 'my sister'});
 });
 
-//sir ping sir pong
+
+/* Message routes */
 client.on('message', message => {
-  if (!message.content.startsWith(prefix)) return;
+	if (!message.content.startsWith(prefix)) return;
+	
 	let args = message.content.substring(1).split(' ');
 	let cmd = args[1];
    
@@ -34,6 +39,8 @@ client.on('message', message => {
 		case 'help':
 			message.channel.send("https://github.com/petterigit/TheSir");
 			break;
+		case 'meme':
+			nextMeme.getMeme(message);
 	//	case 'messsage_X':
 		break;
 	 }
