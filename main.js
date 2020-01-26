@@ -15,6 +15,7 @@ const poke = require('./scripts/poke/main.js');
 const prefix = "sir ";
 
 
+/* Bot setup */
 client.on('ready', () => {
     console.log("I am ready");
     client.user.setActivity('Fucking', {type: 'my sister'});
@@ -29,7 +30,8 @@ client.on('message', message => {
 	let cmd = args[1];
    
 	args = args.splice(1);
-	switch(cmd) {
+
+	switch (cmd) {
 		case 'ping':
 			message.channel.send("Pong!");
 			break;

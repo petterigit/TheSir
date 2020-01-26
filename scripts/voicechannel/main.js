@@ -1,5 +1,8 @@
 "use strict";
 
+/* TODO
+ * message.member.voiceChannel = undefined
+ */
 
 exports.startVoice = async (message) => {
     try {
