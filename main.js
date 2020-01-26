@@ -9,6 +9,7 @@ const token = process.env.TOKEN;
 /* Scripts */
 const nextMeme = require('./scripts/nextmeme/main.js');
 const voiceChannel = require('./scripts/voicechannel/main.js');
+const poke = require('./scripts/poke/main.js');
 
 /* stuff */
 const prefix = "sir ";
@@ -44,8 +45,13 @@ client.on('message', message => {
 		case 'join':
 			voiceChannel.startVoice(message);
 			break;
+		case 'poke':
+			poke.poke(message);
+			break;
 	//	case 'messsage_X':
-		break;
+		//  break;
+		default:
+			message.channel.send("Mikä oli?")
 	 }
   });
 
