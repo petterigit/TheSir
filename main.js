@@ -8,6 +8,7 @@ const token = process.env.TOKEN;
 
 /* Scripts */
 const nextMeme = require('./scripts/nextmeme/main.js');
+const voiceChannel = require('./scripts/voicechannel/main.js');
 
 /* stuff */
 const prefix = "sir ";
@@ -21,18 +22,16 @@ client.on('ready', () => {
 
 /* Message routes */
 client.on('message', message => {
-	if (!message.content.startsWith(prefix)) return;
 	
+	if (!message.content.startsWith(prefix)) return;
 	let args = message.content.substring(1).split(' ');
 	let cmd = args[1];
    
 	args = args.splice(1);
 	switch(cmd) {
-		// ping!
 		case 'ping':
 			message.channel.send("Pong!");
 			break;
-		// pong!
 		case 'pong':
 			message.channel.send("Ping!");
 			break;
@@ -41,6 +40,10 @@ client.on('message', message => {
 			break;
 		case 'meme':
 			nextMeme.getMeme(message);
+			break;
+		case 'join':
+			voiceChannel.startVoice(message);
+			break;
 	//	case 'messsage_X':
 		break;
 	 }
