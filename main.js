@@ -10,6 +10,7 @@ const token = process.env.TOKEN;
 const nextMeme = require('./scripts/nextmeme/main.js');
 const voiceChannel = require('./scripts/voicechannel/main.js');
 const poke = require('./scripts/poke/main.js');
+const commands = require('./scripts/commands/main.js');
 
 /* stuff */
 const prefix = "sir ";
@@ -36,8 +37,7 @@ client.on('message', message => {
 			message.channel.send("Pong!");
 			break;
 		case 'help':
-			message.channel.send("For commands type 'sir commands\n'",
-				"repo: https://github.com/petterigit/TheSir");
+			message.channel.send("For commands type 'sir commands'\nrepo: https://github.com/petterigit/TheSir");
 			break;
 		case 'meme':
 			nextMeme.getMeme(message);
