@@ -1,4 +1,7 @@
 "use strict";
+/* DON'T TOUCH MAIN, TYPE IMPORT AND MAIN FUNC TO MAIN.JS
+ */
+
 
 /* require */
 require("dotenv").config();
@@ -10,6 +13,7 @@ const token = process.env.TOKEN;
 const nextMeme = require('./scripts/nextmeme/main.js');
 const voiceChannel = require('./scripts/voicechannel/main.js');
 const poke = require('./scripts/poke/main.js');
+const commands = require('./scripts/commands/main.js');
 
 /* stuff */
 const prefix = "sir ";
@@ -35,11 +39,8 @@ client.on('message', message => {
 		case 'ping':
 			message.channel.send("Pong!");
 			break;
-		case 'pong':
-			message.channel.send("Ping!");
-			break;
 		case 'help':
-			message.channel.send("https://github.com/petterigit/TheSir");
+			message.channel.send("For commands type 'sir commands'\nrepo: https://github.com/petterigit/TheSir");
 			break;
 		case 'meme':
 			nextMeme.getMeme(message);
@@ -49,6 +50,9 @@ client.on('message', message => {
 			break;
 		case 'poke':
 			poke.poke(message);
+			break;
+		case 'commands':
+			commands.replyCommands(message);
 			break;
 	//	case 'messsage_X':
 		//  break;
