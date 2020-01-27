@@ -5,11 +5,11 @@ const commands_list = [
     "help\n",
     "join (in production)\n",
     "ping\n",
-    ]
+]
 
 exports.replyCommands = async (message) => {
     try {
-        message.channel.send("Available commands: ", commands_list.toString());
+        message.channel.send("Available commands: " + commands_list.toString());
     }
     catch (error) {
         console.log(error)
