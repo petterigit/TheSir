@@ -1,15 +1,15 @@
 "use strict";
 
-const commands_list = [
-    "poke @mention\n",
-    "help\n",
-    "join (in production)\n",
-    "ping\n",
-]
+const commands = `
+    poke @mention
+    help
+    join (in production)
+    ping
+`
 
 exports.replyCommands = async (message) => {
     try {
-        message.channel.send("Available commands: " + commands_list.toString());
+        message.channel.send("Available commands: " + commands);
     }
     catch (error) {
         console.log(error)
