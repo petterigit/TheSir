@@ -1,4 +1,8 @@
 "use strict";
+/* IMPORT const nextMeme = require('./scripts/nextmeme/main.js');
+/* MAIN getMeme(message)
+ */
+
 
 const nextmeme = require("./nextmeme.js");
 

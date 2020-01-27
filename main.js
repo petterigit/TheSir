@@ -1,4 +1,7 @@
 "use strict";
+/* DON'T TOUCH MAIN, TYPE IMPORT AND MAIN FUNC TO MAIN.JS
+ */
+
 
 /* require */
 require("dotenv").config();

@@ -1,4 +1,8 @@
 "use strict";
+/* IMPORT const poke = require('./scripts/poke/main.js');
+/* MAIN poke(message)
+ */
+
 
 /* TODO 
  * encode message for ääkköset

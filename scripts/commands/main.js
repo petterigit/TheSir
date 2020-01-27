@@ -1,5 +1,12 @@
 "use strict";
+/* IMPORT const commands = require('./scripts/commands/main.js');
+/* MAIN replyCommands(message);
+ */
 
+
+/* TODO 
+ * embed / nicer output
+ */
 const commands = `
     poke @mention
     help
