@@ -9,7 +9,7 @@ const commands_list = [
 
 exports.replyCommands = async (message) => {
     try {
-        message.channel.send("Available commands: ", commands_list);
+        message.channel.send("Available commands: ", commands_list.toString());
     }
     catch (error) {
         console.log(error)
