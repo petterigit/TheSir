@@ -36,7 +36,8 @@ client.on('message', message => {
 			message.channel.send("Pong!");
 			break;
 		case 'help':
-			message.channel.send("https://github.com/petterigit/TheSir");
+			message.channel.send("For commands type 'sir commands\n'",
+				"repo: https://github.com/petterigit/TheSir");
 			break;
 		case 'meme':
 			nextMeme.getMeme(message);
@@ -46,6 +47,9 @@ client.on('message', message => {
 			break;
 		case 'poke':
 			poke.poke(message);
+			break;
+		case 'commands':
+			commands.replyCommands(message);
 			break;
 	//	case 'messsage_X':
 		//  break;
