@@ -1,4 +1,8 @@
 "use strict";
+/* IMPORT const voiceChannel = require('./scripts/voicechannel/main.js');
+/* MAIN startVoice(message)
+ */
+
 
 /* TODO
  * message.member.voiceChannel = undefined
