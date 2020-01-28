@@ -58,7 +58,7 @@ exports.beginStory = async (message) => {
 //Continues the story
 exports.story = async (message) => {
     if(message.content == "story help") {
-        message.channel.send("Write the action's number or forward/right/left/hit/kys");
+        message.channel.send("Write the prefix 'story' and the action's number or forward/right/left/hit/kys");
         return;
     }
 
