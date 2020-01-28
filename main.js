@@ -54,6 +54,7 @@ client.on('message', message => {
 			break;
 		case 'story':
 			story.beginStory(message);
+			break;
 		case 'commands':
 			commands.replyCommands(message);
 			break;
