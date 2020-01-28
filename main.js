@@ -13,6 +13,7 @@ const token = process.env.TOKEN;
 const nextMeme = require('./scripts/nextmeme/main.js');
 const voiceChannel = require('./scripts/voicechannel/main.js');
 const poke = require('./scripts/poke/main.js');
+const story = require('./scripts/story/main.js')
 const commands = require('./scripts/commands/main.js');
 
 /* stuff */
@@ -51,14 +52,26 @@ client.on('message', message => {
 		case 'poke':
 			poke.poke(message);
 			break;
+		case 'story':
+			story.beginStory(message);
 		case 'commands':
 			commands.replyCommands(message);
 			break;
 	//	case 'messsage_X':
 		//  break;
 		default:
-			message.channel.send("Mikä oli?")
+			message.channel.send("Mikï¿½ oli?")
 	 }
   });
+
+client.on('message', message => {
+	let storyPrefix = "story ";
+	if (!message.content.startsWith(storyPrefix)) return;
+	if(message.content) {
+		story.story(message);
+	} else {
+		//maybe a varning
+	}
+})
 
 client.login(token);
