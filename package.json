@@ -8,7 +8,9 @@
     "dotenv": "^8.2.0",
     "node-fetch": "^2.6.0",
     "node-opus": "^0.3.3",
-    "ffmpeg": "^0.0.4"
+    "ffmpeg": "^0.0.4",
+    "http": "^0.0.0",
+    "fs":  "^0.0.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
