@@ -5,18 +5,15 @@ const fetch = require("node-fetch");
 exports.getNiiloTweet = async message => {
   try {
     const res = await getTweet();
-    const date = new Date(res.timestamp);
     let embed;
-    if (res.url) {
+    if (res.entities.media.media[0].media_url) {
       embed = {
-        description: `Tweeted: ${date.getDate()}.${date.getMonth() +
-          1}.${date.getFullYear()}`
+        description: `Tweeted: ` + res.created_at + "\n" + res.text
       };
     } else {
       embed = {
-        image: { url: res.url },
-        description: `Tweeted: ${date.getDate()}.${date.getMonth() +
-          1}.${date.getFullYear()}`
+        image: { url: res.entities.media.media[0].media_url },
+        description: `Tweeted: ` + res.created_at + "\n" + res.text
       };
     }
     const mes = await message.channel.send({ embed: embed });
@@ -28,7 +25,7 @@ exports.getNiiloTweet = async message => {
 
 const getTweet = async () => {
   const response = await fetch(
-    "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=niilo222"
+    "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=niilo222&tweet_mode=extended&exclude_replies=true"
   );
   const tweets = await response.json();
   console.log("Found tweets:", tweets);
@@ -45,4 +42,4 @@ const randomNumber = (start, end) => {
 };
 
 // GET https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=twitterapi&count=2
-// GET https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=niilo222
+// GET https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=niilo222&tweet_mode=extended&exclude_replies=true
