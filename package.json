@@ -6,11 +6,12 @@
   "dependencies": {
     "discord.js": "github:discordjs/discord.js",
     "dotenv": "^8.2.0",
+    "ffmpeg": "^0.0.4",
+    "fs": "^0.0.2",
+    "http": "^0.0.0",
     "node-fetch": "^2.6.0",
     "node-opus": "^0.3.3",
-    "ffmpeg": "^0.0.4",
-    "http": "^0.0.0",
-    "fs": "^0.0.2"
+    "twit": "^2.2.11"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

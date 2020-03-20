@@ -2,21 +2,34 @@
 
 const Twit = require("twit");
 
-const token = provess.env.TWITTERTOKEN;
+const TWITTERTOKEN_consumer_key = process.env.TWITTERTOKEN_consumer_key;
+const TWITTERTOKEN_consumer_secret = process.env.TWITTERTOKEN_consumer_secret;
+const TWITTERTOKEN_access_token = process.env.TWITTERTOKEN_access_token;
+const TWITTERTOKEN_access_token_secret =
+  process.env.TWITTERTOKEN_access_token_secret;
 
-const T = new Twit(token);
+const T = new Twit({
+  consumer_key: TWITTERTOKEN_consumer_key,
+  consumer_secret: TWITTERTOKEN_consumer_secret,
+  access_token: TWITTERTOKEN_access_token,
+  access_token_secret: TWITTERTOKEN_access_token_secret
+});
+
+const MAX_TWEETS = 100;
 
 const path = "statuses/user_timeline";
 const parameters = {
   screen_name: "niilo222",
-  count: 100
+  count: MAX_TWEETS
 };
 
 exports.getNiiloTweet = async message => {
   try {
     T.get(path, parameters, function(err, data, response) {
+      console.log("data", data);
       const tweet = getRandomTweet(data);
-      sendTweetToDiscord(tweet);
+      console.log("tweet:", tweet);
+      sendTweetToDiscord(tweet, message);
     });
   } catch (error) {
     message.channel.send("Vituiks meni!");
@@ -24,7 +37,7 @@ exports.getNiiloTweet = async message => {
   }
 };
 
-function sendTweetToDiscord(tweet) {
+function sendTweetToDiscord(tweet, message) {
   const embed = {
     description: "Niilo22 twiittasi " + tweet.created_at + ":\n" + tweet.text
   };
@@ -32,8 +45,7 @@ function sendTweetToDiscord(tweet) {
 }
 
 function getRandomTweet(tweets) {
-  randomNumber(0, tweets.length);
-  return tweets[randomNumber];
+  return tweets[randomNumber(0, 100)];
 }
 
 // Both ends inclusive
