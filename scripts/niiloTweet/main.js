@@ -1,8 +1,10 @@
 "use strict";
 
-const fetch = require("node-fetch");
-
 const Twit = require("twit");
+
+const token = provess.env.TWITTERTOKEN;
+
+const T = new Twit(token);
 
 const path = "statuses/user_timeline";
 const parameters = {
@@ -12,7 +14,7 @@ const parameters = {
 
 exports.getNiiloTweet = async message => {
   try {
-    T.get("statuses/user_timeline", parameters, function(err, data, response) {
+    T.get(path, parameters, function(err, data, response) {
       const tweet = getRandomTweet(data);
       sendTweetToDiscord(tweet);
     });
