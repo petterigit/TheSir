@@ -26,9 +26,7 @@ const parameters = {
 exports.getNiiloTweet = async message => {
   try {
     T.get(path, parameters, function(err, data, response) {
-      console.log("data", data);
       const tweet = getRandomTweet(data);
-      console.log("tweet:", tweet);
       sendTweetToDiscord(tweet, message);
     });
   } catch (error) {
