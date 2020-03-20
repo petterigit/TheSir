@@ -43,7 +43,7 @@ function sendTweetToDiscord(tweet, message) {
 }
 
 function getRandomTweet(tweets) {
-  return tweets[randomNumber(0, 100)];
+  return tweets[randomNumber(0, MAX_TWEETS)];
 }
 
 // Both ends inclusive
