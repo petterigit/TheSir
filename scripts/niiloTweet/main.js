@@ -25,18 +25,19 @@ const parameters = {
 
 exports.getNiiloTweet = async message => {
   try {
-    //const year = randomNumber(2012, 2020);
-    const year = "2015";
-
-    T.get(path, parameters, function(err, data, response) {
-      const tweet = getRandomTweet(data);
-      sendTweetToDiscord(tweet, message);
-    });
+    getTweetsAndSendOneToDiscord(message);
   } catch (error) {
     message.channel.send("Vituiks meni!");
     console.log(error);
   }
 };
+
+function getTweetsAndSendOneToDiscord(message) {
+  T.get(path, parameters, function(err, data, response) {
+    const tweet = getRandomTweet(data);
+    sendTweetToDiscord(tweet, message);
+  });
+}
 
 function getRandomTweet(tweets) {
   return tweets[randomNumber(0, MAX_TWEETS)];
@@ -94,7 +95,8 @@ function parseWeekday(weekday) {
     "sunnuntaina"
   ];
 
-  for (let i = 0; i < 7; i++) {
+  const NUMBER_OF_WEEKDAYS = 7;
+  for (let i = 0; i < NUMBER_OF_WEEKDAYS; i++) {
     if (weekday == weekdaysEng[i]) {
       parsedWeekday = weekdaysFin[i];
       break;
@@ -135,7 +137,8 @@ function parseMonth(month) {
     "joulukuuta"
   ];
 
-  for (let i = 0; i < 12; i++) {
+  const NUMBER_OF_MONTHS = 12;
+  for (let i = 0; i < NUMBER_OF_MONTHS; i++) {
     if (month == monthsEng[i]) {
       parsedMonth = monthsFin[i];
       break;
@@ -146,16 +149,26 @@ function parseMonth(month) {
 }
 
 function parseDay(day) {
-  let parsedDay = "";
-
-  if (day.slice(0, 1) == "0") {
-    parsedDay = day.slice(1, 2) + ".";
-  } else {
-    parsedDay = day + ".";
+  let parsedDay = day;
+  if (startsWithZero(day)) {
+    parsedDay = removeZero(day);
   }
-
+  parsedDay = addDot(parsedDay);
   return parsedDay;
 }
 
-// GET https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=twitterapi&count=2
-// GET https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=niilo222&tweet_mode=extended&exclude_replies=true
+function startsWithZero(day) {
+  if (day.slice(0, 1) == "0") {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function removeZero(day) {
+  return day.slice(1, 2);
+}
+
+function addDot(day) {
+  return day + ".";
+}
