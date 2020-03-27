@@ -4,15 +4,16 @@
  */
 
 
-/* TODO 
+/* TODO
  * embed / nicer output
  */
 const commands = `
     poke @mention
     help
-    join (in production)
     ping
-`
+    niilo22
+    meme
+    `
 
 exports.replyCommands = async (message) => {
     try {

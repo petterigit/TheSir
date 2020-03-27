@@ -41,6 +41,11 @@ client.on("message", message => {
         "For commands type 'sir commands'\nrepo: https://github.com/petterigit/TheSir"
       );
       break;
+    case "apua":
+      message.channel.send(
+        "For commands type 'sir commands'\nrepo: https://github.com/petterigit/TheSir"
+      );
+      break;
     case "meme":
       nextMeme.getMeme(message);
       break;
@@ -59,7 +64,7 @@ client.on("message", message => {
     //	case 'messsage_X':
     //  break;
     default:
-      message.channel.send("Mik� oli?");
+      message.channel.send("Mikä oli?");
   }
 });
 

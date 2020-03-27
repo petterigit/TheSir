@@ -4,9 +4,9 @@
  */
 
 
-/* TODO 
- * encode message for ääkköset
- * get nickname for guild 
+/* TODO
+ * encode message for ï¿½ï¿½kkï¿½set
+ * get nickname for guild
  */
 
 exports.poke = async (message) => {
@@ -14,7 +14,7 @@ exports.poke = async (message) => {
         const user = message.mentions.users.first();
         if (user) {
             user.send("poke :3");
-            message.reply(`HERÄTYS ${user.username}, senkin vätys!`);
+            message.reply(`HERÃ„TYS ${user.username}, senkin vÃ¤tys!`);
         }
     }
     catch (error) {
