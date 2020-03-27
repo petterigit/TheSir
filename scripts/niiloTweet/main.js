@@ -87,8 +87,15 @@ function parseDate(date) {
   const weekday = datetime.getDay().toString();
   const month = datetime.getMonth().toString();
   const day = datetime.getDate().toString();
-  const time =
-    datetime.getHours().toString() + ":" + datetime.getMinutes().toString();
+  const hour = datetime.getHours().toString();
+  if (hour.length < 2) {
+    hour = "0" + hour;
+  }
+  const minute = datetime.getMinutes().toString();
+  if (minute.length < 2) {
+    minute = "0" + minute;
+  }
+  const time = hour + ":" + minute;
   console.log("time is", time);
   const year = datetime.getFullYear().toString();
 
