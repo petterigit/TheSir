@@ -3,5 +3,9 @@
 
 
 Create a pull request and I'll merge
-Main.js command name and file import
-Script file everything else
+
+Add command name and file import to Main.js
+
+Add your own code and everything else to your Script Folder
+
+Commands folder can be updated when needed
