@@ -9,11 +9,19 @@ const client = new Discord.Client();
 const token = process.env.TOKEN;
 
 /* Scripts */
+<<<<<<< HEAD
 const nextMeme = require("./scripts/nextmeme/main.js");
 const voiceChannel = require("./scripts/voicechannel/main.js");
 const poke = require("./scripts/poke/main.js");
 const commands = require("./scripts/commands/main.js");
 const niiloTweets = require("./scripts/niiloTweet/main.js");
+=======
+const nextMeme = require('./scripts/nextmeme/main.js');
+const voiceChannel = require('./scripts/voicechannel/main.js');
+const poke = require('./scripts/poke/main.js');
+const story = require('./scripts/story/main.js')
+const commands = require('./scripts/commands/main.js');
+>>>>>>> staged
 
 /* stuff */
 const prefix = "sir ";
@@ -60,6 +68,9 @@ client.on("message", message => {
       break;
     case "niilo22":
       niiloTweets.getNiiloTweet(message);
+      break;
+    case "story":
+      story.beginStory(message);
       break;
     //	case 'messsage_X':
     //  break;
