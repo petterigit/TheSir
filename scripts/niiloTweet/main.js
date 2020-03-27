@@ -20,7 +20,8 @@ const MAX_TWEETS = 100;
 const path = "statuses/user_timeline";
 const parameters = {
   screen_name: "niilo222",
-  count: MAX_TWEETS
+  count: MAX_TWEETS,
+  tweet_mode: "extended"
 };
 
 exports.getNiiloTweet = async message => {
@@ -35,6 +36,7 @@ exports.getNiiloTweet = async message => {
 function getTweetsAndSendOneToDiscord(message) {
   T.get(path, parameters, function(err, data, response) {
     const tweet = getRandomTweet(data);
+    console.log(tweet.created_at);
     sendTweetToDiscord(tweet, message);
   });
 }
@@ -55,18 +57,40 @@ function sendTweetToDiscord(tweet, message) {
 function createAnswerMessage(tweet) {
   let answerMessage = {
     description:
-      "Niilo22 twiittasi " + parseDate(tweet.created_at) + ":\n\n" + tweet.text
+      "Niilo22 twiittasi " +
+      parseDate(tweet.created_at) +
+      ":\n\n" +
+      tweet.full_text
   };
+
+  if (tweet.entities.media) {
+    console.log("media url:", tweet.entities.media[0].media_url);
+    answerMessage = {
+      description:
+        "Niilo22 twiittasi " +
+        parseDate(tweet.created_at) +
+        ":\n\n" +
+        tweet.full_text,
+      image: { url: tweet.entities.media[0].media_url }
+    };
+  }
+
   return answerMessage;
 }
 
 function parseDate(date) {
+  let datetime = new Date(date);
+  datetime.setHours(datetime.getHours() + 2);
+
   let parsedDate = "";
-  const weekday = date.slice(0, 3);
-  const month = date.slice(4, 7);
-  const day = date.slice(8, 10);
-  const time = date.slice(11, 16);
-  const year = date.slice(26, 30);
+
+  const weekday = datetime.getDay().toString();
+  const month = datetime.getMonth().toString();
+  const day = datetime.getDate().toString();
+  const time =
+    datetime.getHours().toString() + ":" + datetime.getMinutes().toString();
+  console.log("time is", time);
+  const year = datetime.getFullYear().toString();
 
   parsedDate =
     parseWeekday(weekday) +
@@ -77,27 +101,37 @@ function parseDate(date) {
     " " +
     year +
     " klo " +
-    time;
+    parseTime(time);
 
   return parsedDate;
 }
 
+function parseTime(time) {
+  let parsedTime = "";
+  if (time.length < 5) {
+    parsedTime = "0" + time;
+  } else {
+    parsedTime = time;
+  }
+
+  return parsedTime;
+}
+
 function parseWeekday(weekday) {
   let parsedWeekday = "";
-  const weekdaysEng = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const weekdaysFin = [
+    "sunnuntaina",
     "maanantaina",
     "tiistaina",
     "keskiviikkona",
     "torstaina",
     "perjantaina",
-    "lauantaina",
-    "sunnuntaina"
+    "lauantaina"
   ];
 
   const NUMBER_OF_WEEKDAYS = 7;
   for (let i = 0; i < NUMBER_OF_WEEKDAYS; i++) {
-    if (weekday == weekdaysEng[i]) {
+    if (weekday == i) {
       parsedWeekday = weekdaysFin[i];
       break;
     }
@@ -108,20 +142,6 @@ function parseWeekday(weekday) {
 
 function parseMonth(month) {
   let parsedMonth = "";
-  const monthsEng = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-  ];
   const monthsFin = [
     "tammikuuta",
     "helmikuuta",
@@ -139,7 +159,7 @@ function parseMonth(month) {
 
   const NUMBER_OF_MONTHS = 12;
   for (let i = 0; i < NUMBER_OF_MONTHS; i++) {
-    if (month == monthsEng[i]) {
+    if (month == i) {
       parsedMonth = monthsFin[i];
       break;
     }
