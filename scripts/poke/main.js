@@ -14,7 +14,7 @@ exports.poke = async (message) => {
         const user = message.mentions.users.first();
         if (user) {
             user.send("poke :3");
-            message.channel.send(`HERÄTYS ${user.username}, senkin vätys!`);
+            message.channel.send(`HERÄTYS ${message.member}, senkin vätys!`);
         }
     }
     catch (error) {
