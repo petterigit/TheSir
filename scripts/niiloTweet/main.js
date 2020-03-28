@@ -36,7 +36,6 @@ exports.getNiiloTweet = async message => {
 function getTweetsAndSendOneToDiscord(message) {
   T.get(path, parameters, function(err, data, response) {
     const tweet = getRandomTweet(data);
-    console.log(tweet.created_at);
     sendTweetToDiscord(tweet, message);
   });
 }
@@ -64,7 +63,6 @@ function createAnswerMessage(tweet) {
   };
 
   if (tweet.entities.media) {
-    console.log("media url:", tweet.entities.media[0].media_url);
     answerMessage = {
       description:
         "Niilo22 twiittasi " +
@@ -80,7 +78,7 @@ function createAnswerMessage(tweet) {
 
 function parseDate(date) {
   let datetime = new Date(date);
-  datetime = addHoursToDate(datetime, 1);
+  datetime.setHours(datetime.getHours() + 2);
 
   let parsedDate = "";
 
@@ -96,7 +94,6 @@ function parseDate(date) {
     minute = "0" + minute;
   }
   const time = hour + ":" + minute;
-  console.log("time is", time);
   const year = datetime.getFullYear().toString();
 
   parsedDate =
@@ -111,10 +108,6 @@ function parseDate(date) {
     parseTime(time);
 
   return parsedDate;
-}
-
-function addHoursToDate(datetime, hours) {
-  return datetime.setHours(datetime.getHours() + hours);
 }
 
 function parseTime(time) {
