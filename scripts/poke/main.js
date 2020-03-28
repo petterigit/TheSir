@@ -15,7 +15,7 @@ exports.poke = async (message) => {
         if (user) {
             user.send("poke :3");
             message.delete()
-            .then(message.channel.send(`HERÄTYS ${message.member}, senkin vätys!`))
+            .then(message.channel.send(`HERÄTYS ${user.username}, senkin vätys!`))
             .catch(console.log("No rights to delete messages"));
         }
     }
