@@ -80,7 +80,7 @@ function createAnswerMessage(tweet) {
 
 function parseDate(date) {
   let datetime = new Date(date);
-  datetime.setHours(datetime.getHours() + 2);
+  datetime = addHoursToDate(datetime, 1);
 
   let parsedDate = "";
 
@@ -111,6 +111,10 @@ function parseDate(date) {
     parseTime(time);
 
   return parsedDate;
+}
+
+function addHoursToDate(datetime, hours) {
+  return datetime.setHours(datetime.getHours() + hours);
 }
 
 function parseTime(time) {
