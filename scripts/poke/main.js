@@ -14,7 +14,9 @@ exports.poke = async (message) => {
         const user = message.mentions.users.first();
         if (user) {
             user.send("poke :3");
-            message.channel.send(`HERÄTYS ${message.member}, senkin vätys!`);
+            message.delete()
+            .then(message.channel.send(`HERÄTYS ${message.member}, senkin vätys!`));
+            .catch(console.log("No rights to delete messages"))
         }
     }
     catch (error) {
