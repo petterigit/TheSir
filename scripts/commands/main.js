@@ -13,6 +13,8 @@ const commands = `
     ping
     niilo22
     meme
+    pop {number}
+    bap @mention
     `
 
 exports.replyCommands = async (message) => {

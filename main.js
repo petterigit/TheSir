@@ -16,6 +16,7 @@ const commands = require("./scripts/commands/main.js");
 const niiloTweets = require("./scripts/niiloTweet/main.js");
 const story = require('./scripts/story/main.js');
 const pop = require('./scripts/pop/main.js');
+const baptise = require('./scripts/baptise/main.js');
 
 /* stuff */
 const prefix = "sir ";
@@ -68,6 +69,9 @@ client.on("message", message => {
       break;
     case "pop":
       pop.pop(message);
+      break;
+    case "bap":
+      baptise.startBaptise(message);
       break;
     //	case 'messsage_X':
     //  break;

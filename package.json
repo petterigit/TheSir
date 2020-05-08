@@ -11,7 +11,8 @@
     "http": "^0.0.0",
     "node-fetch": "^2.6.0",
     "node-opus": "^0.3.3",
-    "twit": "^2.2.11"
+    "twit": "^2.2.11",
+    "axios": "^0.19.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
