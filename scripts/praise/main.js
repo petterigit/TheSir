@@ -40,7 +40,7 @@ praise = async (message, shameInstead = false) => {
                 else if(i == names.length - 1) {
                     users += ` and ${names[i]}`;
                 } else {
-                    users += `, ${names[i]}`
+                    users += `, ${names[i]}`;
                 }
             }
             if(shameInstead) {
