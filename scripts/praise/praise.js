@@ -15,7 +15,7 @@ const options = {
     textColor: "white",
     textAlign: "center",
     lineHeight: 64,
-    fontWidthMultiplier: 10
+    fontWidthMultiplier: 12
 };
 
 const fs = require("fs");

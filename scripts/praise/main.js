@@ -7,7 +7,7 @@ const Discord = require("discord.js");
 praise = async (message, shameInstead = false) => {
     const mentions = message.mentions;
 
-    if(mentions.users.size != 0 || mentions.everyone) {
+    if(mentions.members.size != 0 || mentions.everyone) {
         let buffer = null;
         try {
             buffer = await Praise.generatePraise(shameInstead);
@@ -20,7 +20,7 @@ praise = async (message, shameInstead = false) => {
         const attachment = new Discord.MessageAttachment(buffer, "reaction.jpg")
 
         let text = "";
-        const sender = message.author.username;
+        const sender = (message.member.nickname || message.author.username);
         if(mentions.everyone) {
             if(shameInstead) {
                 text = `${sender} shames everyone!`;
@@ -28,10 +28,20 @@ praise = async (message, shameInstead = false) => {
                 text = `${sender} praises everyone!`;
             }
         } else {
-            let users = `${mentions.users.map((value, key) => value.username).toString().replace(",", ", ")}`
-            let index = users.lastIndexOf(",")
-            if(index > 0) {
-                users = `${users.substring(0, index)} and ${users.substring(index + 1)}`;
+            let names = mentions.users.map((value, key) => {
+                const member = mentions.members.get(key);
+                return(member.nickname || value.username);
+            });
+            let users = "";
+            for(let i = 0; i < names.length; i++) {
+                if(i == 0) {
+                    users += names[i];
+                }
+                else if(i == names.length - 1) {
+                    users += ` and ${names[i]}`;
+                } else {
+                    users += `, ${names[i]}`
+                }
             }
             if(shameInstead) {
                 text = `${sender} shames ${users}!`;
