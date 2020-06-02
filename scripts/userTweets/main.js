@@ -57,27 +57,34 @@ function sendTweetToDiscord(tweet, message) {
 }
 
 function createAnswerMessage(tweet) {
-  console.log(tweet)
-  let answerMessage = {
-    description:
-      tweet.user.name +
-      " twiittasi " +
-      parseDate(tweet.created_at) +
-      ":\n\n" +
-      tweet.full_text
-  };
-
-  if (tweet.entities.media) {
+  let answerMessage = ""
+  if (typeof tweet === "undefined") {
     answerMessage = {
-      description:
-        tweet.user.name +
-        " twiittasi " +
-        parseDate(tweet.created_at) +
-        ":\n\n" +
-        tweet.full_text,
-      image: { url: tweet.entities.media[0].media_url }
-    };
+      description: "Twiittiä ei löytynyt"
+    }
+  } else {
+    if (tweet.entities.media) {
+      answerMessage = {
+        description:
+          tweet.user.name +
+          " twiittasi " +
+          parseDate(tweet.created_at) +
+          ":\n\n" +
+          tweet.full_text,
+        image: { url: tweet.entities.media[0].media_url }
+      };
+    } else {
+      answerMessage = {
+        description:
+          tweet.user.name +
+          " twiittasi " +
+          parseDate(tweet.created_at) +
+          ":\n\n" +
+          tweet.full_text
+      };
+    }
   }
+
 
   return answerMessage;
 }
