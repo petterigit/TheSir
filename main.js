@@ -14,6 +14,7 @@ const voiceChannel = require("./scripts/voicechannel/main.js");
 const poke = require("./scripts/poke/main.js");
 const commands = require("./scripts/commands/main.js");
 const niiloTweets = require("./scripts/niiloTweet/main.js");
+const userTweets = require("./scripts/userTweets/main.js");
 const story = require('./scripts/story/main.js');
 const pop = require('./scripts/pop/main.js');
 const baptise = require('./scripts/baptise/main.js');
@@ -64,6 +65,9 @@ client.on("message", message => {
       break;
     case "niilo22":
       niiloTweets.getNiiloTweet(message);
+      break;
+    case "twit":
+      userTweets.getUserTweet(message);
       break;
     case "story":
       story.beginStory(message);
