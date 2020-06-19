@@ -15,10 +15,11 @@ const poke = require("./scripts/poke/main.js");
 const commands = require("./scripts/commands/main.js");
 const niiloTweets = require("./scripts/niiloTweet/main.js");
 const userTweets = require("./scripts/userTweets/main.js");
-const story = require('./scripts/story/main.js');
-const pop = require('./scripts/pop/main.js');
-const baptise = require('./scripts/baptise/main.js');
+const story = require("./scripts/story/main.js");
+const pop = require("./scripts/pop/main.js");
+const baptise = require("./scripts/baptise/main.js");
 const praise = require("./scripts/praise/main.js");
+const askShrek = require("./scripts/askShrek/main.js");
 
 /* stuff */
 const prefix = "sir ";
@@ -30,7 +31,7 @@ client.on("ready", () => {
 });
 
 /* Message routes */
-client.on("message", message => {
+client.on("message", (message) => {
   if (!message.content.startsWith(prefix)) return;
   let args = message.content.substring(1).split(" ");
   let cmd = args[1];
@@ -83,6 +84,9 @@ client.on("message", message => {
       break;
     case "shame":
       praise.praise(message, true);
+      break;
+    case "ask":
+      askShrek.askShrek(message);
       break;
     //	case 'messsage_X':
     //  break;
