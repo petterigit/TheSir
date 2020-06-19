@@ -47,7 +47,7 @@ function getRandomLine(lines) {
 }
 
 const randomNumber = (start, end) => {
-  return Math.floor(Math.random() * (start - end + 1) + end) - 1;
+  return Math.floor(Math.random() * Math.floor(end));
 };
 
 function sendCharacterNotFound(message) {
