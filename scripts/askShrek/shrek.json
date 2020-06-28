@@ -840,31 +840,39 @@
     },
     {
       "speaker": "aarne",
-      "lines": ["meh"]
+      "lines": ["Meh"]
     },
     {
       "speaker": "lassi",
-      "lines": ["tyllerö lääh puuh"]
+      "lines": ["Tyllerö lääh puuh"]
     },
     {
       "speaker": "nico",
-      "lines": ["tirsk"]
+      "lines": ["Tirsk"]
     },
     {
       "speaker": "maija",
-      "lines": ["kuolkaa vittu kaikki", "*junaääniä*"]
+      "lines": ["Kuolkaa vittu kaikki", "*junaääniä*"]
     },
     {
       "speaker": "juho",
-      "lines": ["apua auttakaa nyt joku"]
+      "lines": ["Apua auttakaa nyt joku"]
     },
     {
       "speaker": "aleksi",
-      "lines": ["nam salaatti", "vegaanisen vaihtoehdon saa aina pyytämällä"]
+      "lines": ["Nam salaatti", "Vegaanisen vaihtoehdon saa aina pyytämällä"]
     },
     {
       "speaker": "suski",
       "lines": ["..."]
+    },
+    {
+      "speaker": "väinö",
+      "lines": ["REEEEEEE"]
+    },
+    {
+      "speaker": "vilperi",
+      "lines": ["Penikseni on 27,7 cm pitkä"]
     }
   ]
 }
