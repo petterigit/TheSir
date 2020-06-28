@@ -837,6 +837,34 @@
         "*kirahviääniä*",
         "Saanko nuolla varpaitasi?"
       ]
+    },
+    {
+      "speaker": "aarne",
+      "lines": ["meh"]
+    },
+    {
+      "speaker": "lassi",
+      "lines": ["tyllerö lääh puuh"]
+    },
+    {
+      "speaker": "nico",
+      "lines": ["tirsk"]
+    },
+    {
+      "speaker": "maija",
+      "lines": ["kuolkaa vittu kaikki", "*junaääniä*"]
+    },
+    {
+      "speaker": "juho",
+      "lines": ["apua auttakaa nyt joku"]
+    },
+    {
+      "speaker": "aleksi",
+      "lines": ["nam salaatti", "vegaanisen vaihtoehdon saa aina pyytämällä"]
+    },
+    {
+      "speaker": "suski",
+      "lines": ["..."]
     }
   ]
 }
