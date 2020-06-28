@@ -837,6 +837,42 @@
         "*kirahviääniä*",
         "Saanko nuolla varpaitasi?"
       ]
+    },
+    {
+      "speaker": "aarne",
+      "lines": ["Meh"]
+    },
+    {
+      "speaker": "lassi",
+      "lines": ["Tyllerö lääh puuh"]
+    },
+    {
+      "speaker": "nico",
+      "lines": ["Tirsk"]
+    },
+    {
+      "speaker": "maija",
+      "lines": ["Kuolkaa vittu kaikki", "*junaääniä*"]
+    },
+    {
+      "speaker": "juho",
+      "lines": ["Apua auttakaa nyt joku"]
+    },
+    {
+      "speaker": "aleksi",
+      "lines": ["Nam salaatti", "Vegaanisen vaihtoehdon saa aina pyytämällä"]
+    },
+    {
+      "speaker": "suski",
+      "lines": ["..."]
+    },
+    {
+      "speaker": "väinö",
+      "lines": ["REEEEEEE"]
+    },
+    {
+      "speaker": "vilperi",
+      "lines": ["Penikseni on 27,7 cm pitkä"]
     }
   ]
 }
