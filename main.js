@@ -20,6 +20,7 @@ const pop = require("./scripts/pop/main.js");
 const baptise = require("./scripts/baptise/main.js");
 const praise = require("./scripts/praise/main.js");
 const askShrek = require("./scripts/askShrek/main.js");
+const play = require("./scripts/play/main.js");
 
 /* stuff */
 const prefix = "sir ";
@@ -38,9 +39,18 @@ client.on("message", (message) => {
 
   args = args.splice(1);
 
+  // For alias game
+  if (message.channel.name.toLowerCase() === "alias") {
+    if (cmd !== "play") {
+      play.aliasCommand(message);
+      return;
+    }
+  }
+
   switch (cmd) {
     case "ping":
       message.channel.send("Pong!");
+      play.startGame(message);
       break;
     case "help":
       message.channel.send(
@@ -87,6 +97,9 @@ client.on("message", (message) => {
       break;
     case "ask":
       askShrek.askShrek(message);
+      break;
+    case "play":
+      play.startGame(message, client);
       break;
     //	case 'messsage_X':
     //  break;

@@ -3,7 +3,6 @@
 /* MAIN replyCommands(message);
  */
 
-
 /* TODO
  * embed / nicer output
  */
@@ -15,14 +14,14 @@ const commands = `
     meme
     pop {number}
     bap @mention
-    `
+    ask {name}
+    play {game}
+    `;
 
 exports.replyCommands = async (message) => {
-    try {
-        message.channel.send("Available commands: " + commands);
-    }
-    catch (error) {
-        console.log(error)
-    }
-
-}
+  try {
+    message.channel.send("Available commands: " + commands);
+  } catch (error) {
+    console.log(error);
+  }
+};
