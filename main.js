@@ -39,6 +39,14 @@ client.on("message", (message) => {
 
   args = args.splice(1);
 
+  console.log("message.channel.type", message.channel.type);
+  if (message.channel.type === "dm") {
+    if (cmd === "alias") {
+      play.aliasDM(message);
+    }
+    return;
+  }
+
   // For alias game
   if (message.channel.name.toLowerCase() === "alias") {
     if (cmd !== "play") {

@@ -47,3 +47,11 @@ exports.aliasCommand = async (message) => {
     );
   }
 };
+
+exports.aliasDM = async (message) => {
+  if (gameStorage.alias) {
+    gameStorage.alias.setSelectedWord(message);
+  } else {
+    message.channel.send("Peli ei ole käynnissä.");
+  }
+};

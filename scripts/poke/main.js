@@ -12,7 +12,6 @@ exports.poke = async (message) => {
   try {
     const user = message.mentions.users.first();
     if (user) {
-      console.log(user);
       user.send("poke :3");
       message
         .delete()
