@@ -4,11 +4,6 @@
  */
 
 
-/* TODO
- * encode message for ��kk�set
- * get nickname for guild
- */
-
 exports.poke = async (message) => {
     try {
         const user = message.mentions.users.first();

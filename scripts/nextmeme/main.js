@@ -32,7 +32,7 @@ exports.getMeme = async message => {
         await mes.react("👎");
         await mes.react("👍");
       } catch (error) {
-        console.log("Error eith reactions:\n" + error);
+        console.log("Error with reactions:\n" + error);
       }
     }
   } catch (error) {

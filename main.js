@@ -20,6 +20,7 @@ const pop = require("./scripts/pop/main.js");
 const baptise = require("./scripts/baptise/main.js");
 const praise = require("./scripts/praise/main.js");
 const askShrek = require("./scripts/askShrek/main.js");
+const ruokaa = require("./scripts/ruokaa/main.js");
 
 /* stuff */
 const prefix = "sir ";
@@ -88,6 +89,9 @@ client.on("message", (message) => {
     case "ask":
       askShrek.askShrek(message);
       break;
+    case "ruokaa":
+        ruokaa.ruokaa(message);
+        break;
     //	case 'messsage_X':
     //  break;
     default:
