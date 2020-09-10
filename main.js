@@ -21,6 +21,7 @@ const baptise = require("./scripts/baptise/main.js");
 const praise = require("./scripts/praise/main.js");
 const askShrek = require("./scripts/askShrek/main.js");
 const ruokaa = require("./scripts/ruokaa/main.js");
+const noppa = require("./scripts/noppa/main.js");
 
 /* stuff */
 const prefix = "sir ";
@@ -92,6 +93,9 @@ client.on("message", (message) => {
     case "ruokaa":
         ruokaa.ruokaa(message);
         break;
+    case 'noppa':
+      noppa.noppa(message);
+      break;
     //	case 'messsage_X':
     //  break;
     default:
