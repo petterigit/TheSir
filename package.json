@@ -6,6 +6,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "canvas": "^2.6.1",
+    "dice-roller-parser": "^0.1.8",
     "discord.js": "github:discordjs/discord.js",
     "dotenv": "^8.2.0",
     "ffmpeg": "^0.0.4",
