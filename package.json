@@ -17,6 +17,9 @@
     "path": "^0.12.7",
     "twit": "^2.2.11"
   },
+  "engines": {
+    "node": "12.x"
+  },
   "scripts": {
     "start": "node main.js"
   },
