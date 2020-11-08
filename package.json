@@ -7,7 +7,7 @@
     "axios": "^0.19.2",
     "canvas": "^2.6.1",
     "dice-roller-parser": "^0.1.8",
-    "discord.js": "github:discordjs/discord.js",
+    "discord.js": "^12.4.1",
     "dotenv": "^8.2.0",
     "ffmpeg": "^0.0.4",
     "fs": "^0.0.2",
