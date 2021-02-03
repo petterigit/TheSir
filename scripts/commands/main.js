@@ -15,6 +15,15 @@ const commands = `
     meme
     pop {number}
     bap @mention
+    twit {twitter handle}
+    story
+    praise
+    shame
+    ask
+    ruokaa
+    noppa
+    sus
+    f (or F)
     `
 
 exports.replyCommands = async (message) => {

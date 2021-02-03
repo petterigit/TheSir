@@ -23,6 +23,7 @@ const askShrek = require("./scripts/askShrek/main.js");
 const ruokaa = require("./scripts/ruokaa/main.js");
 const noppa = require("./scripts/noppa/main.js");
 const amongUs = require("./scripts/amongUs/main.js");
+const f = require("./scripts/pressF/main.js");
 
 /* stuff */
 const prefix = "sir ";
@@ -99,6 +100,12 @@ client.on("message", (message) => {
       break;
     case 'sus':
       amongUs.sus(message);
+      break;
+    case 'f':
+      f.f(message);
+      break;
+    case 'F':
+      f.f(message);
       break;
     //	case 'messsage_X':
     //  break;
