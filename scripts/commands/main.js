@@ -24,6 +24,8 @@ const commands = `
     noppa
     sus
     f (or F)
+    wholesome {eläin}
+    wholesome help
     `
 
 exports.replyCommands = async (message) => {

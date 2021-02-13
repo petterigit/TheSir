@@ -24,6 +24,7 @@ const ruokaa = require("./scripts/ruokaa/main.js");
 const noppa = require("./scripts/noppa/main.js");
 const amongUs = require("./scripts/amongUs/main.js");
 const f = require("./scripts/pressF/main.js");
+const wholesome = require("./scripts/wholesome/main.js");
 
 /* stuff */
 const prefix = "sir ";
@@ -106,6 +107,9 @@ client.on("message", (message) => {
       break;
     case 'F':
       f.f(message);
+      break;
+    case 'wholesome':
+      wholesome.wholesome(message);
       break;
     //	case 'messsage_X':
     //  break;
