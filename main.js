@@ -1,7 +1,3 @@
-"use strict";
-/* DON'T TOUCH MAIN, TYPE IMPORT AND MAIN FUNC TO MAIN.JS
- */
-
 /* require */
 require("dotenv").config();
 const Discord = require("discord.js");
@@ -25,6 +21,7 @@ const noppa = require("./scripts/noppa/main.js");
 const amongUs = require("./scripts/amongUs/main.js");
 const f = require("./scripts/pressF/main.js");
 const wholesome = require("./scripts/wholesome/main.js");
+const fiiliskierros = require("./scripts/fiiliskierros/main.js");
 
 /* stuff */
 const prefix = "sir ";
@@ -94,8 +91,8 @@ client.on("message", (message) => {
       askShrek.askShrek(message);
       break;
     case "ruokaa":
-        ruokaa.ruokaa(message);
-        break;
+      ruokaa.ruokaa(message);
+      break;
     case 'noppa':
       noppa.noppa(message);
       break;
@@ -110,6 +107,9 @@ client.on("message", (message) => {
       break;
     case 'wholesome':
       wholesome.wholesome(message);
+      break;
+    case 'fiilikset':
+      fiiliskierros.fiiliskierros(message);
       break;
     //	case 'messsage_X':
     //  break;
