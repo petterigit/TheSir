@@ -3,7 +3,10 @@
 // *****************
 // Add wholesome twitter @'s here
 
-const WHS_twitters = ["RabbitEveryHour", "UnsolicitedDiks", "hourlyFox", "PossumEveryHour", "RaccoonEveryHr", "ShouldHaveCat", "DogSolutions", "dog_rates", "cutefunnyanimal"];
+const WHS_twitters = ["RabbitEveryHour", "UnsolicitedDiks", "hourlyFox", "PossumEveryHour", "RaccoonEveryHr", "ShouldHaveCat", "DogSolutions", "dog_rates", "cutefunnyanimal", "contextkittens", "catsdotexe", "contextdogs"];
+
+const WHS_Cats = ["ShouldHaveCat", "contextkittens", "catsdotexe"];
+const WHS_Dogs = ["DogSolutions", "dog_rates", "contextdogs"];
 
 // Add the animals here
 const animalsFIN = ["kani", "dikdik (eli kärsäantilooppi)", "kettu", "opossumi", "pesukarhu", "kissa", "koira", "video"];
@@ -68,11 +71,11 @@ exports.wholesome = async (message) => {
             parameters.screen_name = WHS_twitters[4];
             chosen = 4;
         } else if (param == "kissa") {
-            parameters.screen_name = WHS_twitters[5];
-            chosen = 5;
+            chosen = randomNumber(0,WHS_Cats.length)
+            parameters.screen_name = WHS_Cats[chosen];
         } else if (param == "koira") {
-            chosen = randomNumber(6,7)
-            parameters.screen_name = WHS_twitters[chosen];
+            chosen = randomNumber(0,WHS_Dogs.length)
+            parameters.screen_name = WHS_Dogs[chosen];
         } else if (param == "video") {
             parameters.screen_name = WHS_twitters[8];
             chosen = 7;
@@ -110,12 +113,17 @@ function getTweetsAndSendOneToDiscord(message, chosen) {
                     continue;
                     
                 } else {
-                    if (tweet.entities.media) {
-                        if (chosen == 6 || chosen == 7){
+
+                    if (tweet.entities.media) { //Dog
+                        if (chosen == 6 || chosen == 7 || chosen == 11){
                             animal = 6;
+                        } else if (chosen == 9 || chosen == 10 || chosen == 5) { //Cat
+                            animal = 5;
                         } else {
                             animal = chosen;
                         }
+
+
                         if (tweet.entities.media[0].media_url.search("video") != -1) {
                             video_url_temp = tweet.entities.media[0].media_url_https.split("/");
                             //console.log(video_url_temp);
