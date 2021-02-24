@@ -3,10 +3,13 @@
 // *****************
 // Add wholesome twitter @'s here
 
-const WHS_twitters = ["RabbitEveryHour", "UnsolicitedDiks", "hourlyFox", "PossumEveryHour", "RaccoonEveryHr", "ShouldHaveCat"];
+const WHS_twitters = ["RabbitEveryHour", "UnsolicitedDiks", "hourlyFox", "PossumEveryHour", "RaccoonEveryHr", "ShouldHaveCat", "DogSolutions", "dog_rates", "cutefunnyanimal", "contextkittens", "catsdotexe", "contextdogs"];
+
+const WHS_Cats = ["ShouldHaveCat", "contextkittens", "catsdotexe"];
+const WHS_Dogs = ["DogSolutions", "dog_rates", "contextdogs"];
 
 // Add the animals here
-const animalsFIN = ["kani", "dikdik (eli kärsäantilooppi)", "kettu", "opossumi", "pesukarhu", "kissa"];
+const animalsFIN = ["kani", "dikdik (eli kärsäantilooppi)", "kettu", "opossumi", "pesukarhu", "kissa", "koira", "video"];
 
 // *****************
 
@@ -68,8 +71,14 @@ exports.wholesome = async (message) => {
             parameters.screen_name = WHS_twitters[4];
             chosen = 4;
         } else if (param == "kissa") {
-            parameters.screen_name = WHS_twitters[5];
-            chosen = 5;
+            chosen = randomNumber(0,WHS_Cats.length)
+            parameters.screen_name = WHS_Cats[chosen];
+        } else if (param == "koira") {
+            chosen = randomNumber(0,WHS_Dogs.length)
+            parameters.screen_name = WHS_Dogs[chosen];
+        } else if (param == "video") {
+            parameters.screen_name = WHS_twitters[8];
+            chosen = 7;
         }
 
         // Add else if's when adding new animals
@@ -90,8 +99,12 @@ exports.wholesome = async (message) => {
 function getTweetsAndSendOneToDiscord(message, chosen) {
 
         T.get(path, parameters, function(err, data, response) {
-
+            let animal = 0;
             let tweetStatus = -1;
+            let media_video_url = "";
+            let video_url_temp = "";
+            let tweet_text  = "";
+            let tweet_text_temp = 0;
             while (tweetStatus == -1) {
                 const tweet = data[randomNumber(0, MAX_TWEETS)];
 
@@ -100,20 +113,51 @@ function getTweetsAndSendOneToDiscord(message, chosen) {
                     continue;
                     
                 } else {
-                    if (tweet.entities.media) {
+
+                    if (tweet.entities.media) { //Dog
+                        if (chosen == 6 || chosen == 7 || chosen == 11){
+                            animal = 6;
+                        } else if (chosen == 9 || chosen == 10 || chosen == 5) { //Cat
+                            animal = 5;
+                        } else {
+                            animal = chosen;
+                        }
+
+
+                        if (tweet.entities.media[0].media_url.search("video") != -1) {
+                            video_url_temp = tweet.entities.media[0].media_url_https.split("/");
+                            //console.log(video_url_temp);
+                            video_url_temp = video_url_temp[video_url_temp.length - 1].replace("jpg", "mp4");
+                            media_video_url = "https://video.twimg.com/tweet_video/" + video_url_temp;
+
+                            tweet_text_temp = tweet.full_text.search("https://t.co");
+                            tweet_text = tweet.full_text.slice(0, tweet_text_temp);
+
+                            //console.log(media_video_url);
+                            answerMessage = {
+                                description:
+                                "Tässä sinulle video:\n\n" +
+                                tweet_text
+                            };
+                            tweetStatus = 0;
+                        } else {
                         answerMessage = {
                             description:
                             "Tässä sinulle " +
-                            animalsFIN[chosen] +
+                            animalsFIN[animal] +
                             ":\n\n",
                             image: { url: tweet.entities.media[0].media_url }
                         };
                         tweetStatus = 0;
+                    }
                     } else {
                         continue;
                     }
                 }
                 message.channel.send({ embed: answerMessage });
+                if (media_video_url != "") {
+                    message.channel.send(media_video_url);
+                }
             }         
   });
 
