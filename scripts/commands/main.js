@@ -26,6 +26,7 @@ const commands = `
     f (or F)
     wholesome {eläin}
     wholesome help
+    doubt
     `
 
 exports.replyCommands = async (message) => {
