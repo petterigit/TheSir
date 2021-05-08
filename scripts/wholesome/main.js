@@ -45,7 +45,7 @@ const TWITTERTOKEN_access_token_secret =
 
 let T = undefined;
 try {
-  const T = new Twit({
+  T = new Twit({
     consumer_key: TWITTERTOKEN_consumer_key,
     consumer_secret: TWITTERTOKEN_consumer_secret,
     access_token: TWITTERTOKEN_access_token,
