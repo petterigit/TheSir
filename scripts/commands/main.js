@@ -3,7 +3,6 @@
 /* MAIN replyCommands(message);
  */
 
-
 /* TODO
  * embed / nicer output
  */
@@ -26,14 +25,13 @@ const commands = `
     f (or F)
     wholesome {eläin}
     wholesome help
-    `
+    kortteja
+    `;
 
 exports.replyCommands = async (message) => {
-    try {
-        message.channel.send("Available commands: " + commands);
-    }
-    catch (error) {
-        console.log(error)
-    }
-
-}
+  try {
+    message.channel.send("Available commands: " + commands);
+  } catch (error) {
+    console.log(error);
+  }
+};
