@@ -22,6 +22,7 @@ const amongUs = require("./scripts/amongUs/main.js");
 const f = require("./scripts/pressF/main.js");
 const wholesome = require("./scripts/wholesome/main.js");
 const fiiliskierros = require("./scripts/fiiliskierros/main.js");
+const kortteja = require("./scripts/kortteja/main.js");
 
 /* stuff */
 const prefix = "sir ";
@@ -93,23 +94,26 @@ client.on("message", (message) => {
     case "ruokaa":
       ruokaa.ruokaa(message);
       break;
-    case 'noppa':
+    case "noppa":
       noppa.noppa(message);
       break;
-    case 'sus':
+    case "sus":
       amongUs.sus(message);
       break;
-    case 'f':
+    case "f":
       f.f(message);
       break;
-    case 'F':
+    case "F":
       f.f(message);
       break;
-    case 'wholesome':
+    case "wholesome":
       wholesome.wholesome(message);
       break;
-    case 'fiilikset':
+    case "fiilikset":
       fiiliskierros.fiiliskierros(message);
+      break;
+    case "kortteja":
+      kortteja.kortteja(message);
       break;
     //	case 'messsage_X':
     //  break;
