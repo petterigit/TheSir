@@ -3,7 +3,6 @@
  */
 
 const fetch = require("node-fetch");
-const Discord = require("discord.js");
 
 const cardGameUrl = "https://kortit-ihmiskuntaa-vastaan.herokuapp.com";
 const newGamePath = "/g";
