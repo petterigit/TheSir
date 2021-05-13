@@ -8,17 +8,12 @@ const TWITTERTOKEN_access_token = process.env.TWITTERTOKEN_access_token;
 const TWITTERTOKEN_access_token_secret =
   process.env.TWITTERTOKEN_access_token_secret;
 
-let T = undefined;
-try {
-  T = new Twit({
-    consumer_key: TWITTERTOKEN_consumer_key,
-    consumer_secret: TWITTERTOKEN_consumer_secret,
-    access_token: TWITTERTOKEN_access_token,
-    access_token_secret: TWITTERTOKEN_access_token_secret,
-  });
-} catch (e) {
-  console.log("Could not initialize Twit");
-}
+const T = new Twit({
+  consumer_key: TWITTERTOKEN_consumer_key,
+  consumer_secret: TWITTERTOKEN_consumer_secret,
+  access_token: TWITTERTOKEN_access_token,
+  access_token_secret: TWITTERTOKEN_access_token_secret
+});
 
 const MAX_TWEETS = 100;
 
@@ -26,10 +21,10 @@ const path = "statuses/user_timeline";
 const parameters = {
   screen_name: "niilo222",
   count: MAX_TWEETS,
-  tweet_mode: "extended",
+  tweet_mode: "extended"
 };
 
-exports.getNiiloTweet = async (message) => {
+exports.getNiiloTweet = async message => {
   try {
     getTweetsAndSendOneToDiscord(message);
   } catch (error) {
@@ -39,8 +34,7 @@ exports.getNiiloTweet = async (message) => {
 };
 
 function getTweetsAndSendOneToDiscord(message) {
-  if (!T) return;
-  T.get(path, parameters, function (err, data, response) {
+  T.get(path, parameters, function(err, data, response) {
     const tweet = getRandomTweet(data);
     sendTweetToDiscord(tweet, message);
   });
@@ -65,7 +59,7 @@ function createAnswerMessage(tweet) {
       "Niilo22 twiittasi " +
       parseDate(tweet.created_at) +
       ":\n\n" +
-      tweet.full_text,
+      tweet.full_text
   };
 
   if (tweet.entities.media) {
@@ -75,7 +69,7 @@ function createAnswerMessage(tweet) {
         parseDate(tweet.created_at) +
         ":\n\n" +
         tweet.full_text,
-      image: { url: tweet.entities.media[0].media_url },
+      image: { url: tweet.entities.media[0].media_url }
     };
   }
 
@@ -136,7 +130,7 @@ function parseWeekday(weekday) {
     "keskiviikkona",
     "torstaina",
     "perjantaina",
-    "lauantaina",
+    "lauantaina"
   ];
 
   const NUMBER_OF_WEEKDAYS = 7;
@@ -164,7 +158,7 @@ function parseMonth(month) {
     "syyskuuta",
     "lokakuuta",
     "marraskuuta",
-    "joulukuuta",
+    "joulukuuta"
   ];
 
   const NUMBER_OF_MONTHS = 12;
