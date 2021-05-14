@@ -4,7 +4,7 @@
 
 const fetch = require("node-fetch");
 
-const cardGameUrl = "https://kortit-ihmiskuntaa-vastaan.herokuapp.com";
+const cardGameUrl = "http://pelit.space";
 const newGamePath = "/g";
 
 exports.kortteja = async (message) => {
