@@ -8,17 +8,12 @@ const TWITTERTOKEN_access_token = process.env.TWITTERTOKEN_access_token;
 const TWITTERTOKEN_access_token_secret =
   process.env.TWITTERTOKEN_access_token_secret;
 
-let T = undefined;
-try {
-  T = new Twit({
-    consumer_key: TWITTERTOKEN_consumer_key,
-    consumer_secret: TWITTERTOKEN_consumer_secret,
-    access_token: TWITTERTOKEN_access_token,
-    access_token_secret: TWITTERTOKEN_access_token_secret,
-  });
-} catch (e) {
-  console.log("Could not initialize Twit");
-}
+const T = new Twit({
+  consumer_key: TWITTERTOKEN_consumer_key,
+  consumer_secret: TWITTERTOKEN_consumer_secret,
+  access_token: TWITTERTOKEN_access_token,
+  access_token_secret: TWITTERTOKEN_access_token_secret,
+});
 
 const MAX_TWEETS = 100;
 
@@ -43,6 +38,7 @@ exports.getUserTweet = async (message) => {
 
 function getTweetsAndSendOneToDiscord(message) {
   if (!T) return;
+
   T.get(path, parameters, function (err, data, response) {
     if (data.error) {
       console.log(
