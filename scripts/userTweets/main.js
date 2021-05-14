@@ -44,6 +44,15 @@ exports.getUserTweet = async (message) => {
 function getTweetsAndSendOneToDiscord(message) {
   if (!T) return;
   T.get(path, parameters, function (err, data, response) {
+    if (data.error) {
+      console.log(
+        "Requested:",
+        data.request,
+        "Received error from Twitter API:",
+        data.error
+      );
+      return;
+    }
     const tweet = getRandomTweet(data);
     sendTweetToDiscord(tweet, message);
   });

@@ -123,6 +123,15 @@ function getTweetsAndSendOneToDiscord(message, chosen) {
   if (!T) return;
 
   T.get(path, parameters, function (err, data, response) {
+    if (data.error) {
+      console.log(
+        "Requested:",
+        data.request,
+        "Received error from Twitter API:",
+        data.error
+      );
+      return;
+    }
     let animal = 0;
     let tweetStatus = -1;
     let media_video_url = "";
