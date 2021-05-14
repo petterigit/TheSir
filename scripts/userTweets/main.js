@@ -12,7 +12,7 @@ const T = new Twit({
   consumer_key: TWITTERTOKEN_consumer_key,
   consumer_secret: TWITTERTOKEN_consumer_secret,
   access_token: TWITTERTOKEN_access_token,
-  access_token_secret: TWITTERTOKEN_access_token_secret
+  access_token_secret: TWITTERTOKEN_access_token_secret,
 });
 
 const MAX_TWEETS = 100;
@@ -21,10 +21,10 @@ const path = "statuses/user_timeline";
 const parameters = {
   screen_name: "niilo222",
   count: MAX_TWEETS,
-  tweet_mode: "extended"
+  tweet_mode: "extended",
 };
 
-exports.getUserTweet = async message => {
+exports.getUserTweet = async (message) => {
   try {
     let args = message.content.substring(1).split(" ");
     let twitname = args[2];
@@ -37,7 +37,18 @@ exports.getUserTweet = async message => {
 };
 
 function getTweetsAndSendOneToDiscord(message) {
-  T.get(path, parameters, function(err, data, response) {
+  if (!T) return;
+
+  T.get(path, parameters, function (err, data, response) {
+    if (data.error) {
+      console.log(
+        "Requested:",
+        data.request,
+        "Received error from Twitter API:",
+        data.error
+      );
+      return;
+    }
     const tweet = getRandomTweet(data);
     sendTweetToDiscord(tweet, message);
   });
@@ -57,11 +68,11 @@ function sendTweetToDiscord(tweet, message) {
 }
 
 function createAnswerMessage(tweet) {
-  let answerMessage = ""
+  let answerMessage = "";
   if (typeof tweet === "undefined") {
     answerMessage = {
-      description: "Twiittiä ei löytynyt"
-    }
+      description: "Twiittiä ei löytynyt",
+    };
   } else {
     if (tweet.entities.media) {
       answerMessage = {
@@ -71,7 +82,7 @@ function createAnswerMessage(tweet) {
           parseDate(tweet.created_at) +
           ":\n\n" +
           tweet.full_text,
-        image: { url: tweet.entities.media[0].media_url }
+        image: { url: tweet.entities.media[0].media_url },
       };
     } else {
       answerMessage = {
@@ -80,11 +91,10 @@ function createAnswerMessage(tweet) {
           " twiittasi " +
           parseDate(tweet.created_at) +
           ":\n\n" +
-          tweet.full_text
+          tweet.full_text,
       };
     }
   }
-
 
   return answerMessage;
 }
@@ -143,7 +153,7 @@ function parseWeekday(weekday) {
     "keskiviikkona",
     "torstaina",
     "perjantaina",
-    "lauantaina"
+    "lauantaina",
   ];
 
   const NUMBER_OF_WEEKDAYS = 7;
@@ -171,7 +181,7 @@ function parseMonth(month) {
     "syyskuuta",
     "lokakuuta",
     "marraskuuta",
-    "joulukuuta"
+    "joulukuuta",
   ];
 
   const NUMBER_OF_MONTHS = 12;
