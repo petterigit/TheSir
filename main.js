@@ -1,7 +1,8 @@
 /* require */
 require("dotenv").config();
+const { intents } = require("./intents.js");
 const Discord = require("discord.js");
-const client = new Discord.Client();
+const client = new Discord.Client({ intents: intents });
 const token = process.env.TOKEN;
 
 /* Scripts */
@@ -28,13 +29,13 @@ const kortteja = require("./scripts/kortteja/main.js");
 const prefix = "sir ";
 
 /* Bot setup */
-client.on("ready", () => {
+client.once("ready", () => {
   console.log("I am ready");
   client.user.setActivity("Fucking", { type: "my sister" });
 });
 
-/* Message routes */
-client.on("message", (message) => {
+/* message routes */
+client.on("messageCreate", (message) => {
   if (!message.content.startsWith(prefix)) return;
   let args = message.content.substring(1).split(" ");
   let cmd = args[1];

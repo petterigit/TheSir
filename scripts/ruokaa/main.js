@@ -1,14 +1,23 @@
-'use strict';
+"use strict";
 
-const fetch = require('node-fetch');
+const fetch = require("node-fetch");
+const Discord = require("discord.js");
+
+const createButton = (id, text) => {
+  return new Discord.MessageButton({
+    customId: id,
+    label: text,
+    style: "PRIMARY",
+  });
+};
 
 exports.ruokaa = async (message) => {
-  message.channel.startTyping();
+  message.channel.sendTyping();
 
   try {
-    const menu = await fetch(
-      'https://skinfo.juho.space/categories.json'
-    ).then((res) => res.json());
+    const menu = await fetch("https://skinfo.juho.space/categories.json").then(
+      (res) => res.json()
+    );
 
     const texts = [`Syödään tänään`];
 
@@ -20,7 +29,7 @@ exports.ruokaa = async (message) => {
         for (const food of category.foods) {
           let result = `   ${food.name}`;
           if (food.dietInfo.length > 0) {
-            result += ` (${food.dietInfo.join('/')})`;
+            result += ` (${food.dietInfo.join("/")})`;
           }
           texts.push(result);
         }
@@ -31,7 +40,7 @@ exports.ruokaa = async (message) => {
     const laseri = menu.laseri && menu.laseri.length > 0;
 
     if (!yolo && !laseri) {
-      await message.channel.send('Ei ruokalistoja.');
+      await message.channel.send("Ei ruokalistoja.");
       return;
     }
 
@@ -43,16 +52,21 @@ exports.ruokaa = async (message) => {
       appendMenu(menu.laseri, `🍑 Laserilla`);
     }
 
-    const mes = await message.channel.send(texts.join('\n'));
+    const row = new Discord.MessageActionRow().addComponents(
+      createButton("aa", "aaaaa")
+    );
+
+    const mes = await message.channel.send({
+      content: texts.join("\n"),
+      components: row,
+    });
     if (yolo) {
-      await mes.react('🍉');
+      await mes.react("🍉");
     }
     if (laseri) {
-      await mes.react('🍑');
+      await mes.react("🍑");
     }
   } catch (error) {
     console.log(error);
-  } finally {
-    await message.channel.stopTyping();
   }
 };
