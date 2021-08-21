@@ -39,8 +39,16 @@ exports.ruokaa = async (message) => {
     const yolo = menu.yolo && menu.yolo.length > 0;
     const laseri = menu.laseri && menu.laseri.length > 0;
 
+    const row = new Discord.MessageActionRow().addComponents(
+      createButton("aa", "aaaaa")
+    );
+
     if (!yolo && !laseri) {
-      await message.channel.send("Ei ruokalistoja.");
+      await message.channel.send({
+        content: "Ei ruokalistoja.",
+        components: [row],
+      });
+
       return;
     }
 
@@ -51,10 +59,6 @@ exports.ruokaa = async (message) => {
     if (laseri) {
       appendMenu(menu.laseri, `🍑 Laserilla`);
     }
-
-    const row = new Discord.MessageActionRow().addComponents(
-      createButton("aa", "aaaaa")
-    );
 
     const mes = await message.channel.send({
       content: texts.join("\n"),

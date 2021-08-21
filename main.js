@@ -123,4 +123,11 @@ client.on("messageCreate", (message) => {
   }
 });
 
+client.on("interactionCreate", (interaction) => {
+  if (!interaction.isButton()) return;
+  if (interaction.customId == "aa") {
+    console.log("maaa");
+  }
+});
+
 client.login(token);
