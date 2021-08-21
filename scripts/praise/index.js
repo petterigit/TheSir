@@ -50,26 +50,27 @@ praise = async (message, shameInstead = false) => {
     }
 
     try {
-      message.channel.send(text, attachment);
+      message.channel.send({ content: text, files: [attachment] });
     } catch (error) {
-      console.log("Failed to send message from praise main.js");
+      console.log("Failed to send message from praise");
     }
   } else {
     try {
       message.channel.send("You need to @ someone");
     } catch (error) {
-      console.log("Failed to send message from praise main.js");
+      console.log("Failed to send message from praise");
     }
   }
 };
 
 module.exports = {
   data: {
-    name: "praise",
-    description: "Praises",
+    name: ["praise", "shame"],
+    description:
+      "Praise a fellow Discord dude or shame them for saying something stupid",
   },
   async execute(message) {
-    await praise(message);
+    await praise(message, message.content?.includes("shame"));
   },
 };
 

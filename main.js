@@ -41,7 +41,11 @@ const commandFiles = fs.readdirSync("./scripts/");
 for (const dir of commandFiles) {
   const command = require(`./scripts/${dir}`);
   if (command?.data?.name) {
-    client.commands.set(command.data.name, command);
+    if (Array.isArray(command.data.name)) {
+      command.data.name.map((name) => client.commands.set(name, command));
+    } else {
+      client.commands.set(command.data.name, command);
+    }
   }
 }
 
@@ -59,7 +63,7 @@ client.on("messageCreate", async (message) => {
     await command.execute(message);
   } catch (error) {
     console.error(error);
-    await interaction.reply({
+    await message.reply({
       content: "There was an error while executing this command!",
       ephemeral: true,
     });

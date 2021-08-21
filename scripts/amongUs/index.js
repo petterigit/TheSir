@@ -1,11 +1,11 @@
-const _ = require('lodash');
-const Discord = require('discord.js');
+const _ = require("lodash");
+const Discord = require("discord.js");
 
-const NO_TARGET_MESSAGES = ['where', 'who', 'why', 'where?', 'who?', 'why?'];
+const NO_TARGET_MESSAGES = ["where", "who", "why", "where?", "who?", "why?"];
 
 let impostor;
 
-exports.sus = async (message) => {
+const sus = async (message) => {
   if (!message.channel) {
     return;
   }
@@ -18,7 +18,7 @@ exports.sus = async (message) => {
         .filter((member) => !member.user.bot)
         .random();
 
-      await impostor.send('You are The Impostor.');
+      await impostor.send("You are The Impostor.");
 
       return impostor;
     })();
@@ -42,14 +42,24 @@ exports.sus = async (message) => {
   const targetName = guildTarget.nickname || guildTarget.user.username;
 
   if (target.id === (await impostor).user.id) {
-    embed.setColor('#00ff00').setTitle(`${targetName} was The Impostor.`);
+    embed.setColor("#00ff00").setTitle(`${targetName} was The Impostor.`);
     impostor = null;
   } else {
     embed
-      .setColor('#ff0000')
+      .setColor("#ff0000")
       .setTitle(`${targetName} was not The Impostor.`)
-      .setFooter('1 Impostor remains.');
+      .setFooter("1 Impostor remains.");
   }
 
-  await message.reply(embed);
+  await message.reply({ embeds: [embed] });
+};
+
+module.exports = {
+  data: {
+    name: "sus",
+    description: "Play Among Us in Discord brah",
+  },
+  async execute(message) {
+    await sus(message);
+  },
 };
