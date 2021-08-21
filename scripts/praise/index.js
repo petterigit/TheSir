@@ -73,5 +73,3 @@ module.exports = {
     await praise(message, message.content?.includes("shame"));
   },
 };
-
-// exports.praise = praise;

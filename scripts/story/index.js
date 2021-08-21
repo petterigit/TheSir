@@ -31,7 +31,7 @@ const findStory = (channel) => {
   return -1;
 };
 
-exports.beginStory = async (message) => {
+const beginStory = async (message) => {
   await message.channel.send("You died! 🎉🎉");
   return;
   try {
@@ -55,7 +55,7 @@ exports.beginStory = async (message) => {
 };
 
 //Continues the story
-exports.story = async (message) => {
+const story = async (message) => {
   if (message.content == "story help") {
     message.channel.send(
       "Write the prefix 'story' and the action's number or forward/right/left/hit/kys"
@@ -97,4 +97,18 @@ exports.story = async (message) => {
       "No story is being told. Begin your story with 'sir story'"
     );
   }
+};
+
+module.exports = {
+  data: {
+    name: ["story", "beginStory"],
+    description: "Something something story",
+  },
+  async execute(message) {
+    if (message.content.includes("beginStory")) {
+      await beginStory(message);
+    } else {
+      await story(message);
+    }
+  },
 };
