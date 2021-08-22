@@ -58,9 +58,14 @@ client.on("messageCreate", async (message) => {
   args = args.splice(1);
 
   const command = client.commands.get(cmd);
-  if (!command) return;
+  if (!command) {
+    console.log(client.commands);
+    console.log(`${cmd} not found`);
+    return;
+  }
+
   try {
-    await command.execute(message);
+    await command.execute(message, client);
   } catch (error) {
     console.error(error);
     await message.reply({
