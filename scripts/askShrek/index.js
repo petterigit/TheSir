@@ -1,4 +1,4 @@
-exports.askShrek = async (message) => {
+const askShrek = async (message) => {
   try {
     getLinesAndSendOneToDiscord(message);
   } catch (error) {
@@ -68,7 +68,7 @@ function sendCharacterNotFound(message) {
     embed = embed + allCharacters[i].speaker + ", ";
   }
 
-  message.channel.send(embed);
+  message.channel.send({ embeds: [{ description: embed }] });
 }
 
 function sendAnswerToDiscord(answer, message) {
@@ -82,5 +82,15 @@ function sendAnswerToDiscord(answer, message) {
     characterName.charAt(0).toUpperCase() +
     characterName.slice(1) +
     " answered with:\n";
-  message.channel.send(title, { embed: { description: answer } });
+  message.channel.send({ content: title, embeds: [{ description: answer }] });
 }
+
+module.exports = {
+  data: {
+    name: ["ask", "askShrek"],
+    description: "Ask for advice from the most beloved ogre",
+  },
+  async execute(message) {
+    await askShrek(message);
+  },
+};
