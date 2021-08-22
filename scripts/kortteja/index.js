@@ -7,7 +7,7 @@ const fetch = require("node-fetch");
 const cardGameUrl = "http://pelit.space";
 const newGamePath = "/g";
 
-exports.kortteja = async (message) => {
+const kortteja = async (message) => {
   const url = `${cardGameUrl}${newGamePath}`;
   try {
     const response = await fetch(url, { method: "POST" });
@@ -21,8 +21,18 @@ exports.kortteja = async (message) => {
       `,
     };
 
-    message.channel.send({ embed: embed });
+    message.channel.send({ embeds: [embed] });
   } catch (e) {
     message.channel.send(`Korttipelin aloittaminen ei onnistunut :((`);
   }
+};
+
+module.exports = {
+  data: {
+    name: "kortteja",
+    description: "Luo uuden Kortit ihmiskuntaa vastaan pelin",
+  },
+  async execute(message) {
+    await kortteja(message);
+  },
 };
