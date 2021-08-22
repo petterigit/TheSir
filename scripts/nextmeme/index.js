@@ -7,20 +7,21 @@ const nextmeme = require("./nextmeme.js");
 
 const emoji = {
   megusta: "658413442083848214",
-  rageface: "658413628403351617"
+  rageface: "658413628403351617",
 };
 
-exports.getMeme = async message => {
+const getMeme = async (message) => {
   try {
     const res = await nextmeme.nextMeme();
 
     const date = new Date(res.timestamp * 1000);
     const embed = {
       image: { url: res.url },
-      description: `Posted: ${date.getDate()}.${date.getMonth() +
-        1}.${date.getFullYear()}`
+      description: `Posted: ${date.getDate()}.${
+        date.getMonth() + 1
+      }.${date.getFullYear()}`,
     };
-    const mes = await message.channel.send({ embed: embed });
+    const mes = await message.channel.send({ embeds: [embed] });
 
     try {
       await mes.react(emoji.rageface);
@@ -39,4 +40,15 @@ exports.getMeme = async message => {
     message.channel.send("The meme died before delivery.");
     console.log("Meme fetch error:\n" + error);
   }
+};
+
+module.exports = {
+  data: {
+    name: ["meme"],
+    description:
+      "Gets a random meme from a collection of over a million memes (they are all bad)",
+  },
+  async execute(message) {
+    await getMeme(message);
+  },
 };
