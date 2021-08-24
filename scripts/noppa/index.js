@@ -1,15 +1,15 @@
-const { DiceRoller } = require('dice-roller-parser');
+const { DiceRoller } = require("dice-roller-parser");
 
 const diceRoller = new DiceRoller();
 
-exports.noppa = async (message) => {
-  const args = message.content.split(' ').slice(2);
+const noppa = async (message) => {
+  const args = message.content.split(" ").slice(2);
   if (args.length < 1) {
-    await message.reply('anna (*tirsk*) pliis jotain heitettävää :c');
+    await message.reply("anna (*tirsk*) pliis jotain heitettävää :c");
     return;
   }
 
-  const dieString = args.join(' ');
+  const dieString = args.join(" ");
 
   let value;
 
@@ -21,4 +21,14 @@ exports.noppa = async (message) => {
   }
 
   await message.reply(`heiton tulos (*tirsk*) oli ${value}`);
+};
+
+module.exports = {
+  data: {
+    name: ["noppa"],
+    description: "Roll a dice!",
+  },
+  async execute(message) {
+    await noppa(message);
+  },
 };
