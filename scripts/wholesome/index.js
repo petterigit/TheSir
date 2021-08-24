@@ -64,7 +64,7 @@ const parameters = {
   tweet_mode: "extended",
 };
 
-exports.wholesome = async (message) => {
+const wholesome = async (message) => {
   try {
     let chosen = 0;
     let args = message.content.substring(1).split(" ");
@@ -185,7 +185,7 @@ function getTweetsAndSendOneToDiscord(message, chosen) {
           continue;
         }
       }
-      message.channel.send({ embed: answerMessage });
+      message.channel.send({ embeds: [answerMessage] });
       if (media_video_url != "") {
         message.channel.send(media_video_url);
       }
@@ -195,4 +195,14 @@ function getTweetsAndSendOneToDiscord(message, chosen) {
 
 const randomNumber = (start, end) => {
   return Math.floor(Math.random() * (start - end + 1)) + end;
+};
+
+module.exports = {
+  data: {
+    name: ["wholesome"],
+    description: "Wholesome content machine",
+  },
+  async execute(message) {
+    await wholesome(message);
+  },
 };
