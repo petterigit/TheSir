@@ -42,9 +42,11 @@ for (const dir of commandFiles) {
   const command = require(`./scripts/${dir}`);
   if (command?.data?.name) {
     if (Array.isArray(command.data.name)) {
-      command.data.name.map((name) => client.commands.set(name, command));
+      command.data.name.map((name) =>
+        client.commands.set(name.toLowerCase(), command)
+      );
     } else {
-      client.commands.set(command.data.name, command);
+      client.commands.set(command.data.name.toLowerCase(), command);
     }
   }
 }

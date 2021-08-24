@@ -1,13 +1,21 @@
 "use strict";
 
+const { getNicknameOrName } = require("../../util");
 
-exports.f = async (message) => {
+const f = async (message) => {
+  const user = getNicknameOrName(message);
 
-    const user = message.member.nickname;
-    //console.log(user);
+  let msg = "targetName has paid their respects".replace("targetName", user);
 
-    let msg = "targetName has paid their respects".replace("targetName", user);
+  message.channel.send(msg);
+};
 
-    message.channel.send(msg);
-
-}
+module.exports = {
+  data: {
+    name: ["F"],
+    description: "F in the chat bois",
+  },
+  async execute(message) {
+    await f(message);
+  },
+};
