@@ -1,9 +1,7 @@
 const Praise = require("./praise.js");
 const Discord = require("discord.js");
+const { getNicknameOrName } = require("../../util.js");
 
-/* IMPORT const Praise = require('./scripts/praise/main.js');
-/* MAIN praise(message, shameInstead);
- */
 praise = async (message, shameInstead = false) => {
   const mentions = message.mentions;
 
@@ -20,7 +18,7 @@ praise = async (message, shameInstead = false) => {
     const attachment = new Discord.MessageAttachment(buffer, "reaction.jpg");
 
     let text = "";
-    const sender = message.member.nickname || message.author.username;
+    const sender = getNicknameOrName(message);
     if (mentions.everyone) {
       if (shameInstead) {
         text = `${sender} shames everyone!`;
