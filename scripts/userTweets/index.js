@@ -24,7 +24,7 @@ const parameters = {
   tweet_mode: "extended",
 };
 
-exports.getUserTweet = async (message) => {
+const getUserTweet = async (message) => {
   try {
     let args = message.content.substring(1).split(" ");
     let twitname = args[2];
@@ -64,7 +64,7 @@ const randomNumber = (start, end) => {
 
 function sendTweetToDiscord(tweet, message) {
   const embed = createAnswerMessage(tweet);
-  message.channel.send({ embed: embed });
+  message.channel.send({ embeds: [embed] });
 }
 
 function createAnswerMessage(tweet) {
@@ -219,3 +219,13 @@ function removeZero(day) {
 function addDot(day) {
   return day + ".";
 }
+
+module.exports = {
+  data: {
+    name: ["twit", "tweet"],
+    description: "Get a random tweet from any user",
+  },
+  async execute(message) {
+    await getUserTweet(message);
+  },
+};

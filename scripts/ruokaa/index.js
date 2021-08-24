@@ -11,7 +11,7 @@ const createButton = (id, text) => {
   });
 };
 
-exports.ruokaa = async (message) => {
+const ruokaa = async (message) => {
   message.channel.sendTyping();
 
   try {
@@ -73,4 +73,14 @@ exports.ruokaa = async (message) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+module.exports = {
+  data: {
+    name: ["ruokaa"],
+    description: "Daily lunch planner",
+  },
+  async execute(message) {
+    await ruokaa(message);
+  },
 };
