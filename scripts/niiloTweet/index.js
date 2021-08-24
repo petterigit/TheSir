@@ -24,7 +24,7 @@ const parameters = {
   tweet_mode: "extended",
 };
 
-exports.getNiiloTweet = async (message) => {
+const getNiiloTweet = async (message) => {
   try {
     getTweetsAndSendOneToDiscord(message);
   } catch (error) {
@@ -207,3 +207,13 @@ function removeZero(day) {
 function addDot(day) {
   return day + ".";
 }
+
+module.exports = {
+  data: {
+    name: ["niilo22", "niilo"],
+    description: "Gets the best random Niilo22 tweets",
+  },
+  async execute(message) {
+    await getNiiloTweet(message);
+  },
+};
