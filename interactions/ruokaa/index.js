@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { createMention, getNicknameOrName } = require("../../util.js");
+const { createMention } = require("../../util.js");
 
 const idToRestaurant = {
     yolo: "Yolo",
@@ -19,7 +19,7 @@ const ruokaa = async (interaction) => {
     if (!participantEmbed) {
         participantEmbed = createParticipantEmbed(
             idToRestaurant[restaurantParameter],
-            getNicknameOrName(interaction)
+            createMention(interaction)
         );
         participantEmbed.setColor(originalEmbed.color);
     } else {
@@ -27,7 +27,7 @@ const ruokaa = async (interaction) => {
         const newVotes = setVote(
             votes,
             idToRestaurant[restaurantParameter],
-            getNicknameOrName(interaction)
+            createMention(interaction)
         );
         const newFields = setVotesToFields(newVotes);
         participantEmbed.setFields(newFields);
