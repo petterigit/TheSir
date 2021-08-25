@@ -15,7 +15,7 @@ client.once("ready", () => {
   client.user.setActivity("Fucking", { type: "my sister" });
 });
 
-/* Require all commands from the scripts folder */
+/* Require all commands from the commands folder */
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync("./commands/");
 for (const dir of commandFiles) {
@@ -27,6 +27,22 @@ for (const dir of commandFiles) {
       );
     } else {
       client.commands.set(command.data.name.toLowerCase(), command);
+    }
+  }
+}
+
+/* Require all interactions from the interactions folder */
+client.interactions = new Discord.Collection();
+const interactionFiles = fs.readdirSync("./interactions/");
+for (const dir of interactionFiles) {
+  const interaction = require(`./interactions/${dir}`);
+  if (interaction?.data?.name) {
+    if (Array.isArray(interaction.data.name)) {
+      interaction.data.name.map((name) =>
+        client.interactions.set(name, interaction)
+      );
+    } else {
+      client.interactions.set(interaction.data.name, interaction);
     }
   }
 }
@@ -55,10 +71,21 @@ client.on("messageCreate", async (message) => {
   }
 });
 
-client.on("interactionCreate", (interaction) => {
-  if (!interaction.isButton()) return;
-  if (interaction.customId == "aa") {
-    console.log("maaa");
+/* Handle interactions */
+client.on("interactionCreate", async (interaction) => {
+  const interactionHandler = client.interactions.get(interaction.customId);
+  if (!interactionHandler) {
+    return;
+  }
+
+  try {
+    await interactionHandler.execute(interaction, client);
+  } catch (error) {
+    console.error(error);
+    await message.reply({
+      content: "There was an error while executing this interaction!",
+      ephemeral: true,
+    });
   }
 });
 

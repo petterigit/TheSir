@@ -2,12 +2,13 @@
 
 const fetch = require("node-fetch");
 const Discord = require("discord.js");
+const { ButtonTypes, randomColor } = require("../../util");
 
-const createButton = (id, text) => {
+const createButton = (id, text, style = ButtonTypes.Primary) => {
   return new Discord.MessageButton({
     customId: id,
     label: text,
-    style: "PRIMARY",
+    style: style,
   });
 };
 
@@ -19,57 +20,59 @@ const ruokaa = async (message) => {
       (res) => res.json()
     );
 
-    const texts = [`Syödään tänään`];
+    const embed = new Discord.MessageEmbed();
+    embed.setTitle("Syödään tänään");
+    embed.setColor(randomColor());
 
     const appendMenu = (categories, header) => {
-      texts.push(header);
-
+      const textMenu = [];
       for (const category of categories) {
-        texts.push(` - ${category.category}:`);
+        textMenu.push(` - ${category.category}:`);
         for (const food of category.foods) {
           let result = `   ${food.name}`;
           if (food.dietInfo.length > 0) {
             result += ` (${food.dietInfo.join("/")})`;
           }
-          texts.push(result);
+          textMenu.push(result);
         }
       }
+      embed.addField(header, textMenu.join("\n"), true);
+      embed.setTimestamp();
     };
 
     const yolo = menu.yolo && menu.yolo.length > 0;
     const laseri = menu.laseri && menu.laseri.length > 0;
 
-    const row = new Discord.MessageActionRow().addComponents(
-      createButton("aa", "aaaaa")
-    );
+    const buttonRow = new Discord.MessageActionRow();
 
     if (!yolo && !laseri) {
       await message.channel.send({
         content: "Ei ruokalistoja.",
-        components: [row],
       });
 
       return;
     }
 
-    if (yolo) {
-      appendMenu(menu.yolo, `🍉 Yololla`);
-    }
-
     if (laseri) {
-      appendMenu(menu.laseri, `🍑 Laserilla`);
+      appendMenu(menu.laseri, "Laserilla:");
+      buttonRow.addComponents(createButton("ruokaa-laser", "Laser"));
     }
 
-    const mes = await message.channel.send({
-      content: texts.join("\n"),
-      components: row,
+    if (yolo) {
+      appendMenu(menu.yolo, "Yololla:");
+      buttonRow.addComponents(createButton("ruokaa-yolo", "Yolo"));
+    }
+
+    if (buttonRow.components.length > 0) {
+      buttonRow.addComponents(
+        createButton("ruokaa-skip", "Skip", ButtonTypes.Secondary)
+      );
+    }
+
+    await message.channel.send({
+      embeds: [embed],
+      components: [buttonRow],
     });
-    if (yolo) {
-      await mes.react("🍉");
-    }
-    if (laseri) {
-      await mes.react("🍑");
-    }
   } catch (error) {
     console.log(error);
   }
