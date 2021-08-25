@@ -29,3 +29,5 @@ module.exports = {
 ## Interactions
 
 Create interactions in the `interactions` folder. These can include slash commands and button interactions, or any other interactions there might be. Create folder for each interaction and name the file with export as `index.js`. The export should have identical format to command export seen above.
+
+Interaction parameters are handled similarly to commands. Parameters are separated by whitespace. First parameter is the interaction name, rest of the parameters are additional. For an example, look at `sir ruokaa` command and `ruokaa` interaction.
