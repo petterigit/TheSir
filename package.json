@@ -19,7 +19,7 @@
     "twit": "^2.2.11"
   },
   "engines": {
-    "node": "12.x"
+    "node": "16.x"
   },
   "scripts": {
     "start": "nodemon main.js"
