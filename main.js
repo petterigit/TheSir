@@ -73,7 +73,8 @@ client.on("messageCreate", async (message) => {
 
 /* Handle interactions */
 client.on("interactionCreate", async (interaction) => {
-  const interactionHandler = client.interactions.get(interaction.customId);
+  const interactionId = interaction.customId.split(" ")[0];
+  const interactionHandler = client.interactions.get(interactionId);
   if (!interactionHandler) {
     return;
   }

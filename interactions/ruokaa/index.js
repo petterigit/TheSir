@@ -2,22 +2,23 @@ const Discord = require("discord.js");
 const { createMention } = require("../../util.js");
 
 const idToRestaurant = {
-  "ruokaa-yolo": "Yolo",
-  "ruokaa-laser": "Laser",
-  "ruokaa-buffet": "LUT Buffet",
-  "ruokaa-skip": "Skip",
+  yolo: "Yolo",
+  laser: "Laser",
+  buffet: "LUT Buffet",
+  skip: "Skip",
 };
 
 const participantSeparator = "\n";
 
 const ruokaa = async (interaction) => {
   if (!interaction.isButton()) return;
+  const restaurantParameter = interaction.customId.split(" ")[1];
 
   const originalEmbed = interaction.message.embeds[0];
   let participantEmbed = interaction.message.embeds[1];
   if (!participantEmbed) {
     participantEmbed = createParticipantEmbed(
-      idToRestaurant[interaction.customId],
+      idToRestaurant[restaurantParameter],
       createMention(interaction)
     );
     participantEmbed.setColor(originalEmbed.color);
@@ -25,7 +26,7 @@ const ruokaa = async (interaction) => {
     const votes = parseParticipants(participantEmbed);
     const newVotes = setVote(
       votes,
-      idToRestaurant[interaction.customId],
+      idToRestaurant[restaurantParameter],
       createMention(interaction)
     );
     const newFields = setVotesToFields(newVotes);
@@ -108,7 +109,7 @@ const removeParticipantCount = (name) => {
 
 module.exports = {
   data: {
-    name: ["ruokaa-yolo", "ruokaa-buffet", "ruokaa-laser", "ruokaa-skip"],
+    name: "ruokaa",
   },
   async execute(interaction) {
     await ruokaa(interaction);

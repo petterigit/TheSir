@@ -55,17 +55,17 @@ const ruokaa = async (message) => {
 
     if (laseri) {
       appendMenu(menu.laseri, "Laserilla:");
-      buttonRow.addComponents(createButton("ruokaa-laser", "Laser"));
+      buttonRow.addComponents(createButton("ruokaa laser", "Laser"));
     }
 
     if (yolo) {
       appendMenu(menu.yolo, "Yololla:");
-      buttonRow.addComponents(createButton("ruokaa-yolo", "Yolo"));
+      buttonRow.addComponents(createButton("ruokaa yolo", "Yolo"));
     }
 
     if (buttonRow.components.length > 0) {
       buttonRow.addComponents(
-        createButton("ruokaa-skip", "Skip", ButtonTypes.Secondary)
+        createButton("ruokaa skip", "Skip", ButtonTypes.Secondary)
       );
     }
 
