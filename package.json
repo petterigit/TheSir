@@ -1,7 +1,7 @@
 {
   "name": "thesir",
-  "version": "1.0.0",
-  "description": "It's a discord bot.",
+  "version": "1.1",
+  "description": "It's a discord bot. Now with features!",
   "main": "main.js",
   "dependencies": {
     "axios": "^0.21.1",
@@ -24,6 +24,6 @@
   "scripts": {
     "start": "nodemon main.js"
   },
-  "author": "petterigit",
+  "author": "petterigit, Nikug, MaijaHeiskanen, JuhoHeiskanen, Appelsiini1, Apezkin",
   "license": "ISC"
 }
