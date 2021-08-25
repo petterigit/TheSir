@@ -1,19 +1,20 @@
 {
   "name": "thesir",
-  "version": "1.0.0",
-  "description": "It's a discord bot.",
+  "version": "1.1",
+  "description": "It's a discord bot. Now with features!",
   "main": "main.js",
   "dependencies": {
     "axios": "^0.21.1",
-    "canvas": "^2.6.1",
+    "canvas": "^2.8.0",
     "dice-roller-parser": "^0.1.8",
-    "discord.js": "^12.4.1",
+    "discord.js": "^13.1.0",
     "dotenv": "^8.2.0",
     "ffmpeg": "^0.0.4",
     "fs": "^0.0.2",
     "http": "^0.0.0",
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.1",
+    "nodemon": "^2.0.12",
     "path": "^0.12.7",
     "twit": "^2.2.11"
   },
@@ -21,8 +22,8 @@
     "node": "12.x"
   },
   "scripts": {
-    "start": "node main.js"
+    "start": "nodemon main.js"
   },
-  "author": "petterigit",
+  "author": "petterigit, Nikug, MaijaHeiskanen, JuhoHeiskanen, Appelsiini1, Apezkin",
   "license": "ISC"
 }
