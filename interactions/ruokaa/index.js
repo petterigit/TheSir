@@ -90,8 +90,8 @@ const setVotesToFields = (votes) => {
   const sortedFields = fields
     .filter((field) => field.value)
     .sort((a, b) => {
-      if (a.name === idToRestaurant["ruokaa-skip"]) return 1;
-      if (b.name === idToRestaurant["ruokaa-skip"]) return -1;
+      if (a.name === idToRestaurant["skip"]) return 1;
+      if (b.name === idToRestaurant["skip"]) return -1;
       return a.name > b.name ? 1 : -1;
     });
   return sortedFields;
