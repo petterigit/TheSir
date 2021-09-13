@@ -4,9 +4,11 @@
     "description": "It's a discord bot. Now with features!",
     "main": "main.js",
     "dependencies": {
+        "@discordjs/rest": "0.1.0-canary.0",
         "axios": "^0.21.1",
         "canvas": "^2.8.0",
         "dice-roller-parser": "^0.1.8",
+        "discord-api-types": "^0.23.1",
         "discord.js": "^13.1.0",
         "dotenv": "^8.2.0",
         "ffmpeg": "^0.0.4",
