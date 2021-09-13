@@ -1,5 +1,7 @@
+const { randomInt } = require("crypto");
 const Discord = require("discord.js");
 const fs = require("fs");
+const { Routes } = require("discord-api-types/v9");
 
 exports.getNicknameOrName = (message) => {
     if (message.member.nickname == null) {
@@ -20,10 +22,14 @@ exports.ButtonTypes = {
     Link: "LINK",
 };
 
+exports.RandomInt = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
 exports.randomColor = () => {
     let color = "#";
     for (let i = 0; i < 3; i++) {
-        color += Math.floor(Math.random() * 255).toString(16);
+        color += randomInt(0, 255).toString(16);
     }
     return color;
 };
@@ -44,4 +50,59 @@ exports.requireCommands = (folderName) => {
     }
 
     return commands;
+};
+
+exports.executeCommand = async (handler, client) => {
+    if (!handler) return;
+
+    try {
+        await interactionHandler.execute(interaction, client);
+    } catch (error) {
+        console.error(error);
+        await message.reply({
+            content: "There was an error while executing this interaction!",
+            ephemeral: true,
+        });
+    }
+};
+
+exports.registerSlashCommands = async (commands, rest) => {
+    const clientId = process.env.CLIENT_ID;
+    const guildId = process.env.GUILD_ID;
+
+    const commandsToRegister = commands.map((slash) => slash.data.toJSON());
+
+    try {
+        await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
+            body: commandsToRegister,
+        });
+        console.log("Registered application commands");
+    } catch (error) {
+        console.error("Failed to register application commands", error);
+    }
+};
+
+exports.rotateSisterActivities = async (client) => {
+    const fiveMinutes = 5 * 60 * 1000;
+    const activities = [
+        "PLAYING",
+        "STREAMING",
+        "LISTENING",
+        "WATCHING",
+        "COMPETING",
+    ];
+    const interval = setInterval(() => {
+        const newActivityType = activities[randomInt(0, activities.length - 1)];
+        if (client.user.presence.activities[0].type != newActivityType)
+            client.user.setPresence({
+                activities: [
+                    {
+                        name: "My sister",
+                        type: newActivityType,
+                    },
+                ],
+                status: "online",
+            });
+    }, fiveMinutes);
+    return interval;
 };
