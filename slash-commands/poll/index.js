@@ -6,6 +6,7 @@ const { getNicknameOrName, ButtonTypes } = require("../../util");
 // -1 for remove vote button
 const MAX_BUTTONS = 23;
 const MAX_BUTTONS_PER_ROW = 5;
+const MAX_BUTTON_LABEL = 80;
 const COMMAND_NAME = "poll";
 
 const poll = (interaction) => {
@@ -13,11 +14,10 @@ const poll = (interaction) => {
     const actionRows = createActionRows(buttons);
 
     const title = interaction.options.getString("title");
+    const user = getNicknameOrName(interaction);
 
     interaction.reply({
-        content: `${getNicknameOrName(
-            interaction
-        )} started a poll!\n> ${title}`,
+        content: `${user} started a poll!\n> ${title}`,
         components: actionRows,
     });
 };
@@ -47,7 +47,7 @@ const createButtons = (interaction) => {
         if (input)
             inputs.push({
                 id: optionName(inputs.length),
-                name: input,
+                name: input.slice(0, MAX_BUTTON_LABEL),
             });
         return inputs;
     }, []);
