@@ -46,7 +46,7 @@ const createButtons = (interaction) => {
         const input = interaction.options.getString(optionName(i));
         if (input)
             inputs.push({
-                id: optionName(inputs.length + 1),
+                id: optionName(inputs.length),
                 name: input,
             });
         return inputs;
