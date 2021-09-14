@@ -52,14 +52,14 @@ exports.requireCommands = (folderName) => {
     return commands;
 };
 
-exports.executeCommand = async (handler, client) => {
+exports.executeCommand = async (interaction, handler, client) => {
     if (!handler) return;
 
     try {
-        await interactionHandler.execute(interaction, client);
+        await handler.execute(interaction, client);
     } catch (error) {
         console.error(error);
-        await message.reply({
+        await interaction.reply({
             content: "There was an error while executing this interaction!",
             ephemeral: true,
         });
@@ -70,7 +70,9 @@ exports.registerSlashCommands = async (commands, rest) => {
     const clientId = process.env.CLIENT_ID;
     const guildId = process.env.GUILD_ID;
 
-    const commandsToRegister = commands.map((slash) => slash.data.toJSON());
+    const commandsToRegister = commands.map((slash) =>
+        slash.data.toJSON ? slash.data.toJSON() : slash.data
+    );
 
     try {
         await rest.put(Routes.applicationGuildCommands(clientId, guildId), {

@@ -24,7 +24,6 @@ client.once("ready", () => {
         status: "online",
     });
     rotateSisterActivities(client);
-    client.user.set;
 });
 
 client.commands = requireCommands("commands");
@@ -41,8 +40,8 @@ client.on("messageCreate", async (message) => {
 
     args = args.splice(1);
 
-    const command = client.commands.get(cmd);
-    executeCommand(command, client);
+    const commandHandler = client.commands.get(cmd);
+    executeCommand(message, commandHandler, client);
 });
 
 /* Handle interactions */
@@ -51,11 +50,11 @@ client.on("interactionCreate", async (interaction) => {
         const interactionHandler = client.slashCommands.get(
             interaction.commandName
         );
-        executeCommand(interactionHandler, client);
+        executeCommand(interaction, interactionHandler, client);
     } else if (interaction.isButton()) {
         const interactionId = interaction.customId?.split(" ")[0];
         const interactionHandler = client.interactions.get(interactionId);
-        executeCommand(interactionHandler, client);
+        executeCommand(interaction, interactionHandler, client);
     }
 });
 
