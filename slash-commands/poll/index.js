@@ -3,28 +3,24 @@ const { getNicknameOrName, ButtonTypes, randomColor } = require("../../util");
 
 // Max 5 buttons per row, max 5 rows
 // -1 for question
-// -1 for remove vote button
-const MAX_BUTTONS = 23;
+const MAX_BUTTONS = 24;
 const MAX_BUTTONS_PER_ROW = 5;
 const MAX_BUTTON_LABEL = 80;
 const COMMAND_NAME = "poll";
-const OPTION_PREFIX = "option-";
-const OPTION_REMOVE = "remove";
 
 const constants = {
     commandName: COMMAND_NAME,
-    optionPrefix: OPTION_PREFIX,
-    optionRemove: OPTION_REMOVE,
 };
 
-const poll = (interaction) => {
+const poll = async (interaction) => {
+    await interaction.deferReply();
     const buttons = createButtons(interaction);
     const actionRows = createActionRows(buttons);
 
     const title = interaction.options.getString("title");
     const user = getNicknameOrName(interaction);
 
-    interaction.reply({
+    interaction.editReply({
         content: `${user} started a poll!`,
         components: actionRows,
         embeds: [
@@ -61,7 +57,7 @@ const createButtons = (interaction) => {
         if (input) {
             const shortenedInput = input.slice(0, MAX_BUTTON_LABEL);
             inputs.push({
-                id: `${OPTION_PREFIX}${shortenedInput}`,
+                id: `${inputs.length} ${shortenedInput}`,
                 name: shortenedInput,
             });
         }
@@ -69,7 +65,6 @@ const createButtons = (interaction) => {
     }, []);
 
     const buttons = inputs.map((input) => createButton(input.id, input.name));
-    buttons.push(createButton(OPTION_REMOVE, "Poista", ButtonTypes.Secondary));
     return buttons;
 };
 

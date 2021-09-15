@@ -1,19 +1,14 @@
-const { constants } = require("../../slash-commands/poll");
-const { createMention } = require("../../util");
+const { createMention, getNicknameOrName } = require("../../util");
+
+const NAME_SEPARATOR = ", ";
 
 const poll = (interaction) => {
     const buttonParts = interaction.customId.split(" ");
-    const buttonText = buttonParts
-        .slice(1)
-        .join(" ")
-        .replace(constants.optionPrefix, "");
-    const user = createMention(interaction);
+    const buttonIndex = parseInt(buttonParts[1]);
+    const buttonText = buttonParts.slice(2).join(" ");
+    const user = getNicknameOrName(interaction);
 
-    let embed = {};
-    if (buttonText === constants.optionRemove) {
-    } else {
-        embed = handleVote(interaction, buttonText, user);
-    }
+    const embed = handleVote(interaction, buttonText, user);
 
     interaction.update({
         embeds: [embed],
@@ -44,31 +39,37 @@ const setVote = (embed, buttonText, user) => {
             users.push(user);
         }
         if (users.length === 0) {
-            const newEmbed = embed.fields.filter(
+            const newFields = embed.fields.filter(
                 (field) => field.name !== buttonText
             );
-            return newEmbed;
+            const sortedFields = newFields.sort(fieldComparator);
+            return { ...embed, fields: sortedFields };
         } else {
             selectedField.value = formatUsersToField(users);
-            const newEmbed = embed.fields.map((field) =>
+            const newFields = embed.fields.map((field) =>
                 field.name === buttonText ? selectedField : field
             );
-            return newEmbed;
+            const sortedFields = newFields.sort(fieldComparator);
+            return { ...embed, fields: sortedFields };
         }
     }
 
-    return embed;
+    const sortedFields = embed.fields.sort(fieldComparator);
+    return { ...embed, fields: sortedFields };
 };
 
-const getTitleFromInteraction = (interaction) => {
-    const message = interaction.message.content;
-    const messageQuote = message.split("\n")[1];
-    const title = messageQuote.replace("> ", "");
-    return title;
+const fieldComparator = (a, b) => {
+    const votesA = a.value?.split(NAME_SEPARATOR).length ?? 0;
+    const votesB = b.value?.split(NAME_SEPARATOR).length ?? 0;
+
+    if (votesA === votesB) {
+        return a.name > b.name ? 1 : -1;
+    }
+    return votesA > votesB ? -1 : 1;
 };
 
-const parseUsersFromField = (field) => field.value.split(" ");
-const formatUsersToField = (users) => users.join(" ");
+const parseUsersFromField = (field) => field.value.split(NAME_SEPARATOR);
+const formatUsersToField = (users) => users.join(NAME_SEPARATOR);
 
 module.exports = {
     data: {
