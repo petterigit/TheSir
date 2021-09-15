@@ -1,5 +1,5 @@
 const { MessageActionRow, MessageButton } = require("discord.js");
-const { getNicknameOrName, ButtonTypes } = require("../../util");
+const { getNicknameOrName, ButtonTypes, randomColor } = require("../../util");
 
 // Max 5 buttons per row, max 5 rows
 // -1 for question
@@ -8,6 +8,14 @@ const MAX_BUTTONS = 23;
 const MAX_BUTTONS_PER_ROW = 5;
 const MAX_BUTTON_LABEL = 80;
 const COMMAND_NAME = "poll";
+const OPTION_PREFIX = "option-";
+const OPTION_REMOVE = "remove";
+
+const constants = {
+    commandName: COMMAND_NAME,
+    optionPrefix: OPTION_PREFIX,
+    optionRemove: OPTION_REMOVE,
+};
 
 const poll = (interaction) => {
     const buttons = createButtons(interaction);
@@ -17,8 +25,14 @@ const poll = (interaction) => {
     const user = getNicknameOrName(interaction);
 
     interaction.reply({
-        content: `${user} started a poll!\n> ${title}`,
+        content: `${user} started a poll!`,
         components: actionRows,
+        embeds: [
+            {
+                title: title,
+                color: randomColor(),
+            },
+        ],
     });
 };
 
@@ -44,16 +58,18 @@ const createButtons = (interaction) => {
 
     const inputs = indexes.reduce((inputs, i) => {
         const input = interaction.options.getString(optionName(i));
-        if (input)
+        if (input) {
+            const shortenedInput = input.slice(0, MAX_BUTTON_LABEL);
             inputs.push({
-                id: optionName(inputs.length),
-                name: input.slice(0, MAX_BUTTON_LABEL),
+                id: `${OPTION_PREFIX}${shortenedInput}`,
+                name: shortenedInput,
             });
+        }
         return inputs;
     }, []);
 
     const buttons = inputs.map((input) => createButton(input.id, input.name));
-    buttons.push(createButton("remove", "Poista", ButtonTypes.Secondary));
+    buttons.push(createButton(OPTION_REMOVE, "Poista", ButtonTypes.Secondary));
     return buttons;
 };
 
@@ -92,6 +108,7 @@ module.exports = {
         description: "Create polls with your friends!",
         options: createInputs(MAX_BUTTONS),
     },
+    constants: constants,
     async execute(interaction) {
         await poll(interaction);
     },

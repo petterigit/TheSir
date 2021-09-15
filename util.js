@@ -1,4 +1,3 @@
-const { randomInt } = require("crypto");
 const Discord = require("discord.js");
 const fs = require("fs");
 const { Routes } = require("discord-api-types/v9");
@@ -22,9 +21,10 @@ exports.ButtonTypes = {
     Link: "LINK",
 };
 
-exports.RandomInt = (min, max) => {
+const randomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
 };
+exports.randomInt = randomInt;
 
 exports.randomColor = () => {
     let color = "#";
