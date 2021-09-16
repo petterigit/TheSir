@@ -27,6 +27,7 @@ const poll = async (interaction) => {
             {
                 title: title,
                 color: randomColor(),
+                timestamp: new Date(),
             },
         ],
     });
