@@ -83,6 +83,13 @@ exports.registerSlashCommands = async (commands, rest) => {
     const clientId = process.env.CLIENT_ID;
     const guildId = process.env.GUILD_ID;
 
+    if (!clientId || !guildId) {
+        console.log(
+            "Skipping application command registration: GUILD_ID or CLIENT_ID not found in environment variables"
+        );
+        return;
+    }
+
     const commandsToRegister = commands.map((slash) =>
         slash.data.toJSON ? slash.data.toJSON() : slash.data
     );
