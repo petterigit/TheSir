@@ -1,15 +1,23 @@
 const { MessageActionRow, MessageButton } = require("discord.js");
-const { getNicknameOrName, ButtonTypes, randomColor } = require("../../util");
+const {
+    getNicknameOrName,
+    ButtonTypes,
+    randomColor,
+    InputTypes,
+    randomInt,
+} = require("../../util");
 
-// Max 5 buttons per row, max 5 rows
+// Max 5 buttons per row, max 5 rows -> 25
 // -1 for question
-const MAX_BUTTONS = 24;
+// -1 for rainbow mode
+const MAX_BUTTONS = 23;
 const MAX_BUTTONS_PER_ROW = 5;
 const MAX_BUTTON_LABEL = 80;
 const COMMAND_NAME = "poll";
 
 const constants = {
     commandName: COMMAND_NAME,
+    buttonTypes: [ButtonTypes.Primary, ButtonTypes.Success, ButtonTypes.Danger],
 };
 
 const poll = async (interaction) => {
@@ -65,7 +73,15 @@ const createButtons = (interaction) => {
         return inputs;
     }, []);
 
-    const buttons = inputs.map((input) => createButton(input.id, input.name));
+    const rainbowMode = interaction.options.getBoolean("rainbow-mode");
+
+    const buttons = inputs.map((input) =>
+        createButton(
+            input.id,
+            input.name,
+            rainbowMode ? getRandomButtonStyle() : undefined
+        )
+    );
     return buttons;
 };
 
@@ -75,6 +91,11 @@ const createButton = (id, text, style = ButtonTypes.Primary) => {
         label: text,
         style: style,
     });
+};
+
+const getRandomButtonStyle = () => {
+    const randomValue = randomInt(0, constants.buttonTypes.length - 1);
+    return constants.buttonTypes[randomValue];
 };
 
 const optionName = (index) => `option-${index + 1}`;
@@ -89,10 +110,16 @@ const createInputs = (numberOfInputs) => {
             required: i === 0,
         }));
     inputs.unshift({
-        type: 3,
+        type: InputTypes.String,
         name: "title",
         description: "The title of the poll",
         required: true,
+    });
+    inputs.push({
+        type: InputTypes.Boolean,
+        name: "rainbow-mode",
+        description: "🤗🌈",
+        required: false,
     });
     return inputs;
 };

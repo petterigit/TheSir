@@ -30,7 +30,7 @@ client.commands = requireCommands("commands");
 client.interactions = requireCommands("interactions");
 client.slashCommands = requireCommands("slash-commands");
 
-// registerSlashCommands(client.slashCommands, rest);
+registerSlashCommands(client.slashCommands, rest);
 
 /* Handle messages */
 client.on("messageCreate", async (message) => {

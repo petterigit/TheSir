@@ -21,6 +21,19 @@ exports.ButtonTypes = {
     Link: "LINK",
 };
 
+exports.InputTypes = {
+    SubCommand: 1,
+    SubCommandGroup: 2,
+    String: 3,
+    Integer: 4,
+    Boolean: 5,
+    User: 6,
+    Channel: 7,
+    Role: 8,
+    Mentionable: 9,
+    Number: 10,
+};
+
 const randomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
 };
