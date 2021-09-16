@@ -1,8 +1,9 @@
 const { DiceRoller } = require("dice-roller-parser");
+import {Message} from 'discord.js'
 
 const diceRoller = new DiceRoller();
 
-const noppa = async (message) => {
+const noppa = async (message: Message ) => {
   const args = message.content.split(" ").slice(2);
   if (args.length < 1) {
     await message.reply("anna (*tirsk*) pliis jotain heitettävää :c");
@@ -28,7 +29,7 @@ module.exports = {
     name: ["noppa"],
     description: "Roll a dice!",
   },
-  async execute(message) {
+  async execute(message: Message) {
     await noppa(message);
   },
 };
