@@ -28,14 +28,11 @@ registerFont(path.join(__dirname, "fonts/PressStart2P-Regular.ttf"), {
 const praiseFile = fs.readFileSync(path.join(__dirname, "texts/praises.json"));
 const praise = JSON.parse(praiseFile);
 
-const generatePraise = async (shameInstead = false, message) => {
+const generatePraise = async (shameInstead = false) => {
     const canvas = createCanvas(dimensions.width, dimensions.height);
     const ctx = canvas.getContext("2d");
 
-    let sentence = message;
-    if (!sentence) {
-        sentence = getSentence(shameInstead);
-    }
+    const sentence = getSentence(shameInstead);
     let lines = getLines(
         ctx,
         sentence,
@@ -79,7 +76,6 @@ const generatePraise = async (shameInstead = false, message) => {
         ctx.fillText(lines[i], x, y);
         ctx.strokeText(lines[i], x, y);
     }
-
     return canvas.toBuffer();
 };
 
@@ -107,10 +103,10 @@ const getLines = (ctx, text, maxWidth) => {
 const getSentence = (shameInstead) => {
     let sentence = "";
     if (shameInstead) {
-        size = praise.shame.length;
+        let size = praise.shame.length;
         sentence = praise.shame[randomInteger(0, size)];
     } else {
-        size = praise.praise.length;
+        let size = praise.praise.length;
         sentence = praise.praise[randomInteger(0, size)];
     }
     return sentence;
