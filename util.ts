@@ -1,15 +1,27 @@
+import {
+    Activity,
+    ActivityType,
+    Collection,
+    CommandInteraction,
+    Interaction,
+    Message,
+} from "discord.js";
+import { Command, DiscordClient, SlashCommand } from "./types";
+
 const Discord = require("discord.js");
 const fs = require("fs");
+import _ = require("lodash");
+import { ActivityTypes } from "discord.js/typings/enums";
 const { Routes } = require("discord-api-types/v9");
 
-exports.getNicknameOrName = (message) => {
+exports.getNicknameOrName = (message: Message) => {
     if (message.member.nickname == null) {
         return message.member.user.username;
     }
     return message.member.nickname;
 };
 
-exports.createMention = (interaction) => {
+exports.createMention = (interaction: Interaction) => {
     return `<@${interaction.member.id}>`;
 };
 
@@ -34,21 +46,22 @@ exports.InputTypes = {
     Number: 10,
 };
 
-const randomInt = (min, max) => {
+const randomInt = (min: number, max: number) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
 };
 exports.randomInt = randomInt;
 
-exports.randomColor = () => {
+const randomColor = () => {
     let color = "#";
     for (let i = 0; i < 3; i++) {
         color += randomInt(0, 255).toString(16);
     }
     return color;
 };
+exports.randomColor = randomColor;
 
-exports.requireCommands = (folderName) => {
-    const commands = new Discord.Collection();
+exports.requireCommands = (folderName: String) => {
+    const commands: Collection<Command, string> = new Discord.Collection();
     const folders = fs.readdirSync(`./${folderName}/`);
 
     for (const folder of folders) {
@@ -65,7 +78,11 @@ exports.requireCommands = (folderName) => {
     return commands;
 };
 
-exports.executeCommand = async (interaction, handler, client) => {
+exports.executeCommand = async (
+    interaction: CommandInteraction,
+    handler,
+    client: DiscordClient
+) => {
     if (!handler) return;
 
     try {
@@ -79,7 +96,7 @@ exports.executeCommand = async (interaction, handler, client) => {
     }
 };
 
-exports.registerSlashCommands = async (commands, rest) => {
+exports.registerSlashCommands = async (commands: SlashCommand[], rest) => {
     const clientId = process.env.CLIENT_ID;
     const guildId = process.env.GUILD_ID;
 
@@ -104,17 +121,10 @@ exports.registerSlashCommands = async (commands, rest) => {
     }
 };
 
-exports.rotateSisterActivities = async (client) => {
+exports.rotateSisterActivities = async (client: DiscordClient) => {
     const fiveMinutes = 5 * 60 * 1000;
-    const activities = [
-        "PLAYING",
-        "STREAMING",
-        "LISTENING",
-        "WATCHING",
-        "COMPETING",
-    ];
     const interval = setInterval(() => {
-        const newActivityType = activities[randomInt(0, activities.length - 1)];
+        const newActivityType = _.sample(ActivityTypes);
         if (client.user.presence.activities[0].type != newActivityType)
             client.user.setPresence({
                 activities: [

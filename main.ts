@@ -1,8 +1,11 @@
+import { Client, Interaction } from "discord.js";
+import { DiscordClient } from "./types";
+
 /* require */
 require("dotenv").config();
 const { intents } = require("./intents.js");
 const Discord = require("discord.js");
-const client = new Discord.Client({ intents: intents });
+const client: DiscordClient = new Discord.Client({ intents: intents });
 const token = process.env.TOKEN;
 const { REST } = require("@discordjs/rest");
 const {
@@ -36,7 +39,7 @@ registerSlashCommands(client.slashCommands, rest);
 client.on("messageCreate", async (message) => {
     if (!message.content.startsWith(prefix)) return;
     let args = message.content.substring(1).split(" ");
-    let cmd = args[1];
+    const cmd = args[1];
 
     args = args.splice(1);
 
