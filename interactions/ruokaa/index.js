@@ -55,8 +55,13 @@ const parseParticipants = (embed) => {
 };
 
 const setVote = (votes, restaurant, participant) => {
-    // User didn't change their vote, return early
-    if (votes[restaurant]?.includes(participant)) return votes;
+    const userIndex = votes[restaurant]?.findIndex(
+        (vote) => vote === participant
+    );
+    if (userIndex >= 0) {
+        votes[restaurant].splice(userIndex, 1);
+        return votes;
+    }
 
     const filteredVotes = {};
     for (const [key, value] of Object.entries(votes)) {
