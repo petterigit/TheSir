@@ -56,7 +56,7 @@ const getPraiseText = (interaction, mention, shouldShame) => {
     const actionType = shouldShame ? "shames" : "praises";
     let messageText = `${praiser} ${actionType} `;
     if (mention.user) {
-        messageText += `${createUserMentionWithId(mention.user.id)} !`;
+        messageText += `${createUserMentionWithId(mention.user.id)}!`;
     } else {
         if (mention.name === "@everyone") {
             messageText += `${createEveryoneMention()}!`;
