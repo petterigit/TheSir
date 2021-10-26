@@ -9,8 +9,12 @@ exports.getNicknameOrName = (message) => {
     return message.member.nickname;
 };
 
+exports.createUserMentionWithId = (id) => `<@!${id}>`;
+exports.createRoleMentionWithId = (id) => `<@&${id}>`;
+exports.createEveryoneMention = () => "@everyone";
+
 exports.createMention = (interaction) => {
-    return `<@${interaction.member.id}>`;
+    return `<@!${interaction.member.id}>`;
 };
 
 exports.ButtonTypes = {
@@ -55,7 +59,12 @@ exports.requireCommands = (folderName) => {
         const command = require(`./${folderName}/${folder}`);
         if (command?.data?.name) {
             if (Array.isArray(command.data.name)) {
-                command.data.name.map((name) => commands.set(name, command));
+                command.data.name.map((name) =>
+                    commands.set(name, {
+                        ...command,
+                        data: { ...command.data, name: name },
+                    })
+                );
             } else {
                 commands.set(command.data.name, command);
             }
@@ -89,7 +98,6 @@ exports.registerSlashCommands = async (commands, rest) => {
         );
         return;
     }
-
     const commandsToRegister = commands.map((slash) =>
         slash.data.toJSON ? slash.data.toJSON() : slash.data
     );
