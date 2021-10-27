@@ -91,6 +91,8 @@ exports.executeCommand = async (interaction, handler, client) => {
 exports.registerSlashCommands = async (commands, rest) => {
     const clientId = process.env.CLIENT_ID;
     const guildId = process.env.GUILD_ID;
+    const environment = process.env.ENVIRONMENT;
+    const isProduction = environment?.toLowerCase() === "production";
 
     if (!clientId || !guildId) {
         console.log(
@@ -106,7 +108,14 @@ exports.registerSlashCommands = async (commands, rest) => {
         await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
             body: commandsToRegister,
         });
-        console.log("Registered application commands");
+        console.log("Registered guild commands");
+
+        if (isProduction) {
+            await rest.put(Routes.applicationCommands(clientId, guildId), {
+                body: commandsToRegister,
+            });
+            console.log("Registered global commands");
+        }
     } catch (error) {
         console.error("Failed to register application commands", error);
     }
