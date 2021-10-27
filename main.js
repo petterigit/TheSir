@@ -15,6 +15,8 @@ const {
 /* stuff */
 const prefix = "sir ";
 const rest = new REST({ version: "9" }).setToken(token);
+const environment = process.env.ENVIRONMENT;
+console.log(`Running in ${environment} mode`);
 
 /* Bot setup */
 client.once("ready", () => {

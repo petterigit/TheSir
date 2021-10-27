@@ -9,8 +9,12 @@ exports.getNicknameOrName = (message) => {
     return message.member.nickname;
 };
 
+exports.createUserMentionWithId = (id) => `<@!${id}>`;
+exports.createRoleMentionWithId = (id) => `<@&${id}>`;
+exports.createEveryoneMention = () => "@everyone";
+
 exports.createMention = (interaction) => {
-    return `<@${interaction.member.id}>`;
+    return `<@!${interaction.member.id}>`;
 };
 
 exports.ButtonTypes = {
@@ -55,7 +59,12 @@ exports.requireCommands = (folderName) => {
         const command = require(`./${folderName}/${folder}`);
         if (command?.data?.name) {
             if (Array.isArray(command.data.name)) {
-                command.data.name.map((name) => commands.set(name, command));
+                command.data.name.map((name) =>
+                    commands.set(name, {
+                        ...command,
+                        data: { ...command.data, name: name },
+                    })
+                );
             } else {
                 commands.set(command.data.name, command);
             }
@@ -82,6 +91,8 @@ exports.executeCommand = async (interaction, handler, client) => {
 exports.registerSlashCommands = async (commands, rest) => {
     const clientId = process.env.CLIENT_ID;
     const guildId = process.env.GUILD_ID;
+    const environment = process.env.ENVIRONMENT;
+    const isProduction = environment?.toLowerCase() === "production";
 
     if (!clientId || !guildId) {
         console.log(
@@ -89,7 +100,6 @@ exports.registerSlashCommands = async (commands, rest) => {
         );
         return;
     }
-
     const commandsToRegister = commands.map((slash) =>
         slash.data.toJSON ? slash.data.toJSON() : slash.data
     );
@@ -98,7 +108,14 @@ exports.registerSlashCommands = async (commands, rest) => {
         await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
             body: commandsToRegister,
         });
-        console.log("Registered application commands");
+        console.log("Registered guild commands");
+
+        if (isProduction) {
+            await rest.put(Routes.applicationCommands(clientId, guildId), {
+                body: commandsToRegister,
+            });
+            console.log("Registered global commands");
+        }
     } catch (error) {
         console.error("Failed to register application commands", error);
     }
