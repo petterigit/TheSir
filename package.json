@@ -9,7 +9,7 @@
         "canvas": "^2.8.0",
         "dice-roller-parser": "^0.1.8",
         "discord-api-types": "^0.23.1",
-        "discord.js": "^13.1.0",
+        "discord.js": "^13.3.1",
         "dotenv": "^8.2.0",
         "ffmpeg": "^0.0.4",
         "fs": "^0.0.2",
