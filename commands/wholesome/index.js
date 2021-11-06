@@ -1,5 +1,7 @@
 "use strict";
 
+const _ = require("lodash");
+
 // *****************
 // Add wholesome twitter @'s here
 
@@ -49,7 +51,7 @@ const parameters = {
 const wholesome = async (message) => {
     try {
         let chosen = 0;
-        let args = message.content.substring(1).split(" ");
+        const args = message.content.substring(1).split(" ");
         let param = args[2];
 
         if (param == "help") {
@@ -91,7 +93,7 @@ const wholesome = async (message) => {
         // Add else if's when adding new animals
         // *********************
         else {
-            chosen = randomNumber(0, WHS_twitters.length);
+            chosen = _.random(0, WHS_twitters.length);
             parameters.screen_name = WHS_twitters[chosen];
         }
         getTweetsAndSendOneToDiscord(message, chosen);
@@ -121,9 +123,9 @@ function getTweetsAndSendOneToDiscord(message, chosen) {
         let tweet_text = "";
         let tweet_text_temp = 0;
         while (tweetStatus == -1) {
-            const tweet = data[randomNumber(0, MAX_TWEETS)];
+            const tweet = _.sample(data);
 
-            let answerMessage = "";
+            let answerMessage = {};
             if (typeof tweet === "undefined") {
                 continue;
             } else {
@@ -180,10 +182,6 @@ function getTweetsAndSendOneToDiscord(message, chosen) {
         }
     });
 }
-
-const randomNumber = (start, end) => {
-    return Math.floor(Math.random() * (start - end + 1)) + end;
-};
 
 module.exports = {
     data: {

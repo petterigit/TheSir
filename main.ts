@@ -1,4 +1,4 @@
-import { Client, Interaction } from "discord.js";
+import { Message } from "discord.js";
 import { DiscordClient } from "./types";
 
 /* require */
@@ -6,21 +6,21 @@ require("dotenv").config();
 const { intents } = require("./intents.js");
 const Discord = require("discord.js");
 const client: DiscordClient = new Discord.Client({ intents: intents });
-const token = process.env.TOKEN;
 const { REST } = require("@discordjs/rest");
+const token = process.env.TOKEN;
 const {
     requireCommands,
     executeCommand,
     rotateSisterActivities,
     registerSlashCommands,
-} = require("./util.js");
+} = require("./util");
 
 /* stuff */
 const prefix = "sir ";
-const rest = new REST({ version: "9" }).setToken(token);
 const environment = process.env.ENVIRONMENT;
 console.log(`Running in ${environment} mode`);
 
+const rest = new REST({ version: "9" }).setToken(token);
 /* Bot setup */
 client.once("ready", () => {
     console.log("I am ready");
@@ -34,11 +34,13 @@ client.once("ready", () => {
 client.commands = requireCommands("commands");
 client.interactions = requireCommands("interactions");
 client.slashCommands = requireCommands("slash-commands");
+console.log(client.interactions);
+console.log(client.slashCommands);
 
 registerSlashCommands(client.slashCommands, rest);
 
 /* Handle messages */
-client.on("messageCreate", async (message) => {
+client.on("messageCreate", async (message: Message) => {
     if (!message.content.startsWith(prefix)) return;
     let args = message.content.substring(1).split(" ");
     const cmd = args[1];

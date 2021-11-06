@@ -17,10 +17,16 @@ const options = {
     lineHeight: 64,
     fontWidthMultiplier: 12,
 };
-
+import _ = require("lodash");
 const fs = require("fs");
 const path = require("path");
-const { createCanvas, loadImage, registerFont } = require("canvas");
+import {
+    createCanvas,
+    loadImage,
+    NodeCanvasRenderingContext2D,
+    registerFont,
+} from "canvas";
+
 registerFont(path.join(__dirname, "fonts/PressStart2P-Regular.ttf"), {
     family: "pixel",
 });
@@ -52,7 +58,7 @@ const generatePraise = async (shameInstead = false) => {
     ctx.strokeStyle = options.strokeColor;
     ctx.lineWidth = options.strokeWidth;
     ctx.fillStyle = options.textColor;
-    ctx.textAlign = options.textAlign;
+    ctx.textAlign = options.textAlign as CanvasTextAlign;
 
     ctx.font = `${options.fontSize}px pixel`;
 
@@ -79,7 +85,11 @@ const generatePraise = async (shameInstead = false) => {
     return canvas.toBuffer();
 };
 
-const getLines = (ctx, text, maxWidth) => {
+const getLines = (
+    ctx: NodeCanvasRenderingContext2D,
+    text: string,
+    maxWidth: number
+) => {
     let words = text.split(" ");
     let lines = [];
     let currentLine = words[0];
@@ -100,21 +110,14 @@ const getLines = (ctx, text, maxWidth) => {
     return lines;
 };
 
-const getSentence = (shameInstead) => {
+const getSentence = (shameInstead: boolean) => {
     let sentence = "";
     if (shameInstead) {
-        let size = praise.shame.length;
-        sentence = praise.shame[randomInteger(0, size)];
+        sentence = _.sample(praise.shame);
     } else {
-        let size = praise.praise.length;
-        sentence = praise.praise[randomInteger(0, size)];
+        sentence = _.sample(praise.praise);
     }
     return sentence;
 };
-
-// end exclusive
-function randomInteger(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
-}
 
 exports.generatePraise = generatePraise;

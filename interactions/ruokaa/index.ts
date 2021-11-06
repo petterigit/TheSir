@@ -1,5 +1,7 @@
+import { ButtonInteraction, MessageEmbed } from "discord.js";
+
 const Discord = require("discord.js");
-const { createMention } = require("../../util.js");
+const { createMention } = require("../../util");
 
 const idToRestaurant = {
     yolo: "Yolo",
@@ -10,12 +12,12 @@ const idToRestaurant = {
 
 const participantSeparator = "\n";
 
-const ruokaa = async (interaction) => {
+const ruokaa = async (interaction: ButtonInteraction) => {
     if (!interaction.isButton()) return;
     const restaurantParameter = interaction.customId.split(" ")[1];
 
     const originalEmbed = interaction.message.embeds[0];
-    let participantEmbed = interaction.message.embeds[1];
+    let participantEmbed = interaction.message.embeds[1] as MessageEmbed;
     if (!participantEmbed) {
         participantEmbed = createParticipantEmbed(
             idToRestaurant[restaurantParameter],
@@ -38,14 +40,14 @@ const ruokaa = async (interaction) => {
     });
 };
 
-const createParticipantEmbed = (restaurant, participant) => {
+const createParticipantEmbed = (restaurant: string, participant: string) => {
     const embed = new Discord.MessageEmbed();
     embed.setTitle("Ruokailijat");
     embed.addField(restaurant, participant, true);
     return embed;
 };
 
-const parseParticipants = (embed) => {
+const parseParticipants = (embed: MessageEmbed) => {
     return embed.fields.reduce((votes, field) => {
         const participants = field.value.split(participantSeparator);
         const fieldName = removeParticipantCount(field.name);
@@ -54,9 +56,9 @@ const parseParticipants = (embed) => {
     }, {});
 };
 
-const setVote = (votes, restaurant, participant) => {
+const setVote = (votes: object, restaurant: string, participant: string) => {
     const userIndex = votes[restaurant]?.findIndex(
-        (vote) => vote === participant
+        (vote: string) => vote === participant
     );
     if (userIndex >= 0) {
         votes[restaurant].splice(userIndex, 1);
@@ -66,7 +68,7 @@ const setVote = (votes, restaurant, participant) => {
     const filteredVotes = {};
     for (const [key, value] of Object.entries(votes)) {
         const newParticipants = value.filter(
-            (participantName) => participantName !== participant
+            (participantName: string) => participantName !== participant
         );
         filteredVotes[key] = newParticipants;
     }
@@ -79,7 +81,7 @@ const setVote = (votes, restaurant, participant) => {
     return filteredVotes;
 };
 
-const setVotesToFields = (votes) => {
+const setVotesToFields = (votes: object) => {
     const fields = Object.entries(votes).map(([key, value]) => {
         const field = {
             name: key,
@@ -106,12 +108,11 @@ const setVotesToFields = (votes) => {
     return sortedFields;
 };
 
-const addParticipantCount = (name, participants) => {
-    name += ` (${participants.length})`;
-    return name;
+const addParticipantCount = (name: string, participants: string) => {
+    return name + ` (${participants.length})`;
 };
 
-const removeParticipantCount = (name) => {
+const removeParticipantCount = (name: string) => {
     const restaurant = name.split(" ")[0];
     return restaurant;
 };
@@ -120,7 +121,7 @@ module.exports = {
     data: {
         name: "ruokaa",
     },
-    async execute(interaction) {
+    async execute(interaction: ButtonInteraction) {
         await ruokaa(interaction);
     },
 };

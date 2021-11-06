@@ -1,4 +1,5 @@
 "use strict";
+
 const T = require("../../utils/TwitterClient");
 
 const MAX_TWEETS = 100;
@@ -26,7 +27,7 @@ function getTweetsAndSendOneToDiscord(message) {
     if (!T) return;
 
     T.get(path, parameters, function (err, data, response) {
-        if (data.error) {
+        if (err) {
             console.log(
                 "Requested:",
                 data.request,
@@ -41,12 +42,8 @@ function getTweetsAndSendOneToDiscord(message) {
 }
 
 function getRandomTweet(tweets) {
-    return tweets[randomNumber(0, MAX_TWEETS)];
+    return _.sample(tweets);
 }
-
-const randomNumber = (start, end) => {
-    return Math.floor(Math.random() * (start - end + 1)) + end;
-};
 
 function sendTweetToDiscord(tweet, message) {
     const embed = createAnswerMessage(tweet);
@@ -54,7 +51,7 @@ function sendTweetToDiscord(tweet, message) {
 }
 
 function createAnswerMessage(tweet) {
-    let answerMessage = "";
+    let answerMessage = {};
     if (typeof tweet === "undefined") {
         answerMessage = {
             description: "Twiittiä ei löytynyt",

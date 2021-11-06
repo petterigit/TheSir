@@ -1,11 +1,10 @@
-const { MessageActionRow, MessageButton } = require("discord.js");
-const {
-    getNicknameOrName,
-    ButtonTypes,
-    randomColor,
-    InputTypes,
-    randomInt,
-} = require("../../util");
+import { CommandInteraction, MessageButton } from "discord.js";
+import { createButton } from "../../util";
+
+const { MessageActionRow } = require("discord.js");
+const { getNicknameOrName, randomColor, InputTypes } = require("../../util");
+
+const _ = require("lodash");
 
 // Max 5 buttons per row, max 5 rows -> 25
 // -1 for question
@@ -17,10 +16,9 @@ const COMMAND_NAME = "poll";
 
 const constants = {
     commandName: COMMAND_NAME,
-    buttonTypes: [ButtonTypes.Primary, ButtonTypes.Success, ButtonTypes.Danger],
 };
 
-const poll = async (interaction) => {
+const poll = async (interaction: CommandInteraction) => {
     await interaction.deferReply();
     const buttons = createButtons(interaction);
     const actionRows = createActionRows(buttons);
@@ -41,7 +39,7 @@ const poll = async (interaction) => {
     });
 };
 
-const createActionRows = (buttons) => {
+const createActionRows = (buttons: MessageButton[]) => {
     const actionRows = [];
     for (
         let i = 0, limit = buttons.length;
@@ -56,7 +54,7 @@ const createActionRows = (buttons) => {
     return actionRows;
 };
 
-const createButtons = (interaction) => {
+const createButtons = (interaction: CommandInteraction) => {
     const indexes = Array(MAX_BUTTONS)
         .fill(0)
         .map((_, i) => i);
@@ -70,6 +68,7 @@ const createButtons = (interaction) => {
                 name: shortenedInput,
             });
         }
+
         return inputs;
     }, []);
 
@@ -77,30 +76,17 @@ const createButtons = (interaction) => {
 
     const buttons = inputs.map((input) =>
         createButton(
-            input.id,
+            `${COMMAND_NAME} ${input.id}`,
             input.name,
-            rainbowMode ? getRandomButtonStyle() : undefined
+            rainbowMode ? _.random(0, 5) : undefined
         )
     );
     return buttons;
 };
 
-const createButton = (id, text, style = ButtonTypes.Primary) => {
-    return new MessageButton({
-        customId: `${COMMAND_NAME} ${id}`,
-        label: text,
-        style: style,
-    });
-};
+const optionName = (index: number) => `option-${index + 1}`;
 
-const getRandomButtonStyle = () => {
-    const randomValue = randomInt(0, constants.buttonTypes.length - 1);
-    return constants.buttonTypes[randomValue];
-};
-
-const optionName = (index) => `option-${index + 1}`;
-
-const createInputs = (numberOfInputs) => {
+const createInputs = (numberOfInputs: number) => {
     const inputs = Array(numberOfInputs)
         .fill(0)
         .map((_, i) => ({
@@ -132,7 +118,7 @@ module.exports = {
         options: createInputs(MAX_BUTTONS),
     },
     constants: constants,
-    async execute(interaction) {
+    async execute(interaction: CommandInteraction) {
         await poll(interaction);
     },
 };

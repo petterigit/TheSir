@@ -1,18 +1,25 @@
 import {
-    Activity,
-    ActivityType,
+    ButtonInteraction,
     Collection,
     CommandInteraction,
+    ExcludeEnum,
     Interaction,
     Message,
+    MessageButton,
 } from "discord.js";
-import { Command, DiscordClient, SlashCommand } from "./types";
+import {
+    Command,
+    DiscordClient,
+    SirInteraction,
+    SlashCommand,
+    SlashCommands,
+} from "./types";
 
 const Discord = require("discord.js");
 const fs = require("fs");
 import _ = require("lodash");
-import { ActivityTypes } from "discord.js/typings/enums";
 const { Routes } = require("discord-api-types/v9");
+import { MessageButtonStyles } from "discord.js/typings/enums";
 
 exports.getNicknameOrName = (message: Message) => {
     if (message.member.nickname == null) {
@@ -20,17 +27,26 @@ exports.getNicknameOrName = (message: Message) => {
     }
     return message.member.nickname;
 };
-
-exports.createMention = (interaction: Interaction) => {
-    return `<@${interaction.member.id}>`;
+exports.createUserMentionWithId = (id: string) => `<@!${id}>`;
+exports.createRoleMentionWithId = (id: string) => `<@&${id}>`;
+exports.createEveryoneMention = () => "@everyone";
+exports.createMention = (interaction: Interaction): string => {
+    return `<@${interaction.member.user.id}>`;
 };
 
-exports.ButtonTypes = {
-    Primary: "PRIMARY",
-    Secondary: "SECONDARY",
-    Success: "SUCCESS",
-    Danger: "DANGER",
-    Link: "LINK",
+export const createButton = (
+    id: string,
+    text: string,
+    style: ExcludeEnum<
+        typeof MessageButtonStyles,
+        "LINK"
+    > = MessageButtonStyles.PRIMARY
+) => {
+    return new MessageButton({
+        customId: id,
+        label: text,
+        style: style,
+    });
 };
 
 exports.InputTypes = {
@@ -46,21 +62,15 @@ exports.InputTypes = {
     Number: 10,
 };
 
-const randomInt = (min: number, max: number) => {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-};
-exports.randomInt = randomInt;
-
-const randomColor = () => {
+export const randomColor = () => {
     let color = "#";
     for (let i = 0; i < 3; i++) {
-        color += randomInt(0, 255).toString(16);
+        color += _.random(0, 255).toString(16);
     }
     return color;
 };
-exports.randomColor = randomColor;
 
-exports.requireCommands = (folderName: String) => {
+exports.requireCommands = (folderName: string) => {
     const commands: Collection<Command, string> = new Discord.Collection();
     const folders = fs.readdirSync(`./${folderName}/`);
 
@@ -84,13 +94,14 @@ exports.requireCommands = (folderName: String) => {
 };
 
 exports.executeCommand = async (
-    interaction: CommandInteraction,
+    interaction: CommandInteraction | ButtonInteraction,
     handler,
     client: DiscordClient
 ) => {
     if (!handler) return;
 
     try {
+        console.log("interacting");
         await handler.execute(interaction, client);
     } catch (error) {
         console.error(error);
@@ -101,21 +112,19 @@ exports.executeCommand = async (
     }
 };
 
-exports.registerSlashCommands = async (commands: SlashCommand[], rest) => {
-    const clientId = process.env.CLIENT_ID;
+exports.registerSlashCommands = async (commands: SlashCommands, rest: any) => {
     const guildId = process.env.GUILD_ID;
+    const clientId = process.env.CLIENT_ID;
     const environment = process.env.ENVIRONMENT;
     const isProduction = environment?.toLowerCase() === "production";
 
-    if (!clientId || !guildId) {
+    if (!guildId) {
         console.log(
             "Skipping application command registration: GUILD_ID or CLIENT_ID not found in environment variables"
         );
         return;
     }
-    const commandsToRegister = commands.map((slash) =>
-        slash.data.toJSON ? slash.data.toJSON() : slash.data
-    );
+    const commandsToRegister = commands.map((slash) => slash.data);
 
     try {
         await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
@@ -137,17 +146,19 @@ exports.registerSlashCommands = async (commands: SlashCommand[], rest) => {
 exports.rotateSisterActivities = async (client: DiscordClient) => {
     const fiveMinutes = 5 * 60 * 1000;
     const interval = setInterval(() => {
-        const newActivityType = _.sample(ActivityTypes);
-        if (client.user.presence.activities[0].type != newActivityType)
-            client.user.setPresence({
-                activities: [
-                    {
-                        name: "My sister",
-                        type: newActivityType,
-                    },
-                ],
-                status: "online",
-            });
+        //F.U Nipa,
+        //const newActivityType = _.sample(Object.values(ActivityTypes));
+        //if (client.user.presence.activities[0].type != newActivityType)
+        const newActivityType = _.random(0, 5);
+        client.user.setPresence({
+            activities: [
+                {
+                    name: "My sister",
+                    type: newActivityType,
+                },
+            ],
+            status: "online",
+        });
     }, fiveMinutes);
     return interval;
 };

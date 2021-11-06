@@ -1,4 +1,10 @@
-const Praise = require("./praise.js");
+import {
+    APIInteractionDataResolvedGuildMember,
+    APIRole,
+} from "discord-api-types";
+import { CommandInteraction, GuildMember, Role, User } from "discord.js";
+
+const Praise = require("./praise");
 const Discord = require("discord.js");
 const {
     getNicknameOrName,
@@ -6,7 +12,7 @@ const {
     createEveryoneMention,
     createRoleMentionWithId,
     createUserMentionWithId,
-} = require("../../util.js");
+} = require("../../util");
 
 const MESSAGE_OPTIONS = { mention: "mention", message: "message" };
 const inputs = [
@@ -24,9 +30,11 @@ const inputs = [
     },
 ];
 
-const praise = async (interaction) => {
+const praise = async (interaction: CommandInteraction) => {
     await interaction.deferReply();
-    const mention = interaction.options.getMentionable(MESSAGE_OPTIONS.mention);
+    const mention = interaction.options.getMentionable(
+        MESSAGE_OPTIONS.mention
+    ) as GuildMember | Role | APIRole | User;
     const shouldShame = interaction.commandName !== "praise";
     const praiseText = getPraiseText(interaction, mention, shouldShame);
     const customMessage = interaction.options.getString(
@@ -51,14 +59,23 @@ const praise = async (interaction) => {
     }
 };
 
-const getPraiseText = (interaction, mention, shouldShame) => {
+const getPraiseText = (
+    interaction: CommandInteraction,
+    mention: GuildMember | Role | APIRole | User,
+    shouldShame: boolean
+) => {
     const praiser = getNicknameOrName(interaction);
     const actionType = shouldShame ? "shames" : "praises";
     let messageText = `${praiser} ${actionType} `;
-    if (mention.user) {
-        messageText += `${createUserMentionWithId(mention.user.id)}!`;
+    if ((<GuildMember>mention).user) {
+        messageText += `${createUserMentionWithId(
+            (<GuildMember>mention).user.id
+        )}!`;
     } else {
-        if (mention.name === "@everyone") {
+        if (
+            (<Role | APIRole>mention).name &&
+            (<Role | APIRole>mention).name === "@everyone"
+        ) {
             messageText += `${createEveryoneMention()}!`;
         } else {
             messageText += `everyone with the role ${createRoleMentionWithId(
@@ -77,7 +94,7 @@ module.exports = {
             "Everyone deserves some praise (or shame) every once in a while",
         options: inputs,
     },
-    async execute(message) {
+    async execute(message: CommandInteraction) {
         await praise(message);
     },
 };

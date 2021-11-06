@@ -1,6 +1,7 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
+import { Commands, DiscordClient } from "../../types";
 
-const filterUnique = (commands) => {
+const filterUnique = (commands: Commands) => {
     return commands.reduce((uniqueCommands, command) => {
         if (
             !uniqueCommands.find(
@@ -13,7 +14,7 @@ const filterUnique = (commands) => {
     }, []);
 };
 
-const replyCommands = async (message: Message, client: Client) => {
+const replyCommands = async (message: Message, client: DiscordClient) => {
     try {
         const commands = filterUnique(client.commands);
         const embed = {
@@ -36,7 +37,7 @@ module.exports = {
         name: ["commands", "help", "tasukete", "助けて"],
         description: "Lists all commands",
     },
-    async execute(message: Message, client: Client) {
+    async execute(message: Message, client: DiscordClient) {
         await replyCommands(message, client);
     },
 };
