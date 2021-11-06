@@ -24,6 +24,7 @@ const createPetName = async (memberName: string) => {
         if (petName.length >= MAX_NAME_LENGTH - 10) {
             return petName;
         } else {
+            petName += ", The";
             for (;;) {
                 let x = _.sample(data) as string;
                 if (x.length + 1 + petName.length <= MAX_NAME_LENGTH)
