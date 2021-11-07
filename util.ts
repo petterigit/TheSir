@@ -101,7 +101,6 @@ exports.executeCommand = async (
     if (!handler) return;
 
     try {
-        console.log("interacting");
         await handler.execute(interaction, client);
     } catch (error) {
         console.error(error);

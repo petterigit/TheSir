@@ -4,7 +4,6 @@ import {
     Client,
     Collection,
     CommandInteraction,
-    Interaction,
     Message,
 } from "discord.js";
 

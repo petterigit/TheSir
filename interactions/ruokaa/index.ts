@@ -1,4 +1,4 @@
-import { ButtonInteraction, MessageEmbed } from "discord.js";
+import { ButtonInteraction, Collection, MessageEmbed } from "discord.js";
 
 const Discord = require("discord.js");
 const { createMention } = require("../../util");
@@ -47,16 +47,23 @@ const createParticipantEmbed = (restaurant: string, participant: string) => {
     return embed;
 };
 
-const parseParticipants = (embed: MessageEmbed) => {
-    return embed.fields.reduce((votes, field) => {
+const parseParticipants = (
+    embed: MessageEmbed
+): Collection<string, string[]> => {
+    const collection = new Collection<string, string[]>();
+    embed.fields.forEach((field) => {
         const participants = field.value.split(participantSeparator);
         const fieldName = removeParticipantCount(field.name);
-        votes[fieldName] = participants;
-        return votes;
+        collection.set(fieldName, participants);
     }, {});
+    return collection;
 };
 
-const setVote = (votes: object, restaurant: string, participant: string) => {
+const setVote = (
+    votes: Collection<string, string[]>,
+    restaurant: string,
+    participant: string
+) => {
     const userIndex = votes[restaurant]?.findIndex(
         (vote: string) => vote === participant
     );
@@ -65,7 +72,7 @@ const setVote = (votes: object, restaurant: string, participant: string) => {
         return votes;
     }
 
-    const filteredVotes = {};
+    const filteredVotes = new Collection<string, string[]>();
     for (const [key, value] of Object.entries(votes)) {
         const newParticipants = value.filter(
             (participantName: string) => participantName !== participant
@@ -81,7 +88,7 @@ const setVote = (votes: object, restaurant: string, participant: string) => {
     return filteredVotes;
 };
 
-const setVotesToFields = (votes: object) => {
+const setVotesToFields = (votes: Collection<string, string[]>) => {
     const fields = Object.entries(votes).map(([key, value]) => {
         const field = {
             name: key,

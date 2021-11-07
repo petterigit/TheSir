@@ -34,8 +34,6 @@ client.once("ready", () => {
 client.commands = requireCommands("commands");
 client.interactions = requireCommands("interactions");
 client.slashCommands = requireCommands("slash-commands");
-console.log(client.interactions);
-console.log(client.slashCommands);
 
 registerSlashCommands(client.slashCommands, rest);
 

@@ -24,7 +24,7 @@
         "node": "16.x"
     },
     "scripts": {
-        "start": "ts-node main.ts"
+        "start": "nodemon main.ts"
     },
     "author": "petterigit, Nikug, MaijaHeiskanen, JuhoHeiskanen, Appelsiini1, Apezkin",
     "license": "ISC",
