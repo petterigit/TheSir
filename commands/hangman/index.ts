@@ -88,8 +88,7 @@ module.exports = {
     },
     async execute(message: Message) {
         // Make sure we're not overloaded with messages
-        // Doesn't work currently... (Important for handling single message & channel at a time..)
-        // I think it's already handled on top level -- Bot handles commands in a single thread or something...
+        // Maybe works, maybe does nothing. Hope for the best :]
         if (!processing) {
             processing = true;
             messageChannel = message.channel;
