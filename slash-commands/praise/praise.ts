@@ -17,9 +17,7 @@ const options = {
     lineHeight: 64,
     fontWidthMultiplier: 12,
 };
-import _ = require("lodash");
-const fs = require("fs");
-const path = require("path");
+import path from "path";
 import {
     createCanvas,
     loadImage,
@@ -27,18 +25,21 @@ import {
     registerFont,
 } from "canvas";
 
+import * as praise from "./texts/praises.json";
+import sample from "lodash/sample";
+
 registerFont(path.join(__dirname, "fonts/PressStart2P-Regular.ttf"), {
     family: "pixel",
 });
 
-const praiseFile = fs.readFileSync(path.join(__dirname, "texts/praises.json"));
-const praise = JSON.parse(praiseFile);
-
-const generatePraise = async (shameInstead = false) => {
+export const generatePraise = async (
+    shameInstead = false,
+    customMessage?: string
+): Promise<Buffer> => {
     const canvas = createCanvas(dimensions.width, dimensions.height);
     const ctx = canvas.getContext("2d");
 
-    const sentence = getSentence(shameInstead);
+    const sentence = customMessage ? customMessage : getSentence(shameInstead);
     let lines = getLines(
         ctx,
         sentence,
@@ -62,7 +63,7 @@ const generatePraise = async (shameInstead = false) => {
 
     ctx.font = `${options.fontSize}px pixel`;
 
-    let x = canvas.width / 2;
+    const x = canvas.width / 2;
     let y = canvas.height + margins.bot;
 
     if (shameInstead) {
@@ -90,13 +91,13 @@ const getLines = (
     text: string,
     maxWidth: number
 ) => {
-    let words = text.split(" ");
-    let lines = [];
+    const words = text.split(" ");
+    const lines = [];
     let currentLine = words[0];
 
     for (let i = 1; i < words.length; i++) {
-        let word = words[i];
-        let width =
+        const word = words[i];
+        const width =
             ctx.measureText(currentLine + " " + word).width *
             options.fontWidthMultiplier;
         if (width < maxWidth) {
@@ -113,11 +114,9 @@ const getLines = (
 const getSentence = (shameInstead: boolean) => {
     let sentence = "";
     if (shameInstead) {
-        sentence = _.sample(praise.shame);
+        sentence = sample(praise.shame);
     } else {
-        sentence = _.sample(praise.praise);
+        sentence = sample(praise.praise);
     }
     return sentence;
 };
-
-exports.generatePraise = generatePraise;

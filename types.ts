@@ -13,24 +13,11 @@ export interface DiscordClient extends Client {
     slashCommands: SlashCommands;
 }
 
-export type Interactions = Collection<string, SirInteraction>;
-export type Commands = Collection<string, Command>;
-export type SlashCommands = Collection<string, SlashCommand>;
+export type Interactions = Collection<string, Command<ButtonInteraction>>;
+export type Commands = Collection<string, Command<Message>>;
+export type SlashCommands = Collection<string, Command<CommandInteraction>>;
 
-export type SirInteraction = {
+export type Command<T> = {
     data: ApplicationCommandData;
-    constants?: string[];
-
-    execute: (message: ButtonInteraction, client?: DiscordClient) => void;
-};
-
-export type Command = {
-    data: ApplicationCommandData;
-    execute: (message: Message, client?: DiscordClient) => void;
-};
-
-export type SlashCommand = {
-    data: ApplicationCommandData;
-    constants: string[];
-    execute: (message: CommandInteraction, client?: DiscordClient) => void;
+    execute: (message: T, client?: DiscordClient) => Promise<void>;
 };

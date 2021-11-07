@@ -1,6 +1,7 @@
 "use strict";
 
-const _ = require("lodash");
+import sample from "lodash/sample";
+import random from "lodash/random";
 
 // *****************
 // Add wholesome twitter @'s here
@@ -37,7 +38,8 @@ const animalsFIN = [
 
 // *****************
 
-const T = require("../../utils/TwitterClient");
+import T from "../../utils/TwitterClient";
+import { Message, MessageEmbed, MessageEmbedOptions } from "discord.js";
 
 const MAX_TWEETS = 100;
 
@@ -48,21 +50,21 @@ const parameters = {
     tweet_mode: "extended",
 };
 
-const wholesome = async (message) => {
+const wholesome = async (message: Message) => {
     try {
         let chosen = 0;
         const args = message.content.substring(1).split(" ");
-        let param = args[2];
+        const param = args[2];
 
         if (param == "help") {
             let animalsString = "";
             for (let i = 0; i < animalsFIN.length; i++) {
                 animalsString += animalsFIN[i] + "\n";
             }
-            const help = {
+            const help = new MessageEmbed({
                 description: "Saatavilla olevat eläimet:\n\n" + animalsString,
-            };
-            message.channel.send({ embed: help });
+            });
+            message.channel.send({ embeds: [help] });
             return;
         } else if (param == "kani") {
             parameters.screen_name = WHS_twitters[0];
@@ -80,26 +82,27 @@ const wholesome = async (message) => {
             parameters.screen_name = WHS_twitters[4];
             chosen = 4;
         } else if (param == "kissa") {
-            chosen = randomNumber(0, WHS_Cats.length);
+            chosen = random(0, WHS_Cats.length);
             parameters.screen_name = WHS_Cats[chosen];
         } else if (param == "koira") {
-            chosen = randomNumber(0, WHS_Dogs.length);
+            chosen = random(0, WHS_Dogs.length);
             parameters.screen_name = WHS_Dogs[chosen];
         } else if (param == "video") {
             parameters.screen_name = WHS_twitters[8];
             chosen = 7;
         }
-
         // Add else if's when adding new animals
         // *********************
         else {
-            chosen = _.random(0, WHS_twitters.length);
+            chosen = random(0, WHS_twitters.length);
             parameters.screen_name = WHS_twitters[chosen];
         }
         getTweetsAndSendOneToDiscord(message, chosen);
+        return;
     } catch (error) {
         message.channel.send("Vituiks meni ku Jeesuksen pääsiäinen!");
         console.log(error);
+        return;
     }
 };
 
@@ -107,13 +110,8 @@ function getTweetsAndSendOneToDiscord(message, chosen) {
     if (!T) return;
 
     T.get(path, parameters, function (err, data, response) {
-        if (data.error) {
-            console.log(
-                "Requested:",
-                data.request,
-                "Received error from Twitter API:",
-                data.error
-            );
+        if (err) {
+            console.log("Requested:", "Received error from Twitter API:", err);
             return;
         }
         let animal = 0;
@@ -123,7 +121,7 @@ function getTweetsAndSendOneToDiscord(message, chosen) {
         let tweet_text = "";
         let tweet_text_temp = 0;
         while (tweetStatus == -1) {
-            const tweet = _.sample(data);
+            const tweet: any = sample(data);
 
             let answerMessage = {};
             if (typeof tweet === "undefined") {
@@ -188,7 +186,7 @@ module.exports = {
         name: ["wholesome"],
         description: "Wholesome content machine",
     },
-    async execute(message) {
+    async execute(message: Message) {
         await wholesome(message);
     },
 };

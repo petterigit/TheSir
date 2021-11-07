@@ -6,7 +6,7 @@ import { Message } from "discord.js";
 /* MAIN getMeme(message)
  */
 
-const nextmeme = require("./nextmeme");
+import { nextMeme } from "./nextmeme";
 
 const emoji = {
     megusta: "658413442083848214",
@@ -15,7 +15,7 @@ const emoji = {
 
 const getMeme = async (message: Message) => {
     try {
-        const res = await nextmeme.nextMeme();
+        const res = await nextMeme();
 
         const date = new Date(res.timestamp * 1000);
         const embed = {

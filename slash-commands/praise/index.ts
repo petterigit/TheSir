@@ -1,18 +1,20 @@
+import { APIRole } from "discord-api-types";
 import {
-    APIInteractionDataResolvedGuildMember,
-    APIRole,
-} from "discord-api-types";
-import { CommandInteraction, GuildMember, Role, User } from "discord.js";
+    CommandInteraction,
+    GuildMember,
+    MessageAttachment,
+    Role,
+    User,
+} from "discord.js";
 
-const Praise = require("./praise");
-const Discord = require("discord.js");
-const {
+import * as Praise from "./praise";
+import {
     getNicknameOrName,
     InputTypes,
     createEveryoneMention,
     createRoleMentionWithId,
     createUserMentionWithId,
-} = require("../../util");
+} from "../../util";
 
 const MESSAGE_OPTIONS = { mention: "mention", message: "message" };
 const inputs = [
@@ -50,7 +52,7 @@ const praise = async (interaction: CommandInteraction) => {
         return;
     }
 
-    const attachment = new Discord.MessageAttachment(buffer, "reaction.jpg");
+    const attachment = new MessageAttachment(buffer, "reaction.jpg");
 
     try {
         interaction.editReply({ content: praiseText, files: [attachment] });

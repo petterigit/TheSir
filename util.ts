@@ -1,36 +1,38 @@
 import {
     ButtonInteraction,
     Collection,
+    ColorResolvable,
     CommandInteraction,
     ExcludeEnum,
+    GuildMember,
     Interaction,
     Message,
     MessageButton,
 } from "discord.js";
-import {
-    Command,
-    DiscordClient,
-    SirInteraction,
-    SlashCommand,
-    SlashCommands,
-} from "./types";
+import { Command, DiscordClient, SlashCommands } from "./types";
 
-const Discord = require("discord.js");
-const fs = require("fs");
-import _ = require("lodash");
-const { Routes } = require("discord-api-types/v9");
+import random from "lodash/random";
+import * as fs from "fs";
+import { Routes } from "discord-api-types/v9";
+
 import { MessageButtonStyles } from "discord.js/typings/enums";
+import { REST } from "@discordjs/rest";
 
-exports.getNicknameOrName = (message: Message) => {
-    if (message.member.nickname == null) {
-        return message.member.user.username;
+export const BUTTON_STYLE_LENGTH = 5;
+
+export const getNicknameOrName = (
+    message: Message | CommandInteraction
+): string => {
+    const member = message.member as GuildMember;
+    if (member.nickname == null) {
+        return member.user.username;
     }
-    return message.member.nickname;
+    return member.nickname;
 };
-exports.createUserMentionWithId = (id: string) => `<@!${id}>`;
-exports.createRoleMentionWithId = (id: string) => `<@&${id}>`;
-exports.createEveryoneMention = () => "@everyone";
-exports.createMention = (interaction: Interaction): string => {
+export const createUserMentionWithId = (id: string): string => `<@!${id}>`;
+export const createRoleMentionWithId = (id: string): string => `<@&${id}>`;
+export const createEveryoneMention = (): string => "@everyone";
+export const createMention = (interaction: Interaction): string => {
     return `<@${interaction.member.user.id}>`;
 };
 
@@ -49,7 +51,7 @@ export const createButton = (
     });
 };
 
-exports.InputTypes = {
+export const InputTypes = {
     SubCommand: 1,
     SubCommandGroup: 2,
     String: 3,
@@ -62,20 +64,22 @@ exports.InputTypes = {
     Number: 10,
 };
 
-export const randomColor = () => {
+export const randomColor = (): ColorResolvable => {
     let color = "#";
     for (let i = 0; i < 3; i++) {
-        color += _.random(0, 255).toString(16);
+        color += random(0, 255).toString(16);
     }
-    return color;
+    return color as ColorResolvable;
 };
 
-exports.requireCommands = (folderName: string) => {
-    const commands: Collection<Command, string> = new Discord.Collection();
+export const requireCommands = async <T>(
+    folderName: string
+): Promise<Collection<string, Command<T>>> => {
+    const commands = new Collection<string, Command<T>>();
     const folders = fs.readdirSync(`./${folderName}/`);
 
     for (const folder of folders) {
-        const command = require(`./${folderName}/${folder}`);
+        const command = await import(`./${folderName}/${folder}`);
         if (command?.data?.name) {
             if (Array.isArray(command.data.name)) {
                 command.data.name.map((name) =>
@@ -93,9 +97,9 @@ exports.requireCommands = (folderName: string) => {
     return commands;
 };
 
-exports.executeCommand = async (
-    interaction: CommandInteraction | ButtonInteraction,
-    handler,
+export const executeCommand = async <T>(
+    interaction: T,
+    handler: Command<T>,
     client: DiscordClient
 ) => {
     if (!handler) return;
@@ -104,14 +108,13 @@ exports.executeCommand = async (
         await handler.execute(interaction, client);
     } catch (error) {
         console.error(error);
-        await interaction.reply({
-            content: "There was an error while executing this interaction!",
-            ephemeral: true,
-        });
     }
 };
 
-exports.registerSlashCommands = async (commands: SlashCommands, rest: any) => {
+export const registerSlashCommands = async (
+    commands: SlashCommands,
+    rest: REST
+): Promise<void> => {
     const guildId = process.env.GUILD_ID;
     const clientId = process.env.CLIENT_ID;
     const environment = process.env.ENVIRONMENT;
@@ -132,7 +135,7 @@ exports.registerSlashCommands = async (commands: SlashCommands, rest: any) => {
         console.log("Registered guild commands");
 
         if (isProduction) {
-            await rest.put(Routes.applicationCommands(clientId, guildId), {
+            await rest.put(Routes.applicationCommands(clientId), {
                 body: commandsToRegister,
             });
             console.log("Registered global commands");
@@ -142,13 +145,14 @@ exports.registerSlashCommands = async (commands: SlashCommands, rest: any) => {
     }
 };
 
-exports.rotateSisterActivities = async (client: DiscordClient) => {
+export const rotateSisterActivities = async (
+    client: DiscordClient
+): Promise<NodeJS.Timer> => {
     const fiveMinutes = 5 * 60 * 1000;
     const interval = setInterval(() => {
-        //F.U Nipa,
         //const newActivityType = _.sample(Object.values(ActivityTypes));
         //if (client.user.presence.activities[0].type != newActivityType)
-        const newActivityType = _.random(0, 5);
+        const newActivityType = random(0, BUTTON_STYLE_LENGTH);
         client.user.setPresence({
             activities: [
                 {

@@ -64,7 +64,7 @@ const story = async (message: Message) => {
         return;
     }
 
-    let index;
+    let index: number;
     if ((index = findStory(message.channel)) != -1) {
         if (message.content == "story 5" || message.content == "story kys") {
             stories.splice(index, 1);

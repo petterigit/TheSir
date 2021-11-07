@@ -1,8 +1,7 @@
 "use strict";
 
 import { Message } from "discord.js";
-
-const { getNicknameOrName } = require("../../util");
+import { getNicknameOrName } from "../../util";
 
 const f = async (message: Message) => {
     const user = getNicknameOrName(message);
@@ -11,7 +10,8 @@ const f = async (message: Message) => {
         user
     );
 
-    message.channel.send(msg);
+    await message.channel.send(msg);
+    return;
 };
 
 module.exports = {

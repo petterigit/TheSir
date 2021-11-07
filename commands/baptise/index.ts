@@ -1,6 +1,6 @@
 "use strict";
 
-import { Message, MessageEditOptions } from "discord.js";
+import { Message } from "discord.js";
 
 /* Shamelessly copied most code from
 https://bitbucket.org/nikugronberg/toripolliisi/src/master/scripts/baptise.js
@@ -9,9 +9,8 @@ https://bitbucket.org/nikugronberg/toripolliisi/src/master/scripts/baptise.js
 /* IMPORT const baptise = require('./scripts/baptise/main.js');
 /* MAIN startBaptise(message);
  */
-
-const fetch = require("node-fetch");
-import _ = require("lodash");
+import fetch from "node-fetch";
+import sample from "lodash/sample";
 
 const TITLEURL = "https://proksi.juho.space/pet-name";
 const MAX_NAME_LENGTH = 32;
@@ -26,7 +25,7 @@ const createPetName = async (memberName: string) => {
         } else {
             petName += ", The";
             for (;;) {
-                let x = _.sample(data) as string;
+                const x = sample(data) as string;
                 if (x.length + 1 + petName.length <= MAX_NAME_LENGTH)
                     petName += " " + x;
                 else break;
@@ -40,8 +39,8 @@ const createPetName = async (memberName: string) => {
 
 const startBaptise = async (message: Message) => {
     if (message.mentions.users.first() != null) {
-        let member = message.mentions.members.first();
-        let memberName = member.displayName;
+        const member = message.mentions.members.first();
+        const memberName = member.displayName;
         message.channel
             .send(
                 memberName +

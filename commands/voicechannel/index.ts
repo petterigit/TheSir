@@ -1,4 +1,7 @@
 "use strict";
+
+import { Message } from "discord.js";
+
 /* IMPORT const voiceChannel = require('./scripts/voicechannel/main.js');
 /* MAIN startVoice(message)
  */
@@ -7,7 +10,9 @@
  * message.member.voiceChannel = undefined
  */
 
-const startVoice = async (message) => {
+const startVoice = async (message: Message) => {
+    message.reply("I'm rikki");
+    /*
     try {
         if (message.member.voiceChannel) {
             message.member.voiceChannel
@@ -29,14 +34,15 @@ const startVoice = async (message) => {
         message.reply("Aaaaaaaaa");
         console.log(error);
     }
+    */
 };
 
-module.exports = {
+export default {
     data: {
         name: ["join"],
         description: "Work in progress voice channel thing",
     },
-    async execute(message) {
+    async execute(message: Message) {
         await startVoice(message);
     },
 };

@@ -1,10 +1,13 @@
-import { CommandInteraction, MessageButton } from "discord.js";
+import {
+    CommandInteraction,
+    MessageButton,
+    MessageActionRow,
+    ColorResolvable,
+} from "discord.js";
 import { createButton } from "../../util";
+import random from "lodash/random";
 
-const { MessageActionRow } = require("discord.js");
-const { getNicknameOrName, randomColor, InputTypes } = require("../../util");
-
-const _ = require("lodash");
+import { getNicknameOrName, randomColor, InputTypes } from "../../util";
 
 // Max 5 buttons per row, max 5 rows -> 25
 // -1 for question
@@ -32,7 +35,7 @@ const poll = async (interaction: CommandInteraction) => {
         embeds: [
             {
                 title: title,
-                color: randomColor(),
+                color: randomColor() as ColorResolvable,
                 timestamp: new Date(),
             },
         ],
@@ -78,7 +81,7 @@ const createButtons = (interaction: CommandInteraction) => {
         createButton(
             `${COMMAND_NAME} ${input.id}`,
             input.name,
-            rainbowMode ? _.random(0, 5) : undefined
+            rainbowMode ? random(0, 5) : undefined
         )
     );
     return buttons;

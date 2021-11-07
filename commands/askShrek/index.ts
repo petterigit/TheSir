@@ -1,5 +1,9 @@
 import { Message, MessageEmbed } from "discord.js";
-import _ = require("lodash");
+import * as data from "./shrek.json";
+import join from "lodash/join";
+import find from "lodash/find";
+import map from "lodash/map";
+import sample from "lodash/sample";
 
 interface Character {
     speaker: string;
@@ -18,20 +22,16 @@ const askShrek = async (message: Message) => {
 };
 
 function getLinesAndSendOneToDiscord(message: Message) {
-    let args = message.content.substring(1).split(" ");
+    const args = message.content.substring(1).split(" ");
     if (args.length < 3) {
         sendCharacterNotFound(message);
         return;
     }
 
-    let characterName = _.join(args.slice(2), " ").toLowerCase();
+    const characterName = join(args.slice(2), " ").toLowerCase();
 
-    const fs = require("fs");
-    const path = require("path");
-    const file = fs.readFileSync(path.join(__dirname, "./shrek.json"));
-
-    const characters: Character[] = JSON.parse(file).speakers;
-    const character = _.find(
+    const characters: Character[] = data.speakers;
+    const character = find(
         characters,
         (o) => o.speaker.toLowerCase() === characterName
     );
@@ -52,11 +52,8 @@ function sendCharacterNotFound(message: Message, name: string | null = null) {
         embed.setTitle("No character name was given");
     }
 
-    const fs = require("fs");
-    const path = require("path");
-    const file = fs.readFileSync(path.join(__dirname, "./shrek.json"));
-    const allSpeakers: Character[] = JSON.parse(file).speakers;
-    const speakers = _.join(_.map(allSpeakers, "speaker"), ", ");
+    const allSpeakers: Character[] = data.speakers;
+    const speakers = join(map(allSpeakers, "speaker"), ", ");
     embed
         .setColor("#ff0000")
         .addField(
@@ -70,7 +67,7 @@ function sendCharacterNotFound(message: Message, name: string | null = null) {
 function sendAnswerToDiscord(message: Message, answer: Character) {
     const embed = new MessageEmbed();
     embed.setTitle(answer.speaker + " answered:");
-    embed.setDescription(_.sample(answer.lines));
+    embed.setDescription(sample(answer.lines));
     message.channel.send({ embeds: [embed] });
 }
 

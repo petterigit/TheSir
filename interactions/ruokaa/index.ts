@@ -5,8 +5,7 @@ import {
     MessageEmbed,
 } from "discord.js";
 
-const Discord = require("discord.js");
-const { createMention } = require("../../util");
+import { createMention } from "../../util";
 
 const idToRestaurant = {
     yolo: "Yolo",
@@ -46,7 +45,7 @@ const ruokaa = async (interaction: ButtonInteraction) => {
 };
 
 const createParticipantEmbed = (restaurant: string, participant: string) => {
-    const embed = new Discord.MessageEmbed();
+    const embed = new MessageEmbed();
     embed.setTitle("Ruokailijat");
     embed.addField(restaurant, participant, true);
     return embed;
@@ -76,8 +75,6 @@ const setVote = (
         votes[restaurant].splice(userIndex, 1);
         return votes;
     }
-    console.log("coming votes");
-    console.log(votes);
 
     const filteredVotes = new Collection<string, string[]>();
     votes.forEach((value, key) => {
@@ -92,8 +89,6 @@ const setVote = (
     } else {
         filteredVotes.get(restaurant).push(participant);
     }
-    console.log("going votes");
-    console.log(filteredVotes);
     return filteredVotes;
 };
 
@@ -110,8 +105,6 @@ const setVotesToFields = (votes: Collection<string, string[]>) => {
         }
         fields.push(field);
     });
-    console.log("all fields: ");
-    console.log(fields);
 
     const sortedFields = fields
         .filter((field) => field.value)
@@ -124,8 +117,6 @@ const setVotesToFields = (votes: Collection<string, string[]>) => {
             if (bName === skipName) return -1;
             return aName > bName ? 1 : -1;
         });
-    console.log("sorted fields: ");
-    console.log(sortedFields);
     return sortedFields;
 };
 

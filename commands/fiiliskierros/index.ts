@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 
 const fiiliskierros = async (message: Message) => {
-    let args = message.content.substring(1).split(" ");
+    const args = message.content.substring(1).split(" ");
     if (args[2] == "possu") {
         try {
             const member = message.mentions.members.first();

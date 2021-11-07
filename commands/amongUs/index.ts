@@ -1,7 +1,6 @@
-import { GuildMember, Message, TextChannel } from "discord.js";
+import { GuildMember, Message, MessageEmbed, TextChannel } from "discord.js";
 
-import _ = require("lodash");
-import Discord = require("discord.js");
+import sample from "lodash/sample";
 
 const NO_TARGET_MESSAGES = ["where", "who", "why", "where?", "who?", "why?"];
 
@@ -29,11 +28,11 @@ const sus = async (message: Message) => {
     const target = message.mentions.users.first();
 
     if (!target) {
-        await message.reply(_.sample(NO_TARGET_MESSAGES) as string);
+        await message.reply(sample(NO_TARGET_MESSAGES) as string);
         return;
     }
 
-    const embed = new Discord.MessageEmbed();
+    const embed = new MessageEmbed();
 
     if (!message.guild) {
         return;

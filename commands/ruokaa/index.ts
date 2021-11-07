@@ -1,25 +1,45 @@
 "use strict";
 
-import { ExcludeEnum, Message, MessageButton } from "discord.js";
+import {
+    ColorResolvable,
+    Message,
+    MessageActionRow,
+    MessageEmbed,
+} from "discord.js";
 import { MessageButtonStyles } from "discord.js/typings/enums";
 
-const fetch = require("node-fetch");
-const Discord = require("discord.js");
+import fetch from "node-fetch";
 import { createButton, randomColor } from "../../util";
+
+type Food = {
+    name: string;
+    dietInfo: string[];
+};
+
+type Category = {
+    category: string;
+    foods: Food[];
+};
+
+type JSONResponse = {
+    laseri?: Category[];
+    yolo?: Category[];
+};
 
 const ruokaa = async (message: Message) => {
     message.channel.sendTyping();
 
     try {
-        const menu = await fetch(
+        const response = await fetch(
             "https://skinfo.juho.space/categories.json"
-        ).then((res) => res.json());
+        );
+        const data: JSONResponse = await response.json();
 
-        const embed = new Discord.MessageEmbed();
+        const embed = new MessageEmbed();
         embed.setTitle("Syödään tänään");
-        embed.setColor(randomColor());
+        embed.setColor(randomColor() as ColorResolvable);
 
-        const appendMenu = (categories, header) => {
+        const appendMenu = (categories: Category[], header: string) => {
             const textMenu = [];
             for (const category of categories) {
                 textMenu.push(` - ${category.category}:`);
@@ -35,10 +55,10 @@ const ruokaa = async (message: Message) => {
             embed.setTimestamp();
         };
 
-        const yolo = menu.yolo && menu.yolo.length > 0;
-        const laseri = menu.laseri && menu.laseri.length > 0;
+        const yolo = data.yolo && data.yolo.length > 0;
+        const laseri = data.laseri && data.laseri.length > 0;
 
-        const buttonRow = new Discord.MessageActionRow();
+        const buttonRow = new MessageActionRow();
 
         if (!yolo && !laseri) {
             await message.channel.send({
@@ -49,12 +69,12 @@ const ruokaa = async (message: Message) => {
         }
 
         if (laseri) {
-            appendMenu(menu.laseri, "Laserilla:");
+            appendMenu(data.laseri, "Laserilla:");
             buttonRow.addComponents(createButton("ruokaa laser", "Laser"));
         }
 
         if (yolo) {
-            appendMenu(menu.yolo, "Yololla:");
+            appendMenu(data.yolo, "Yololla:");
             buttonRow.addComponents(createButton("ruokaa yolo", "Yolo"));
         }
 

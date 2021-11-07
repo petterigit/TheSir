@@ -1,6 +1,9 @@
 "use strict";
 
-const T = require("../../utils/TwitterClient");
+import T from "../../utils/TwitterClient";
+import sample from "lodash/sample";
+import { Message } from "discord.js";
+
 const MAX_TWEETS = 100;
 
 const path = "statuses/user_timeline";
@@ -10,8 +13,11 @@ const parameters = {
     tweet_mode: "extended",
 };
 
-const getNiiloTweet = async (message) => {
+const getUserTweet = async (message: Message) => {
     try {
+        const args = message.content.substring(1).split(" ");
+        const twitname = args[2];
+        parameters.screen_name = twitname;
         getTweetsAndSendOneToDiscord(message);
     } catch (error) {
         message.channel.send("Vituiks meni!");
@@ -23,13 +29,8 @@ function getTweetsAndSendOneToDiscord(message) {
     if (!T) return;
 
     T.get(path, parameters, function (err, data, response) {
-        if (data.error) {
-            console.log(
-                "Requested:",
-                data.request,
-                "Received error from Twitter API:",
-                data.error
-            );
+        if (err) {
+            console.log("Requested:", "Received error from Twitter API:", err);
             return;
         }
         const tweet = getRandomTweet(data);
@@ -38,43 +39,48 @@ function getTweetsAndSendOneToDiscord(message) {
 }
 
 function getRandomTweet(tweets) {
-    return tweets[randomNumber(0, MAX_TWEETS)];
+    return sample(tweets);
 }
-
-const randomNumber = (start, end) => {
-    return Math.floor(Math.random() * (start - end + 1)) + end;
-};
 
 function sendTweetToDiscord(tweet, message) {
     const embed = createAnswerMessage(tweet);
-    message.channel.send({ embed: embed });
+    message.channel.send({ embeds: [embed] });
 }
 
 function createAnswerMessage(tweet) {
-    let answerMessage = {
-        description:
-            "Niilo22 twiittasi " +
-            parseDate(tweet.created_at) +
-            ":\n\n" +
-            tweet.full_text,
-    };
-
-    if (tweet.entities.media) {
+    let answerMessage = {};
+    if (typeof tweet === "undefined") {
         answerMessage = {
-            description:
-                "Niilo22 twiittasi " +
-                parseDate(tweet.created_at) +
-                ":\n\n" +
-                tweet.full_text,
-            image: { url: tweet.entities.media[0].media_url },
+            description: "Twiittiä ei löytynyt",
         };
+    } else {
+        if (tweet.entities.media) {
+            answerMessage = {
+                description:
+                    tweet.user.name +
+                    " twiittasi " +
+                    parseDate(tweet.created_at) +
+                    ":\n\n" +
+                    tweet.full_text,
+                image: { url: tweet.entities.media[0].media_url },
+            };
+        } else {
+            answerMessage = {
+                description:
+                    tweet.user.name +
+                    " twiittasi " +
+                    parseDate(tweet.created_at) +
+                    ":\n\n" +
+                    tweet.full_text,
+            };
+        }
     }
 
     return answerMessage;
 }
 
 function parseDate(date) {
-    let datetime = new Date(date);
+    const datetime = new Date(date);
     datetime.setHours(datetime.getHours() + 2);
 
     let parsedDate = "";
@@ -196,10 +202,10 @@ function addDot(day) {
 
 module.exports = {
     data: {
-        name: ["niilo22", "niilo"],
-        description: "Gets the best random Niilo22 tweets",
+        name: ["twit", "tweet"],
+        description: "Get a random tweet from any user",
     },
-    async execute(message) {
-        await getNiiloTweet(message);
+    async execute(message: Message) {
+        await getUserTweet(message);
     },
 };

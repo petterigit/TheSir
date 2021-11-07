@@ -1,26 +1,24 @@
-import { Message } from "discord.js";
+import { Client, Message } from "discord.js";
 import { DiscordClient } from "./types";
 
 /* require */
-require("dotenv").config();
-const { intents } = require("./intents.js");
-const Discord = require("discord.js");
-const client: DiscordClient = new Discord.Client({ intents: intents });
-const { REST } = require("@discordjs/rest");
+import * as dotenv from "dotenv";
+dotenv.config({ path: __dirname + "/.env" });
+import { intents } from "./intents";
+const client: DiscordClient = new Client({ intents: intents }) as DiscordClient;
+import { REST } from "@discordjs/rest";
 const token = process.env.TOKEN;
-const {
+import {
     requireCommands,
     executeCommand,
     rotateSisterActivities,
     registerSlashCommands,
-} = require("./util");
+} from "./util";
 
 /* stuff */
 const prefix = "sir ";
 const environment = process.env.ENVIRONMENT;
-console.log(`Running in ${environment} mode`);
 
-const rest = new REST({ version: "9" }).setToken(token);
 /* Bot setup */
 client.once("ready", () => {
     console.log("I am ready");
@@ -30,12 +28,6 @@ client.once("ready", () => {
     });
     rotateSisterActivities(client);
 });
-
-client.commands = requireCommands("commands");
-client.interactions = requireCommands("interactions");
-client.slashCommands = requireCommands("slash-commands");
-
-registerSlashCommands(client.slashCommands, rest);
 
 /* Handle messages */
 client.on("messageCreate", async (message: Message) => {
@@ -62,5 +54,14 @@ client.on("interactionCreate", async (interaction) => {
         executeCommand(interaction, interactionHandler, client);
     }
 });
+const initialize = async () => {
+    const rest = new REST({ version: "9" }).setToken(token);
+    client.commands = await requireCommands("commands");
+    client.interactions = await requireCommands("interactions");
+    client.slashCommands = await requireCommands("slash-commands");
+    registerSlashCommands(client.slashCommands, rest);
+    console.log(`Running in ${environment} mode`);
+};
 
+initialize();
 client.login(token);

@@ -1,4 +1,4 @@
-import { APIEmbed, APIEmbedField, APIMessage } from "discord-api-types";
+import { APIEmbedField } from "discord-api-types";
 import {
     ButtonInteraction,
     EmbedField,
@@ -7,7 +7,7 @@ import {
     MessageEmbedOptions,
 } from "discord.js";
 
-const { createMention } = require("../../util");
+import { createMention } from "../../util";
 
 const NAME_SEPARATOR = ", ";
 
@@ -17,7 +17,7 @@ const poll = async (interaction: ButtonInteraction) => {
     const user = createMention(interaction);
 
     const embed = handleVote(interaction, buttonText, user);
-    let options: InteractionUpdateOptions = {
+    const options: InteractionUpdateOptions = {
         embeds: [embed],
     };
 
@@ -121,7 +121,7 @@ const addOrRemoveUser = (users: string[], user: string) => {
 const createNewField = (
     buttonText: string,
     user: string,
-    inline: boolean = false
+    inline = false
 ): EmbedField => ({
     name: buttonText,
     value: user,

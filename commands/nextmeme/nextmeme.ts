@@ -1,14 +1,38 @@
-const fetch = require("node-fetch");
-import _ = require("lodash");
+import fetch from "node-fetch";
+import sample from "lodash/sample";
+import random from "lodash/random";
 
 const startingDate = new Date(2012, 1, 1);
 
-exports.nextMeme = async () => {
+type Meme = {
+    ID?: number;
+    type?: number;
+    title?: string;
+    tags?: string;
+    url?: string;
+    timestamp?: number;
+    votes?: number;
+    positiveVotes?: number;
+    uploaderName?: string;
+    uploaderID?: number;
+    rating?: number;
+    width?: number;
+    height?: number;
+    thumbnailURL?: string;
+    titleToSlug?: string;
+};
+
+type JSONResponse = {
+    stat: number;
+    items: Meme[];
+};
+
+export const nextMeme = async (): Promise<Meme> => {
     const timestamp = randomTimestamp(startingDate, new Date());
     const res = await fetch(
         "https://www.memedroid.com/memes/getGallerySurroundings/" + timestamp
     );
-    const json = await res.json();
+    const json: JSONResponse = await res.json();
 
     if (json.stat != 0) {
         throw new Error("Status was not 0. Status: " + json.stat);
@@ -18,11 +42,11 @@ exports.nextMeme = async () => {
     if (length <= 0) {
         throw new Error("No memes were fetched");
     }
-    return json.items[_.random(0, length - 1)];
+    return sample(json.items);
 };
 
 // Makes a timestamp in Memedroid url format (10 chars long)
 const randomTimestamp = (start: Date, end: Date) => {
-    const ranNumber = _.random(start.getTime(), end.getTime());
+    const ranNumber = random(start.getTime(), end.getTime());
     return ranNumber.toString().substr(0, 10);
 };
