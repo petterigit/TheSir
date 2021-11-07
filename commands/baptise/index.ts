@@ -40,7 +40,8 @@ const createPetName = async (memberName: string) => {
 const startBaptise = async (message: Message) => {
     if (message.mentions.users.first() != null) {
         const member = message.mentions.members.first();
-        const memberName = member.displayName;
+        let memberName = member.displayName;
+        memberName = memberName.split(",")[0];
         message.channel
             .send(
                 memberName +
@@ -58,7 +59,8 @@ const startBaptise = async (message: Message) => {
                         );
                     })
                     .catch((err) => {
-                        console.error("baptising went wrong:\n" + err);
+                        console.error("baptising went wrong:\n");
+                        console.error(err);
                         msg.edit(
                             msg.toString().replace(/`/g, "") +
                                 "\n\nHe drowned in the Oulujoki"
