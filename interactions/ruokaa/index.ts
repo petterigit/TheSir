@@ -1,4 +1,9 @@
-import { ButtonInteraction, Collection, MessageEmbed } from "discord.js";
+import {
+    ButtonInteraction,
+    Collection,
+    EmbedField,
+    MessageEmbed,
+} from "discord.js";
 
 const Discord = require("discord.js");
 const { createMention } = require("../../util");
@@ -71,35 +76,42 @@ const setVote = (
         votes[restaurant].splice(userIndex, 1);
         return votes;
     }
+    console.log("coming votes");
+    console.log(votes);
 
     const filteredVotes = new Collection<string, string[]>();
-    for (const [key, value] of Object.entries(votes)) {
+    votes.forEach((value, key) => {
         const newParticipants = value.filter(
             (participantName: string) => participantName !== participant
         );
-        filteredVotes[key] = newParticipants;
-    }
+        filteredVotes.set(key, newParticipants);
+    });
 
-    if (filteredVotes[restaurant] == null) {
-        filteredVotes[restaurant] = [participant];
+    if (filteredVotes.get(restaurant) == null) {
+        filteredVotes.set(restaurant, [participant]);
     } else {
-        filteredVotes[restaurant].push(participant);
+        filteredVotes.get(restaurant).push(participant);
     }
+    console.log("going votes");
+    console.log(filteredVotes);
     return filteredVotes;
 };
 
 const setVotesToFields = (votes: Collection<string, string[]>) => {
-    const fields = Object.entries(votes).map(([key, value]) => {
+    const fields: EmbedField[] = [];
+    votes.forEach((value, key) => {
         const field = {
             name: key,
             value: value?.join(participantSeparator),
             inline: true,
         };
         if (value.length > 1) {
-            field.name = addParticipantCount(key, value);
+            field.name = addParticipantCount(key, value.length);
         }
-        return field;
+        fields.push(field);
     });
+    console.log("all fields: ");
+    console.log(fields);
 
     const sortedFields = fields
         .filter((field) => field.value)
@@ -112,11 +124,13 @@ const setVotesToFields = (votes: Collection<string, string[]>) => {
             if (bName === skipName) return -1;
             return aName > bName ? 1 : -1;
         });
+    console.log("sorted fields: ");
+    console.log(sortedFields);
     return sortedFields;
 };
 
-const addParticipantCount = (name: string, participants: string) => {
-    return name + ` (${participants.length})`;
+const addParticipantCount = (name: string, count: number) => {
+    return name + ` (${count})`;
 };
 
 const removeParticipantCount = (name: string) => {
