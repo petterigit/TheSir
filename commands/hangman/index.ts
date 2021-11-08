@@ -163,20 +163,18 @@ const updateGameStateToUser = async () => {
         "```" +
         HANGMANPICS[TOTALGUESSES - gameState.guessesLeft] +
         "```";
-    console.log(HANGMANPICS[TOTALGUESSES - gameState.guessesLeft]);
     if (gameState.errorMessage != "") {
-        gameStateString = gameStateString + gameState.errorMessage;
+        gameStateString = gameStateString + "\n" + gameState.errorMessage;
     }
 
+    const embed = new MessageEmbed();
+    embed.setDescription(gameStateString);
+    embed.setTitle("HANGMAN");
     if (messageParams.hangManMessage === undefined) {
-        const embed = new MessageEmbed();
-        embed.setDescription(gameStateString);
         messageParams.hangManMessage = await messageParams.messageChannel.send({
             embeds: [embed],
         });
     } else {
-        const embed = new MessageEmbed();
-        embed.setDescription(gameStateString);
         messageParams.hangManMessage.edit({ embeds: [embed] });
     }
 };
