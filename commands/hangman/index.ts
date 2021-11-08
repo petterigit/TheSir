@@ -1,134 +1,128 @@
-import {
-    DMChannel,
-    Message,
-    NewsChannel,
-    PartialDMChannel,
-    TextChannel,
-    ThreadChannel,
-} from "discord.js";
-
+import { Message, MessageEmbed } from "discord.js";
+import { GameState, MessageParams } from "./hmTypes";
 import dictionary from "./dictionary.json";
+import { HANGMANPICS } from "./asciiArts";
 
-let word: string;
-let wordExplanation: string;
+const TOTALGUESSES = 6;
 
-let gameState = "not active";
-let guessedCharacters: string[] = [];
-let knownCharacters: string[] = [];
-let guessesLeft = 5;
-let guessCharacter: string;
-let messageContent: string;
-let messageChannel:
-    | TextChannel
-    | PartialDMChannel
-    | DMChannel
-    | NewsChannel
-    | ThreadChannel;
+const gameState: GameState = {
+    active: false,
+    guessedCharacters: [],
+    knownCharacters: [],
+    guessesLeft: TOTALGUESSES,
+    word: "",
+    wordExplanation: "",
+    errorMessage: "",
+};
+const messageParams: MessageParams = {
+    hangManMessage: undefined,
+    guessCharacter: "",
+    messageContent: "",
+    messageChannel: undefined,
+};
 
 /* MAIN */
 const hangMan = async () => {
-    if (gameState === "not active") {
+    if (!gameState.active) {
+        /* GAME SETUP */
         resetGame();
         setHangMan();
-        gameState = "active";
-    } else if (gameState === "active") {
-        // Check if given message is valid
+        gameState.active = true;
+    } else if (gameState.active) {
+        /* MESSAGE VALIDATION */
         const messageRes = await checkMessage();
         if (messageRes === "exit") {
             resetGame();
             return;
         } else if (messageRes === "error") {
+            await updateGameStateToUser();
+            gameState.errorMessage = "";
             return;
         } else {
-            guessCharacter = messageRes;
+            messageParams.guessCharacter = messageRes;
         }
-        // Check if given character is in the word
-        const guessResult = await checkGuess(guessCharacter);
+
+        /* USER GUESS HANDLING */
+        const guessResult = await checkGuess(messageParams.guessCharacter);
         if (guessResult === true) {
-            // If the guess was correct, do stuff
-            let position = word.indexOf(guessCharacter);
+            let position = gameState.word.indexOf(messageParams.guessCharacter);
+
+            // Loop through indexes of characters in word
             while (position !== -1) {
-                knownCharacters[position] = word[position];
-                position = word.indexOf(guessCharacter, position + 1);
+                gameState.knownCharacters[position] = gameState.word[position];
+                position = gameState.word.indexOf(
+                    messageParams.guessCharacter,
+                    position + 1
+                );
             }
-            if (knownCharacters.join("") === word) {
+
+            // You win!
+            if (gameState.knownCharacters.join("") === gameState.word) {
+                await updateGameStateToUser();
                 replyToChannel("You win! ");
-                await replyToChannel("The word was: " + word);
+                await replyToChannel("The word was: " + gameState.word);
                 await sendWordExplanation();
                 resetGame();
                 return;
             }
-
-            //word = word.replaceAll(guessCharacter, "");
         } else {
-            // If the guess was not correct, do stuff
-            guessesLeft--;
-            if (guessesLeft <= 0) {
+            gameState.guessesLeft--;
+
+            // You lose!
+            if (gameState.guessesLeft <= 0) {
+                await updateGameStateToUser();
                 await replyToChannel("You lost!");
-                await replyToChannel("The word was: " + word);
+                await replyToChannel("The word was: " + gameState.word);
                 await sendWordExplanation();
                 resetGame();
                 return;
             }
         }
-
-        await replyToChannel("Your guesses: " + guessedCharacters);
-        await replyToChannel("Known characters in word: " + knownCharacters);
-        await replyToChannel("Guesses left: " + guessesLeft.toString());
+        await updateGameStateToUser();
     } else {
         await replyToChannel("Unknown state.. Restarting hangman");
         resetGame();
     }
 };
 
-module.exports = {
-    data: {
-        name: ["hangman", "hm"],
-        description: "Hangman Game",
-    },
-    async execute(message: Message) {
-        // Make sure we're not overloaded with messages
-        try {
-            messageChannel = message.channel;
-            messageContent = message.content;
-            await hangMan();
-        } catch (e) {
-            console.log(e);
-            replyToChannel("Hangman encountered an error.");
-        }
-    },
+/* GAME SETUP */
+const resetGame = () => {
+    gameState.active = false;
+    gameState.guessedCharacters = [];
+    gameState.knownCharacters = [];
+    gameState.guessesLeft = 5;
+
+    /* Sever ties to the old message so we won't go and change that ... */
+    messageParams.hangManMessage = undefined;
 };
 
-/* GAME SETUP */
 const setHangMan = async () => {
     // Get a random word from dictionary
     const keys = Object.keys(dictionary);
     const randIndex = Math.floor(Math.random() * keys.length);
 
-    // Set word
-    word = keys[randIndex].toLowerCase();
-    wordExplanation = dictionary[word];
-    knownCharacters.length = word.length;
-    knownCharacters.fill("@");
+    gameState.word = keys[randIndex].toLowerCase();
+    gameState.wordExplanation = dictionary[gameState.word];
+    gameState.knownCharacters.length = gameState.word.length;
+    gameState.knownCharacters.fill("\\_");
 
-    /* Print Game Board to Player */
     await replyToChannel(
-        "Hangman setup done! Type in your guesses after the 'hangman' command"
+        "Hangman setup done! Type in your guesses after the 'hm' command"
     );
+    await updateGameStateToUser();
 };
 
-/* VALIDATING MESSAGE CONTENTS */
+/* MESSAGE VALIDATION */
 const checkMessage = async () => {
-    const guessString = messageContent.substring(1).split(" ")[2];
+    const guessString = messageParams.messageContent.substring(1).split(" ")[2];
 
     if (guessString === undefined) {
-        await replyToChannel(
-            "Empty guess.. Try a little harder! Or quit with 'hangman 0'"
-        );
+        gameState.errorMessage =
+            "Empty guess.. Try a little harder! Or quit with 'hangman 0'";
         return "error";
     }
     if (guessString.length > 1) {
-        await replyToChannel("ONE. LETTER. AT. A. TIME. Thank you.'");
+        gameState.errorMessage = "ONE. LETTER. AT. A. TIME. Thank you.'";
         return "error";
     }
 
@@ -137,57 +131,77 @@ const checkMessage = async () => {
         return "exit";
     }
 
-    if (guessedCharacters.includes(messageCharacter)) {
-        await replyToChannel(
-            "You already tried this.. Bad memory? Need me to spell your guesses out loud?"
-        );
-        await replyToChannel("YOUR GUESSES SO FAR ARE: ");
-        for (let i = 0; i < guessedCharacters.length; i++) {
-            await replyToChannel(guessedCharacters[i]);
-        }
-        await replyToChannel("Please, continue.");
+    if (gameState.guessedCharacters.includes(messageCharacter)) {
+        gameState.errorMessage = "You already tried this.. Bad memory?";
         return "error";
-    } else if (knownCharacters.includes(messageCharacter)) {
-        await replyToChannel(
-            "We already know that the word does infact contain the letter '" +
-                messageCharacter +
-                "'."
-        );
+    } else if (gameState.knownCharacters.includes(messageCharacter)) {
+        /* Should be covered by the clause above */
         return "error";
     }
     return messageCharacter;
 };
 
-/* NORMAL GAME FLOW */
+/* USER GUESS HANDLING */
 const checkGuess = async (messageCharacter: string) => {
-    await replyToChannel("You guessed: " + messageCharacter);
-    guessedCharacters.push(messageCharacter);
-    if (word.includes(messageCharacter)) {
+    gameState.guessedCharacters.push(messageCharacter);
+    if (gameState.word.includes(messageCharacter)) {
         /* Guess was correct ! */
-        await replyToChannel(
-            "'" + messageCharacter + "' was in the word. Good guess!"
-        );
         return true;
     } else {
         /* Guess was not correct ! */
-        await replyToChannel(
-            "'" + messageCharacter + "' was not in the word. Try again!"
-        );
         return false;
     }
 };
 
+/* GAME STATE UPDATES TO PLAYER */
+const updateGameStateToUser = async () => {
+    let gameStateString =
+        `
+        Your word:          ${gameState.knownCharacters.join(" ")}
+        Guesses Left:       ${gameState.guessesLeft}
+        Guessed Letters:    ${gameState.guessedCharacters}` +
+        "```" +
+        HANGMANPICS[TOTALGUESSES - gameState.guessesLeft] +
+        "```";
+    console.log(HANGMANPICS[TOTALGUESSES - gameState.guessesLeft]);
+    if (gameState.errorMessage != "") {
+        gameStateString = gameStateString + gameState.errorMessage;
+    }
+
+    if (messageParams.hangManMessage === undefined) {
+        const embed = new MessageEmbed();
+        embed.setDescription(gameStateString);
+        messageParams.hangManMessage = await messageParams.messageChannel.send({
+            embeds: [embed],
+        });
+    } else {
+        const embed = new MessageEmbed();
+        embed.setDescription(gameStateString);
+        messageParams.hangManMessage.edit({ embeds: [embed] });
+    }
+};
+
 const sendWordExplanation = async () => {
-    await replyToChannel(word + ", " + wordExplanation);
+    await replyToChannel(gameState.word + ", " + gameState.wordExplanation);
 };
 
 const replyToChannel = async (message: string) => {
-    messageChannel.send(message);
+    messageParams.messageChannel.send(message);
 };
 
-const resetGame = () => {
-    gameState = "not active";
-    guessedCharacters = [];
-    knownCharacters = [];
-    guessesLeft = 5;
+module.exports = {
+    data: {
+        name: ["hangman", "hm"],
+        description: "Hangman Game",
+    },
+    async execute(message: Message) {
+        try {
+            messageParams.messageChannel = message.channel;
+            messageParams.messageContent = message.content;
+            await hangMan();
+        } catch (e) {
+            console.log(e);
+            replyToChannel("Hangman encountered an error.");
+        }
+    },
 };
