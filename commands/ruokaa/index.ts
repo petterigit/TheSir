@@ -37,7 +37,7 @@ const ruokaa = async (message: Message) => {
 
         const embed = new MessageEmbed();
         embed.setTitle("Syödään tänään");
-        embed.setColor(randomColor() as ColorResolvable);
+        embed.setColor(randomColor());
 
         const appendMenu = (categories: Category[], header: string) => {
             const textMenu = [];

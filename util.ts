@@ -69,6 +69,7 @@ export const randomColor = (): ColorResolvable => {
     for (let i = 0; i < 3; i++) {
         color += random(0, 255).toString(16);
     }
+
     return color as ColorResolvable;
 };
 

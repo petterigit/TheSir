@@ -35,7 +35,7 @@ const poll = async (interaction: CommandInteraction) => {
         embeds: [
             {
                 title: title,
-                color: randomColor() as ColorResolvable,
+                color: randomColor(),
                 timestamp: new Date(),
             },
         ],
