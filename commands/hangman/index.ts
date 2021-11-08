@@ -13,9 +13,8 @@ let word: string;
 let wordExplanation: string;
 
 let gameState = "not active";
-let processing = false;
-const guessedCharacters: string[] = [];
-const knownCharacters: string[] = [];
+let guessedCharacters: string[] = [];
+let knownCharacters: string[] = [];
 let guessesLeft = 5;
 let guessCharacter: string;
 let messageContent: string;
@@ -29,13 +28,14 @@ let messageChannel:
 /* MAIN */
 const hangMan = async () => {
     if (gameState === "not active") {
-        gameState = "active";
+        resetGame();
         setHangMan();
+        gameState = "active";
     } else if (gameState === "active") {
         // Check if given message is valid
         const messageRes = await checkMessage();
         if (messageRes === "exit") {
-            gameState = "not active";
+            resetGame();
             return;
         } else if (messageRes === "error") {
             return;
@@ -55,7 +55,7 @@ const hangMan = async () => {
                 replyToChannel("You win! ");
                 await replyToChannel("The word was: " + word);
                 await sendWordExplanation();
-                gameState = "not active";
+                resetGame();
                 return;
             }
 
@@ -67,7 +67,7 @@ const hangMan = async () => {
                 await replyToChannel("You lost!");
                 await replyToChannel("The word was: " + word);
                 await sendWordExplanation();
-                gameState = "not active";
+                resetGame();
                 return;
             }
         }
@@ -77,26 +77,24 @@ const hangMan = async () => {
         await replyToChannel("Guesses left: " + guessesLeft.toString());
     } else {
         await replyToChannel("Unknown state.. Restarting hangman");
-        gameState = "not active";
+        resetGame();
     }
 };
 
 module.exports = {
     data: {
-        name: ["hangman"],
+        name: ["hangman", "hm"],
         description: "Hangman Game",
     },
     async execute(message: Message) {
         // Make sure we're not overloaded with messages
-        // Maybe works, maybe does nothing. Hope for the best :]
-        if (!processing) {
-            processing = true;
+        try {
             messageChannel = message.channel;
             messageContent = message.content;
-            hangMan();
-            processing = false;
-        } else {
-            replyToChannel("You're sending too many messages at once.. pls no");
+            await hangMan();
+        } catch (e) {
+            console.log(e);
+            replyToChannel("Hangman encountered an error.");
         }
     },
 };
@@ -136,7 +134,6 @@ const checkMessage = async () => {
 
     const messageCharacter = guessString.toLowerCase();
     if (messageCharacter === "0") {
-        gameState = "not active";
         return "exit";
     }
 
@@ -186,4 +183,11 @@ const sendWordExplanation = async () => {
 
 const replyToChannel = async (message: string) => {
     messageChannel.send(message);
+};
+
+const resetGame = () => {
+    gameState = "not active";
+    guessedCharacters = [];
+    knownCharacters = [];
+    guessesLeft = 5;
 };
