@@ -14,6 +14,8 @@ import {
     createEveryoneMention,
     createRoleMentionWithId,
     createUserMentionWithId,
+    isGuildMember,
+    isRole,
 } from "../../util";
 
 const MESSAGE_OPTIONS = { mention: "mention", message: "message" };
@@ -69,15 +71,10 @@ const getPraiseText = (
     const praiser = getNicknameOrName(interaction);
     const actionType = shouldShame ? "shames" : "praises";
     let messageText = `${praiser} ${actionType} `;
-    if ((<GuildMember>mention).user) {
-        messageText += `${createUserMentionWithId(
-            (<GuildMember>mention).user.id
-        )}!`;
+    if (isGuildMember(mention)) {
+        messageText += `${createUserMentionWithId(mention.user.id)}!`;
     } else {
-        if (
-            (<Role | APIRole>mention).name &&
-            (<Role | APIRole>mention).name === "@everyone"
-        ) {
+        if (isRole(mention) && mention.name === "@everyone") {
             messageText += `${createEveryoneMention()}!`;
         } else {
             messageText += `everyone with the role ${createRoleMentionWithId(

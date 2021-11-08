@@ -1,5 +1,4 @@
 import {
-    ButtonInteraction,
     Collection,
     ColorResolvable,
     CommandInteraction,
@@ -8,12 +7,14 @@ import {
     Interaction,
     Message,
     MessageButton,
+    Role,
+    User,
 } from "discord.js";
 import { Command, DiscordClient, SlashCommands } from "./types";
 
 import random from "lodash/random";
 import * as fs from "fs";
-import { Routes } from "discord-api-types/v9";
+import { APIRole, Routes } from "discord-api-types/v9";
 
 import { MessageButtonStyles } from "discord.js/typings/enums";
 import { REST } from "@discordjs/rest";
@@ -34,6 +35,16 @@ export const createRoleMentionWithId = (id: string): string => `<@&${id}>`;
 export const createEveryoneMention = (): string => "@everyone";
 export const createMention = (interaction: Interaction): string => {
     return `<@${interaction.member.user.id}>`;
+};
+export const isGuildMember = (
+    mention: GuildMember | Role | APIRole | User
+): mention is GuildMember => {
+    return (mention as GuildMember).user != null;
+};
+export const isRole = (
+    mention: GuildMember | Role | APIRole | User
+): mention is Role | APIRole => {
+    return (mention as Role | APIRole).name != null;
 };
 
 export const createButton = (
