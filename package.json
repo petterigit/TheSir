@@ -24,7 +24,7 @@
         "node": "16.x"
     },
     "scripts": {
-        "build": "tsc build",
+        "build": "tsc -p .",
         "start": "node dist/main.js",
         "dev": "nodemon main.ts"
     },
