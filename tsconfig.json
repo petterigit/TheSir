@@ -1,12 +1,9 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "es2017",
-    "lib": ["es2017"],
-    "sourceMap": true,
-    "outDir": "dist",
     "esModuleInterop": true,
     "resolveJsonModule": true,
+    "lib": [
+      "ES2021.String"
+    ]
   }
 }
