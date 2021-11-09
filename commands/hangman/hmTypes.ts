@@ -18,7 +18,7 @@ export type GameState = {
 };
 
 export type MessageParams = {
-    hangManMessage: Message;
+    hangmanMessage: Message;
     guessCharacter: string;
     messageContent: string;
     messageChannel:

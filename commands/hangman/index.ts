@@ -15,18 +15,18 @@ const gameState: GameState = {
     errorMessage: "",
 };
 const messageParams: MessageParams = {
-    hangManMessage: undefined,
+    hangmanMessage: undefined,
     guessCharacter: "",
     messageContent: "",
     messageChannel: undefined,
 };
 
 /* MAIN */
-const hangMan = async () => {
+const hangman = async () => {
     if (!gameState.active) {
         /* GAME SETUP */
         resetGame();
-        setHangMan();
+        setHangman();
         gameState.active = true;
     } else if (gameState.active) {
         /* MESSAGE VALIDATION */
@@ -93,10 +93,10 @@ const resetGame = () => {
     gameState.guessesLeft = 5;
 
     /* Sever ties to the old message so we won't go and change that ... */
-    messageParams.hangManMessage = undefined;
+    messageParams.hangmanMessage = undefined;
 };
 
-const setHangMan = async () => {
+const setHangman = async () => {
     // Get a random word from dictionary
     const keys = Object.keys(dictionary);
     const randIndex = Math.floor(Math.random() * keys.length);
@@ -170,12 +170,12 @@ const updateGameStateToUser = async () => {
     const embed = new MessageEmbed();
     embed.setDescription(gameStateString);
     embed.setTitle("HANGMAN");
-    if (messageParams.hangManMessage === undefined) {
-        messageParams.hangManMessage = await messageParams.messageChannel.send({
+    if (messageParams.hangmanMessage === undefined) {
+        messageParams.hangmanMessage = await messageParams.messageChannel.send({
             embeds: [embed],
         });
     } else {
-        messageParams.hangManMessage.edit({ embeds: [embed] });
+        messageParams.hangmanMessage.edit({ embeds: [embed] });
     }
 };
 
@@ -196,7 +196,7 @@ module.exports = {
         try {
             messageParams.messageChannel = message.channel;
             messageParams.messageContent = message.content;
-            await hangMan();
+            await hangman();
         } catch (e) {
             console.log(e);
             replyToChannel("Hangman encountered an error.");
