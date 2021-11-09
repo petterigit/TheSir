@@ -28,7 +28,7 @@
         "start": "node dist/main.js",
         "dev": "nodemon main.ts"
     },
-    "author": "petterigit, Nikug, MaijaHeiskanen, JuhoHeiskanen, Appelsiini1, Apezkin, AleksiJärventausta",
+    "author": "petterigit, Nikug, MaijaHeiskanen, JuhoHeiskanen, Appelsiini1, Apezkin, AleksiJarventausta",
     "license": "ISC",
     "devDependencies": {
         "@types/lodash": "^4.14.173",
