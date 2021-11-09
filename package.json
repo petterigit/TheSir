@@ -1,6 +1,6 @@
 {
     "name": "thesir",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "description": "It's a discord bot. Now with features!",
     "main": "main.js",
     "dependencies": {
@@ -24,9 +24,11 @@
         "node": "16.x"
     },
     "scripts": {
-        "start": "nodemon main.ts"
+        "build": "tsc build",
+        "start": "node dist/main.js",
+        "dev": "nodemon main.ts"
     },
-    "author": "petterigit, Nikug, MaijaHeiskanen, JuhoHeiskanen, Appelsiini1, Apezkin",
+    "author": "petterigit, Nikug, MaijaHeiskanen, JuhoHeiskanen, Appelsiini1, Apezkin, AleksiJärventausta",
     "license": "ISC",
     "devDependencies": {
         "@types/lodash": "^4.14.173",
