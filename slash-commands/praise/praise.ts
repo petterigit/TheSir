@@ -28,9 +28,12 @@ import {
 import * as praise from "./texts/praises.json";
 import sample from "lodash/sample";
 
-registerFont(path.join(__dirname, "fonts/PressStart2P-Regular.ttf"), {
-    family: "pixel",
-});
+registerFont(
+    path.join(process.cwd(), "/public/fonts/PressStart2P-Regular.ttf"),
+    {
+        family: "pixel",
+    }
+);
 
 export const generatePraise = async (
     shameInstead = false,
@@ -48,10 +51,14 @@ export const generatePraise = async (
 
     let img = null;
     if (shameInstead) {
-        img = await loadImage(path.join(__dirname, "images/sad blob.jpg"));
+        img = await loadImage(
+            path.join(process.cwd(), "public/images/sad blob.jpg")
+        );
     } else {
         lines = lines.reverse();
-        img = await loadImage(path.join(__dirname, "images/uni.jpg"));
+        img = await loadImage(
+            path.join(process.cwd(), "public/images/uni.jpg")
+        );
     }
 
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
