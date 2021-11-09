@@ -5,124 +5,129 @@ import { HANGMANPICS } from "./asciiArts";
 
 const TOTALGUESSES = 6;
 
-const gameState: GameState = {
-    active: false,
-    guessedCharacters: [],
-    knownCharacters: [],
-    guessesLeft: TOTALGUESSES,
-    word: "",
-    wordExplanation: "",
-    errorMessage: "",
-};
+let RUNNINGGAMES: GameState[] = [];
+
 const messageParams: MessageParams = {
-    hangmanMessage: undefined,
+    messageChannel: undefined,
+    currentChannelID: "",
     guessCharacter: "",
     messageContent: "",
-    messageChannel: undefined,
 };
 
 /* MAIN */
 const hangman = async () => {
-    if (!gameState.active) {
-        /* GAME SETUP */
-        resetGame();
-        setHangman();
-        gameState.active = true;
-    } else if (gameState.active) {
-        /* MESSAGE VALIDATION */
-        const messageRes = await checkMessage();
-        if (messageRes === "exit") {
-            resetGame();
-            return;
-        } else if (messageRes === "error") {
-            await updateGameStateToUser();
-            gameState.errorMessage = "";
-            return;
-        } else {
-            messageParams.guessCharacter = messageRes;
-        }
+    const currentGame = RUNNINGGAMES.find(
+        (game) => game.channelID == messageParams.currentChannelID
+    );
 
-        /* USER GUESS HANDLING */
-        const guessResult = await checkGuess(messageParams.guessCharacter);
-        if (guessResult === true) {
-            let position = gameState.word.indexOf(messageParams.guessCharacter);
-
-            // Loop through indexes of characters in word
-            while (position !== -1) {
-                gameState.knownCharacters[position] = gameState.word[position];
-                position = gameState.word.indexOf(
-                    messageParams.guessCharacter,
-                    position + 1
-                );
-            }
-
-            // You win!
-            if (gameState.knownCharacters.join("") === gameState.word) {
-                await updateGameStateToUser();
-                replyToChannel("You win! ");
-                await replyToChannel("The word was: " + gameState.word);
-                await sendWordExplanation();
-                resetGame();
-                return;
-            }
-        } else {
-            gameState.guessesLeft--;
-
-            // You lose!
-            if (gameState.guessesLeft <= 0) {
-                await updateGameStateToUser();
-                await replyToChannel("You lost!");
-                await replyToChannel("The word was: " + gameState.word);
-                await sendWordExplanation();
-                resetGame();
-                return;
-            }
-        }
-        await updateGameStateToUser();
-    } else {
-        await replyToChannel("Unknown state.. Restarting hangman");
-        resetGame();
+    if (currentGame === undefined) {
+        const currentGame = setGame();
+        setHangman(currentGame);
+        return;
     }
+    /* MESSAGE VALIDATION */
+    const messageRes = await checkMessage(currentGame);
+    if (messageRes === "exit") {
+        removeGame(currentGame);
+        return;
+    } else if (messageRes === "error") {
+        await updateGameStateToUser(currentGame);
+        currentGame.errorMessage = "";
+        return;
+    } else {
+        messageParams.guessCharacter = messageRes;
+    }
+
+    /* USER GUESS HANDLING */
+    const guessResult = await checkGuess(
+        messageParams.guessCharacter,
+        currentGame
+    );
+    if (guessResult === true) {
+        let position = currentGame.word.indexOf(messageParams.guessCharacter);
+
+        // Loop through indexes of characters in word
+        while (position !== -1) {
+            currentGame.knownCharacters[position] = currentGame.word[position];
+            position = currentGame.word.indexOf(
+                messageParams.guessCharacter,
+                position + 1
+            );
+        }
+
+        // You win!
+        if (currentGame.knownCharacters.join("") === currentGame.word) {
+            await updateGameStateToUser(currentGame);
+            replyToChannel("You win! ");
+            await replyToChannel("The word was: " + currentGame.word);
+            await sendWordExplanation(currentGame);
+            removeGame(currentGame);
+            return;
+        }
+    } else {
+        currentGame.guessesLeft--;
+
+        // You lose!
+        if (currentGame.guessesLeft <= 0) {
+            await updateGameStateToUser(currentGame);
+            await replyToChannel("You lost!");
+            await replyToChannel("The word was: " + currentGame.word);
+            await sendWordExplanation(currentGame);
+            removeGame(currentGame);
+            return;
+        }
+    }
+    await updateGameStateToUser(currentGame);
 };
 
 /* GAME SETUP */
-const resetGame = () => {
-    gameState.active = false;
-    gameState.guessedCharacters = [];
-    gameState.knownCharacters = [];
-    gameState.guessesLeft = 5;
-
-    /* Sever ties to the old message so we won't go and change that ... */
-    messageParams.hangmanMessage = undefined;
+const setGame = () => {
+    const currentGame = {
+        channelID: messageParams.currentChannelID,
+        active: true,
+        guessedCharacters: [],
+        knownCharacters: [],
+        guessesLeft: TOTALGUESSES,
+        word: "",
+        wordExplanation: "",
+        errorMessage: "",
+        hangmanMessage: undefined,
+    };
+    RUNNINGGAMES.push(currentGame);
+    return currentGame;
 };
 
-const setHangman = async () => {
+const setHangman = async (currentGame: GameState) => {
     // Get a random word from dictionary
     const keys = Object.keys(dictionary);
     const randIndex = Math.floor(Math.random() * keys.length);
 
-    gameState.word = keys[randIndex].toLowerCase();
-    gameState.wordExplanation = dictionary[gameState.word];
-    gameState.knownCharacters.length = gameState.word.length;
-    gameState.knownCharacters.fill("\\_");
+    currentGame.word = keys[randIndex].toLowerCase();
+    currentGame.wordExplanation = dictionary[currentGame.word];
+    currentGame.knownCharacters.length = currentGame.word.length;
+    currentGame.knownCharacters.fill("\\_");
 
     await replyToChannel(
         "Hangman setup done! Type in your guesses after the 'hm' command"
     );
-    await updateGameStateToUser();
+    await updateGameStateToUser(currentGame);
+};
+
+const removeGame = (currentGame: GameState) => {
+    RUNNINGGAMES = RUNNINGGAMES.filter((game) => game !== currentGame);
 };
 
 /* MESSAGE VALIDATION */
-const checkMessage = async () => {
+const checkMessage = async (currentGame: GameState) => {
     const guessString = messageParams.messageContent.substring(1).split(" ")[2];
 
     if (guessString === undefined) {
-        gameState.errorMessage =
+        currentGame.errorMessage =
             "Empty guess.. Try a little harder! Or quit with 'hangman 0'";
         return "error";
     }
     if (guessString.length > 1) {
-        gameState.errorMessage = "ONE. LETTER. AT. A. TIME. Thank you.'";
+        currentGame.errorMessage = "ONE. LETTER. AT. A. TIME. Thank you.'";
         return "error";
     }
 
@@ -131,10 +136,10 @@ const checkMessage = async () => {
         return "exit";
     }
 
-    if (gameState.guessedCharacters.includes(messageCharacter)) {
-        gameState.errorMessage = "You already tried this.. Bad memory?";
+    if (currentGame.guessedCharacters.includes(messageCharacter)) {
+        currentGame.errorMessage = "You already tried this.. Bad memory?";
         return "error";
-    } else if (gameState.knownCharacters.includes(messageCharacter)) {
+    } else if (currentGame.knownCharacters.includes(messageCharacter)) {
         /* Should be covered by the clause above */
         return "error";
     }
@@ -142,9 +147,9 @@ const checkMessage = async () => {
 };
 
 /* USER GUESS HANDLING */
-const checkGuess = async (messageCharacter: string) => {
-    gameState.guessedCharacters.push(messageCharacter);
-    if (gameState.word.includes(messageCharacter)) {
+const checkGuess = async (messageCharacter: string, currentGame: GameState) => {
+    currentGame.guessedCharacters.push(messageCharacter);
+    if (currentGame.word.includes(messageCharacter)) {
         /* Guess was correct ! */
         return true;
     } else {
@@ -154,37 +159,43 @@ const checkGuess = async (messageCharacter: string) => {
 };
 
 /* GAME STATE UPDATES TO PLAYER */
-const updateGameStateToUser = async () => {
+const updateGameStateToUser = async (currentGame: GameState) => {
     let gameStateString =
         `
-        Your word:          ${gameState.knownCharacters.join(" ")}
-        Guesses Left:       ${gameState.guessesLeft}
-        Guessed Letters:    ${gameState.guessedCharacters}` +
+        Your word:          ${currentGame.knownCharacters.join(" ")}
+        Guesses Left:       ${currentGame.guessesLeft}
+        Guessed Letters:    ${currentGame.guessedCharacters}` +
         "```" +
-        HANGMANPICS[TOTALGUESSES - gameState.guessesLeft] +
+        HANGMANPICS[TOTALGUESSES - currentGame.guessesLeft] +
         "```";
-    if (gameState.errorMessage != "") {
-        gameStateString = gameStateString + "\n" + gameState.errorMessage;
+    if (currentGame.errorMessage != "") {
+        gameStateString = gameStateString + "\n" + currentGame.errorMessage;
     }
 
     const embed = new MessageEmbed();
     embed.setDescription(gameStateString);
     embed.setTitle("HANGMAN");
-    if (messageParams.hangmanMessage === undefined) {
-        messageParams.hangmanMessage = await messageParams.messageChannel.send({
+    if (currentGame.hangmanMessage === undefined) {
+        currentGame.hangmanMessage = await messageParams.messageChannel.send({
             embeds: [embed],
         });
     } else {
-        messageParams.hangmanMessage.edit({ embeds: [embed] });
+        currentGame.hangmanMessage.edit({ embeds: [embed] });
     }
 };
 
-const sendWordExplanation = async () => {
-    await replyToChannel(gameState.word + ", " + gameState.wordExplanation);
+const sendWordExplanation = async (currentGame: GameState) => {
+    await replyToChannel(currentGame.word + ", " + currentGame.wordExplanation);
 };
 
 const replyToChannel = async (message: string) => {
     messageParams.messageChannel.send(message);
+};
+
+const getMessageParams = (message: Message) => {
+    messageParams.currentChannelID = message.channel.id;
+    messageParams.messageChannel = message.channel;
+    messageParams.messageContent = message.content;
 };
 
 module.exports = {
@@ -194,8 +205,7 @@ module.exports = {
     },
     async execute(message: Message) {
         try {
-            messageParams.messageChannel = message.channel;
-            messageParams.messageContent = message.content;
+            getMessageParams(message);
             await hangman();
         } catch (e) {
             console.log(e);

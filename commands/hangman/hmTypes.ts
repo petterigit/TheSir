@@ -15,16 +15,18 @@ export type GameState = {
     word: string;
     wordExplanation: string;
     errorMessage: string;
+    channelID: string;
+    hangmanMessage: Message;
 };
 
 export type MessageParams = {
-    hangmanMessage: Message;
-    guessCharacter: string;
-    messageContent: string;
     messageChannel:
         | DMChannel
-        | NewsChannel
         | PartialDMChannel
         | TextChannel
+        | NewsChannel
         | ThreadChannel;
+    currentChannelID: string;
+    guessCharacter: string;
+    messageContent: string;
 };
