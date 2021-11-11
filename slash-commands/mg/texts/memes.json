@@ -1,0 +1,21 @@
+{
+ "data":[
+   {
+    "imageFileName": "drake.jpg",
+    "textBoxes": [
+    {
+      "name": "nah",
+      "x":400,
+      "y":0,
+      "width":400,
+      "height":400
+    },
+    {
+      "name": "yes",
+      "x":400,
+      "y":400,
+      "width":400,
+      "height":400
+    },
+  }
+]}
