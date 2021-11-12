@@ -102,10 +102,19 @@ const setHangman = async (currentGame: GameState) => {
     const keys = Object.keys(dictionary);
     const randIndex = Math.floor(Math.random() * keys.length);
 
-    currentGame.word = keys[randIndex].toLowerCase();
+    // u2000 = Loooong space - here for styling & win condition checking
+    const word = keys[randIndex].toLowerCase().replace(" ", "\u2000");
+    currentGame.word = word;
     currentGame.wordExplanation = dictionary[currentGame.word];
     currentGame.knownCharacters.length = currentGame.word.length;
     currentGame.knownCharacters.fill("\\_");
+
+    let i = word.length;
+    while (i--) {
+        if ("-_`'\u2000".includes(word[i])) {
+            currentGame.knownCharacters[i] = currentGame.word[i];
+        }
+    }
 
     await replyToChannel(
         "Hangman setup done! Type in your guesses after the 'hm' command"
@@ -207,6 +216,7 @@ module.exports = {
         try {
             getMessageParams(message);
             await hangman();
+            message.delete();
         } catch (e) {
             console.log(e);
             replyToChannel("Hangman encountered an error.");
