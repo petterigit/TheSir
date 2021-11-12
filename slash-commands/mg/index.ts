@@ -1,99 +1,38 @@
-import { APIRole } from "discord-api-types";
-import {
-    CommandInteraction,
-    GuildMember,
-    MessageAttachment,
-    Role,
-    User,
-} from "discord.js";
+import { CommandInteraction, MessageAttachment } from "discord.js";
+import { ApplicationCommandTypes } from "discord.js/typings/enums";
 
-import * as Praise from "./praise";
-import {
-    getNicknameOrName,
-    InputTypes,
-    createEveryoneMention,
-    createRoleMentionWithId,
-    createUserMentionWithId,
-    isGuildMember,
-    isRole,
-} from "../../util";
+import { getNicknameOrName } from "../../util";
+import { genCommandOptions, generateMeme, MemeOptions } from "./MemeGenerator";
 
-const MESSAGE_OPTIONS = { mention: "mention", message: "message" };
-const inputs = [
-    {
-        type: InputTypes.Mentionable,
-        name: MESSAGE_OPTIONS.mention,
-        description: "Who should be praised or shamed",
-        required: true,
-    },
-    {
-        type: InputTypes.String,
-        name: MESSAGE_OPTIONS.message,
-        description: "Optional custom message",
-        required: false,
-    },
-];
-
-const praise = async (interaction: CommandInteraction) => {
+const mg = async (interaction: CommandInteraction) => {
     await interaction.deferReply();
-    const mention = interaction.options.getMentionable(
-        MESSAGE_OPTIONS.mention
-    ) as GuildMember | Role | APIRole | User;
-    const shouldShame = interaction.commandName !== "praise";
-    const praiseText = getPraiseText(interaction, mention, shouldShame);
-    const customMessage = interaction.options.getString(
-        MESSAGE_OPTIONS.message
-    );
+    const data = interaction.options.data[0] as unknown as MemeOptions;
+    const memer = getNicknameOrName(interaction);
 
-    let buffer = null;
     try {
-        buffer = await Praise.generatePraise(shouldShame, customMessage);
+        const buffer = await generateMeme(data);
+        const attachment = new MessageAttachment(buffer, "reaction.jpg");
+        interaction.editReply({
+            content: `${memer} created a ${data.name} meme!`,
+            files: [attachment],
+        });
+        //interaction.editReply({ content: "aaaa" });
     } catch (error) {
-        interaction.editReply({ content: "Praise machine is broken" });
+        interaction.editReply({ content: "Meme generator is broken" });
         console.log(error);
         return;
     }
-
-    const attachment = new MessageAttachment(buffer, "reaction.jpg");
-
-    try {
-        interaction.editReply({ content: praiseText, files: [attachment] });
-    } catch (error) {
-        console.log("Failed to send message from praise");
-    }
-};
-
-const getPraiseText = (
-    interaction: CommandInteraction,
-    mention: GuildMember | Role | APIRole | User,
-    shouldShame: boolean
-) => {
-    const praiser = getNicknameOrName(interaction);
-    const actionType = shouldShame ? "shames" : "praises";
-    let messageText = `${praiser} ${actionType} `;
-    if (isGuildMember(mention)) {
-        messageText += `${createUserMentionWithId(mention.user.id)}!`;
-    } else {
-        if (isRole(mention) && mention.name === "@everyone") {
-            messageText += `${createEveryoneMention()}!`;
-        } else {
-            messageText += `everyone with the role ${createRoleMentionWithId(
-                mention.id
-            )}!`;
-        }
-    }
-    return messageText;
 };
 
 module.exports = {
     data: {
-        type: 1,
-        name: ["praise", "shame"],
+        type: ApplicationCommandTypes.CHAT_INPUT,
+        name: ["mg"],
         description:
             "Everyone deserves some praise (or shame) every once in a while",
-        options: inputs,
+        options: genCommandOptions(),
     },
     async execute(message: CommandInteraction) {
-        await praise(message);
+        await mg(message);
     },
 };
