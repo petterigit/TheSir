@@ -1,3 +1,10 @@
+import * as fs from "fs";
+
+import {
+    APIInteractionGuildMember,
+    APIRole,
+    Routes,
+} from "discord-api-types/v9";
 import {
     Collection,
     ColorResolvable,
@@ -12,12 +19,9 @@ import {
 } from "discord.js";
 import { Command, DiscordClient, SlashCommands } from "./types";
 
-import random from "lodash/random";
-import * as fs from "fs";
-import { APIRole, Routes } from "discord-api-types/v9";
-
 import { MessageButtonStyles } from "discord.js/typings/enums";
 import { REST } from "@discordjs/rest";
+import random from "lodash/random";
 
 export const BUTTON_STYLE_LENGTH = 5;
 
@@ -25,23 +29,24 @@ export const getNicknameOrName = (
     message: Message | CommandInteraction
 ): string => {
     const member = message.member as GuildMember;
-    if (member.nickname == null) {
+    if (member.displayName == null) {
         return member.user.username;
     }
-    return member.nickname;
+    return member.displayName;
 };
+
 export const createUserMentionWithId = (id: string): string => `<@!${id}>`;
 export const createRoleMentionWithId = (id: string): string => `<@&${id}>`;
 export const createEveryoneMention = (): string => "@everyone";
 export const createMention = (interaction: Interaction): string => {
     return `<@${interaction.member.user.id}>`;
 };
-export const isGuildMember = (
+export const isMentionGuildMember = (
     mention: GuildMember | Role | APIRole | User
 ): mention is GuildMember => {
     return (mention as GuildMember).user != null;
 };
-export const isRole = (
+export const isMentionRole = (
     mention: GuildMember | Role | APIRole | User
 ): mention is Role | APIRole => {
     return (mention as Role | APIRole).name != null;

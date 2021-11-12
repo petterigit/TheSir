@@ -1,4 +1,5 @@
-import { APIRole } from "discord-api-types";
+import * as Praise from "./praise";
+
 import {
     CommandInteraction,
     GuildMember,
@@ -6,17 +7,18 @@ import {
     Role,
     User,
 } from "discord.js";
-
-import * as Praise from "./praise";
 import {
-    getNicknameOrName,
     InputTypes,
     createEveryoneMention,
     createRoleMentionWithId,
     createUserMentionWithId,
-    isGuildMember,
-    isRole,
+    getNicknameOrName,
+    isMentionGuildMember,
+    isMentionRole,
 } from "../../util";
+
+import { APIRole } from "discord-api-types";
+import { ApplicationCommandTypes } from "discord.js/typings/enums";
 
 const MESSAGE_OPTIONS = { mention: "mention", message: "message" };
 const inputs = [
@@ -71,10 +73,10 @@ const getPraiseText = (
     const praiser = getNicknameOrName(interaction);
     const actionType = shouldShame ? "shames" : "praises";
     let messageText = `${praiser} ${actionType} `;
-    if (isGuildMember(mention)) {
+    if (isMentionGuildMember(mention)) {
         messageText += `${createUserMentionWithId(mention.user.id)}!`;
     } else {
-        if (isRole(mention) && mention.name === "@everyone") {
+        if (isMentionRole(mention) && mention.name === "@everyone") {
             messageText += `${createEveryoneMention()}!`;
         } else {
             messageText += `everyone with the role ${createRoleMentionWithId(
@@ -87,7 +89,7 @@ const getPraiseText = (
 
 module.exports = {
     data: {
-        type: 1,
+        type: ApplicationCommandTypes.CHAT_INPUT,
         name: ["praise", "shame"],
         description:
             "Everyone deserves some praise (or shame) every once in a while",
