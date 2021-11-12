@@ -26,16 +26,21 @@
     "scripts": {
         "build": "tsc -p .",
         "start": "node dist/main.js",
-        "dev": "nodemon main.ts"
+        "dev": "nodemon main.ts",
+        "test": "jest"
     },
     "author": "petterigit, Nikug, MaijaHeiskanen, JuhoHeiskanen, Appelsiini1, Apezkin, AleksiJarventausta",
     "license": "ISC",
     "devDependencies": {
+        "@babel/preset-typescript": "^7.16.0",
+        "@types/jest": "^27.0.2",
         "@types/lodash": "^4.14.173",
         "@types/twit": "^2.2.30",
         "@typescript-eslint/eslint-plugin": "^4.31.1",
         "@typescript-eslint/parser": "^4.31.1",
         "eslint": "^7.32.0",
+        "jest": "^27.3.1",
+        "ts-jest": "^27.0.7",
         "ts-node": "^10.4.0",
         "typescript": "^4.4.3"
     }
