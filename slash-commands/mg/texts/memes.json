@@ -1,0 +1,72 @@
+{
+ "data":[
+   {
+    "imageFileName": "drake.jpg",
+     "name": "drake",
+     "description": "dank drake meme",
+     "width": 1200,
+     "fontSize": 40,
+     "textAlign": "left",
+     "fontWidthMultiplier": 1,
+     "lineHeight": 64,
+     "height": 1200,
+
+     "strokeWidth": 2,
+     "strokeColor": "black",
+     "textColor": "black",
+    "textBoxes": [
+    {
+      "name": "nah",
+      "description": "drake is like nah",
+      "x":600,
+      "y":0,
+      "width":600,
+      "height":600,
+      "marginLeft": 20
+    },
+    {
+      "name": "yes",
+      "description": "drake is like yeah",
+      "x":600,
+      "y":600,
+      "width":600,
+      "height":600,
+      "marginLeft": 20
+    }
+    ]
+   },
+   {
+     "imageFileName": "tuxedo_puh.png",
+     "name": "puh",
+     "description": "fancy puhi",
+     "width": 800,
+     "fontSize":20,
+     "textAlign": "center",
+     "lineHeight": 48,
+     "strokeWidth": 1,
+     "strokeColor": "black",
+     "fontWidthMultiplier": 1,
+     "textColor": "black",
+     "height": 582,
+     "textBoxes": [
+       {
+         "name": "lame",
+         "description": "Puh be like this is lame",
+         "x":350,
+         "y":0,
+         "width":450,
+         "height":400,
+         "marginLeft": 10
+       },
+       {
+         "name": "fancy",
+         "description": "Puh thinks this is so fancy",
+         "x":350,
+         "y":291,
+         "width":450,
+         "height":400,
+         "marginLeft": 10
+       }
+     ]
+   }
+]}
