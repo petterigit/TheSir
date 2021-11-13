@@ -5,6 +5,7 @@
     "main": "main.js",
     "dependencies": {
         "@discordjs/rest": "0.1.0-canary.0",
+        "@discordjs/voice": "^0.7.5",
         "axios": "^0.21.2",
         "canvas": "^2.8.0",
         "dice-roller-parser": "^0.1.8",
