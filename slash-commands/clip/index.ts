@@ -5,11 +5,15 @@ import {
     createAudioPlayer,
     createAudioResource,
     AudioPlayerStatus,
+    VoiceConnection,
+    AudioPlayer,
 } from "@discordjs/voice";
 import { ApplicationCommandTypes } from "discord.js/typings/enums";
 import { CommandInteraction, GuildMember } from "discord.js";
 import path from "path";
+
 import { VoiceConnectionParams } from "./musicTypes";
+import options from "./clipOptions";
 
 const connectionParams: VoiceConnectionParams = {
     channelId: "",
@@ -17,33 +21,34 @@ const connectionParams: VoiceConnectionParams = {
     adapterCreator: null,
 };
 
-let voiceConnection;
-let audioPlayer;
+let voiceConnection: VoiceConnection;
+let audioPlayer: AudioPlayer;
+let data: { name: string; type: string };
 
 module.exports = {
     data: {
         type: ApplicationCommandTypes.CHAT_INPUT,
         name: ["clip"],
         description: "Plays a sound clip. Then leaves, abruptly.",
+        options: options,
     },
     async execute(interaction: CommandInteraction) {
+        await interaction.deferReply();
+        getInteractionData(interaction);
         getConnectionParams(interaction);
-
         audioPlayer = createAudioPlayer();
-        setAudioResource("kala.mp3");
+        setAudioResource();
         voiceConnection = joinVoiceChannel(connectionParams);
 
         try {
-            // Wait for connection & audio player to be ready
-            await audioIsPlaying();
-            await voiceIsReady();
-
+            await audioIsPlaying(5);
+            await voiceIsReady(5);
             voiceConnection.subscribe(audioPlayer);
-
-            await audioIsIdle();
+            interaction.editReply("Playing " + data.name);
+            await audioIsIdle(120);
         } finally {
-            // Kill connection when ready
             voiceConnection.destroy();
+            interaction.editReply("Done with clip");
         }
     },
 };
@@ -55,21 +60,29 @@ const getConnectionParams = (interaction: CommandInteraction) => {
     connectionParams.adapterCreator = interaction.guild.voiceAdapterCreator;
 };
 
-const voiceIsReady = async () => {
-    return entersState(voiceConnection, VoiceConnectionStatus.Ready, 15_000);
+const voiceIsReady = async (seconds: number) => {
+    return entersState(
+        voiceConnection,
+        VoiceConnectionStatus.Ready,
+        seconds * 1000
+    );
 };
 
-const audioIsPlaying = async () => {
-    return entersState(audioPlayer, AudioPlayerStatus.Playing, 15_0000);
+const audioIsPlaying = async (seconds: number) => {
+    return entersState(audioPlayer, AudioPlayerStatus.Playing, seconds * 1000);
 };
-const audioIsIdle = async () => {
-    return entersState(audioPlayer, AudioPlayerStatus.Idle, 15_000);
+const audioIsIdle = async (seconds: number) => {
+    return entersState(audioPlayer, AudioPlayerStatus.Idle, seconds * 1000);
 };
 
-const setAudioResource = (sound: string) => {
+const setAudioResource = () => {
     const resource = createAudioResource(
-        path.join(process.cwd(), "/public/sounds/", sound)
+        path.join(process.cwd(), "/public/sounds/", data.name, ".mp3")
     );
 
     audioPlayer.play(resource);
+};
+
+const getInteractionData = (interaction: CommandInteraction) => {
+    data = interaction.options.data[0];
 };
