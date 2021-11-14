@@ -2,10 +2,18 @@ import {
     joinVoiceChannel,
     VoiceConnectionStatus,
     entersState,
+    createAudioPlayer,
+    createAudioResource,
+    StreamType,
+    AudioPlayerStatus,
+    AudioPlayer,
+    PlayerSubscription,
 } from "@discordjs/voice";
 import { ApplicationCommandTypes } from "discord.js/typings/enums";
 
+import path from "path";
 import { Message } from "discord.js";
+import { ConnectionVisibility } from "discord-api-types";
 
 module.exports = {
     data: {
@@ -22,24 +30,57 @@ module.exports = {
 };
 
 async function connect(message: Message) {
+    const channelId = message.member.voice.channelId;
+    const guildId = message.guild.id;
+    const adapterCreator = message.guild.voiceAdapterCreator;
+
+    const voiceConnection = joinVoiceChannel({
+        channelId: channelId,
+        guildId: guildId,
+        adapterCreator: adapterCreator,
+    });
+    const audioPlayer = createAudioPlayer();
+    await playKala(audioPlayer);
+
+    console.log("Audio Source Set");
     try {
-        const channelId = message.member.voice.channelId;
-        const guildId = message.guild.id;
-        const adapterCreator = message.guild.voiceAdapterCreator;
+        await entersState(
+            voiceConnection,
+            VoiceConnectionStatus.Ready,
+            15_0000
+        );
+        console.log("Voice Connection Ready");
 
-        const connection = joinVoiceChannel({
-            channelId: channelId,
-            guildId: guildId,
-            adapterCreator: adapterCreator,
-        });
-
-        await entersState(connection, VoiceConnectionStatus.Signalling, 5_000);
-        console.log("Signalling");
-        await entersState(connection, VoiceConnectionStatus.Ready, 5_000);
-        console.log("Ready");
+        voiceConnection.subscribe(audioPlayer);
+        console.log("Subscribeled");
+        await entersState(audioPlayer, AudioPlayerStatus.Playing, 15_0000);
+        console.log("Audio player playing");
+        audioPlayer.unpause();
+        /* Audio player doesn't do a thing, goes straight to idle */
+        await entersState(audioPlayer, AudioPlayerStatus.Idle, 15_0000);
+        //await entersState(audioPlayer, AudioPlayerStatus.Playing, 15_0000);
+        console.log("Audio player idle");
+        return voiceConnection;
     } catch (error) {
         console.error(error);
     } finally {
-        // Close Connection
+        voiceConnection.destroy();
     }
 }
+
+const playKala = async (player: AudioPlayer) => {
+    const resource = createAudioResource(
+        path.join(process.cwd(), "/public/sounds/kala.mp3")
+    );
+    /*const resource = createAudioResource(
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        {
+            inputType: StreamType.Arbitrary,
+        }
+    );
+    */
+    player.play(resource);
+
+    /* Return error if it takes more than 5s to boot */
+    return entersState(player, AudioPlayerStatus.Playing, 5e3);
+};
