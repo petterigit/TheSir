@@ -77,9 +77,8 @@ const audioIsIdle = async (seconds: number) => {
 
 const setAudioResource = () => {
     const resource = createAudioResource(
-        path.join(process.cwd(), "/public/sounds/", data.name, ".mp3")
+        path.join(process.cwd(), "/public/sounds/", data.name + ".mp3")
     );
-
     audioPlayer.play(resource);
 };
 

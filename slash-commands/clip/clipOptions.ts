@@ -7,6 +7,11 @@ const options: ApplicationCommandOptionData[] = [
         description: "kalakala",
         type: ApplicationCommandOptionTypes.SUB_COMMAND,
     },
+    {
+        name: "heinix",
+        description: "Just six - Heinix",
+        type: ApplicationCommandOptionTypes.SUB_COMMAND,
+    },
 ];
 
 export default options;
