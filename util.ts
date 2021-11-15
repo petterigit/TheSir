@@ -6,6 +6,7 @@ import {
     Routes,
 } from "discord-api-types/v9";
 import {
+    ApplicationCommandData,
     Collection,
     ColorResolvable,
     CommandInteraction,
@@ -15,6 +16,7 @@ import {
     Message,
     MessageButton,
     Role,
+    Snowflake,
     User,
 } from "discord.js";
 import { Command, DiscordClient, SlashCommands } from "./types";
@@ -133,11 +135,19 @@ export const registerSlashCommands = async (
     const commandsToRegister = client.slashCommands.map((slash) => slash.data);
     client.guilds.fetch().then((guilds) => {
         guilds.forEach((guild) => {
-            client.application.commands
-                .set(commandsToRegister, guild.id)
-                .catch((e) => console.error(e));
+            registerSlashCommand(client, guild.id, commandsToRegister);
         });
     });
+};
+
+export const registerSlashCommand = async (
+    client: DiscordClient,
+    id: Snowflake,
+    data: ApplicationCommandData[]
+) => {
+    await client.application.commands
+        .set(data, id)
+        .catch((e) => console.error(e));
 };
 
 export const rotateSisterActivities = async (

@@ -12,6 +12,7 @@ import {
     executeCommand,
     rotateSisterActivities,
     registerSlashCommands,
+    registerSlashCommand,
 } from "./util";
 
 /* stuff */
@@ -53,6 +54,12 @@ client.on("interactionCreate", async (interaction) => {
         executeCommand(interaction, interactionHandler, client);
     }
 });
+
+client.on("guildCreate", async (guild) => {
+    const commandsToRegister = client.slashCommands.map((slash) => slash.data);
+    await registerSlashCommand(client, guild.id, commandsToRegister);
+});
+
 const initialize = async () => {
     await client.login(token);
     client.commands = await requireCommands("commands");
