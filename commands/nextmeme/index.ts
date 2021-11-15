@@ -1,10 +1,4 @@
-"use strict";
-
 import { Message } from "discord.js";
-
-/* IMPORT const nextMeme = require('./scripts/nextmeme/main.js');
-/* MAIN getMeme(message)
- */
 
 import { nextMeme } from "./nextmeme";
 

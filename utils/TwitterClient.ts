@@ -1,4 +1,3 @@
-"use strict";
 import Twit = require("twit");
 
 const TWITTERTOKEN_consumer_key = process.env.TWITTERTOKEN_consumer_key;

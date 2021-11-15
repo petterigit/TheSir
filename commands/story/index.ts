@@ -1,5 +1,3 @@
-"use strict";
-
 import { Message, TextBasedChannels } from "discord.js";
 
 const stories: Story[] = [];

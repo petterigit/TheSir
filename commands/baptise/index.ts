@@ -1,14 +1,9 @@
-"use strict";
-
 import { Message } from "discord.js";
 
 /* Shamelessly copied most code from
 https://bitbucket.org/nikugronberg/toripolliisi/src/master/scripts/baptise.js
 */
 
-/* IMPORT const baptise = require('./scripts/baptise/main.js');
-/* MAIN startBaptise(message);
- */
 import fetch from "node-fetch";
 import sample from "lodash/sample";
 

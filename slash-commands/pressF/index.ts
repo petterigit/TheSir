@@ -1,5 +1,3 @@
-"use strict";
-
 import { ApplicationCommandTypes } from "discord.js/typings/enums";
 import { CommandInteraction } from "discord.js";
 import { getNicknameOrName } from "../../util";

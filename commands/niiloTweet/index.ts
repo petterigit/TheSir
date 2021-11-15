@@ -1,5 +1,3 @@
-"use strict";
-
 import { Message } from "discord.js";
 import T from "../../utils/TwitterClient";
 const MAX_TWEETS = 100;

@@ -1,5 +1,3 @@
-"use strict";
-
 import { Message } from "discord.js";
 
 const poke = async (message: Message) => {

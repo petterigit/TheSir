@@ -1,7 +1,3 @@
-/* eslint-disable semi */
-/* eslint-disable quotes */
-"use strict";
-
 import { Message } from "discord.js";
 
 const pop = async (message: Message) => {
