@@ -1,5 +1,3 @@
-"use strict";
-
 import T from "../../utils/TwitterClient";
 import sample from "lodash/sample";
 import { Message } from "discord.js";
