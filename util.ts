@@ -133,10 +133,11 @@ export const registerSlashCommands = async (
     client: DiscordClient
 ): Promise<void> => {
     const commandsToRegister = client.slashCommands.map((slash) => slash.data);
-    client.guilds.fetch().then((guilds) => {
-        guilds.forEach((guild) => {
-            registerSlashCommand(client, guild.id, commandsToRegister);
-        });
+    client.guilds.fetch().then(async (guilds) => {
+        for (let i = 0; i < guilds.size; i++) {
+            const guildId = guilds.at(i).id;
+            await registerSlashCommand(client, guildId, commandsToRegister);
+        }
     });
 };
 
