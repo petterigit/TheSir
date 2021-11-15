@@ -55,13 +55,13 @@ client.on("interactionCreate", async (interaction) => {
     }
 });
 const initialize = async () => {
+    await client.login(token);
     const rest = new REST({ version: "9" }).setToken(token);
     client.commands = await requireCommands("commands");
     client.interactions = await requireCommands("interactions");
     client.slashCommands = await requireCommands("slash-commands");
-    registerSlashCommands(client.slashCommands, rest);
+    registerSlashCommands(client);
     console.log(`Running in ${environment} mode`);
 };
 
 initialize();
-client.login(token);

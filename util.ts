@@ -129,37 +129,16 @@ export const executeCommand = async <T>(
 };
 
 export const registerSlashCommands = async (
-    commands: SlashCommands,
-    rest: REST
+    client: DiscordClient
 ): Promise<void> => {
-    const guildId = process.env.GUILD_ID;
-    const clientId = process.env.CLIENT_ID;
-    const environment = process.env.ENVIRONMENT;
-    const isProduction = environment?.toLowerCase() === "production";
-
-    if (!guildId) {
-        console.log(
-            "Skipping application command registration: GUILD_ID or CLIENT_ID not found in environment variables"
-        );
-        return;
-    }
-    const commandsToRegister = commands.map((slash) => slash.data);
-
-    try {
-        await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
-            body: commandsToRegister,
+    const commandsToRegister = client.slashCommands.map((slash) => slash.data);
+    client.guilds.fetch().then((guilds) => {
+        guilds.forEach((guild) => {
+            client.application.commands
+                .set(commandsToRegister, guild.id)
+                .catch((e) => console.error(e));
         });
-        console.log("Registered guild commands");
-
-        if (isProduction) {
-            await rest.put(Routes.applicationCommands(clientId), {
-                body: commandsToRegister,
-            });
-            console.log("Registered global commands");
-        }
-    } catch (error) {
-        console.error("Failed to register application commands", error);
-    }
+    });
 };
 
 export const rotateSisterActivities = async (
