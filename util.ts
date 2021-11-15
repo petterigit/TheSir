@@ -20,7 +20,6 @@ import {
 import { Command, DiscordClient, SlashCommands } from "./types";
 
 import { MessageButtonStyles } from "discord.js/typings/enums";
-import { REST } from "@discordjs/rest";
 import random from "lodash/random";
 
 export const BUTTON_STYLE_LENGTH = 5;

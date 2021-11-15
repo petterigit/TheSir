@@ -6,7 +6,6 @@ import * as dotenv from "dotenv";
 dotenv.config({ path: __dirname + "/.env" });
 import { intents } from "./intents";
 const client: DiscordClient = new Client({ intents: intents }) as DiscordClient;
-import { REST } from "@discordjs/rest";
 const token = process.env.TOKEN;
 import {
     requireCommands,
@@ -56,7 +55,6 @@ client.on("interactionCreate", async (interaction) => {
 });
 const initialize = async () => {
     await client.login(token);
-    const rest = new REST({ version: "9" }).setToken(token);
     client.commands = await requireCommands("commands");
     client.interactions = await requireCommands("interactions");
     client.slashCommands = await requireCommands("slash-commands");
