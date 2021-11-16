@@ -6,6 +6,7 @@ import {
     Routes,
 } from "discord-api-types/v9";
 import {
+    ApplicationCommandData,
     Collection,
     ColorResolvable,
     CommandInteraction,
@@ -15,12 +16,12 @@ import {
     Message,
     MessageButton,
     Role,
+    Snowflake,
     User,
 } from "discord.js";
 import { Command, DiscordClient, SlashCommands } from "./types";
 
 import { MessageButtonStyles } from "discord.js/typings/enums";
-import { REST } from "@discordjs/rest";
 import random from "lodash/random";
 
 export const BUTTON_STYLE_LENGTH = 5;
@@ -129,37 +130,25 @@ export const executeCommand = async <T>(
 };
 
 export const registerSlashCommands = async (
-    commands: SlashCommands,
-    rest: REST
+    client: DiscordClient
 ): Promise<void> => {
-    const guildId = process.env.GUILD_ID;
-    const clientId = process.env.CLIENT_ID;
-    const environment = process.env.ENVIRONMENT;
-    const isProduction = environment?.toLowerCase() === "production";
-
-    if (!guildId) {
-        console.log(
-            "Skipping application command registration: GUILD_ID or CLIENT_ID not found in environment variables"
-        );
-        return;
-    }
-    const commandsToRegister = commands.map((slash) => slash.data);
-
-    try {
-        await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
-            body: commandsToRegister,
-        });
-        console.log("Registered guild commands");
-
-        if (isProduction) {
-            await rest.put(Routes.applicationCommands(clientId), {
-                body: commandsToRegister,
-            });
-            console.log("Registered global commands");
+    const commandsToRegister = client.slashCommands.map((slash) => slash.data);
+    client.guilds.fetch().then(async (guilds) => {
+        for (let i = 0; i < guilds.size; i++) {
+            const guildId = guilds.at(i).id;
+            await registerSlashCommand(client, guildId, commandsToRegister);
         }
-    } catch (error) {
-        console.error("Failed to register application commands", error);
-    }
+    });
+};
+
+export const registerSlashCommand = async (
+    client: DiscordClient,
+    id: Snowflake,
+    data: ApplicationCommandData[]
+) => {
+    await client.application.commands
+        .set(data, id)
+        .catch((e) => console.error(e));
 };
 
 export const rotateSisterActivities = async (

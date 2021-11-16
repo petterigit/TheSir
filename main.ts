@@ -6,13 +6,13 @@ import * as dotenv from "dotenv";
 dotenv.config({ path: __dirname + "/.env" });
 import { intents } from "./intents";
 const client: DiscordClient = new Client({ intents: intents }) as DiscordClient;
-import { REST } from "@discordjs/rest";
 const token = process.env.TOKEN;
 import {
     requireCommands,
     executeCommand,
     rotateSisterActivities,
     registerSlashCommands,
+    registerSlashCommand,
 } from "./util";
 
 /* stuff */
@@ -54,14 +54,19 @@ client.on("interactionCreate", async (interaction) => {
         executeCommand(interaction, interactionHandler, client);
     }
 });
+
+client.on("guildCreate", async (guild) => {
+    const commandsToRegister = client.slashCommands.map((slash) => slash.data);
+    await registerSlashCommand(client, guild.id, commandsToRegister);
+});
+
 const initialize = async () => {
-    const rest = new REST({ version: "9" }).setToken(token);
+    await client.login(token);
     client.commands = await requireCommands("commands");
     client.interactions = await requireCommands("interactions");
     client.slashCommands = await requireCommands("slash-commands");
-    registerSlashCommands(client.slashCommands, rest);
+    registerSlashCommands(client);
     console.log(`Running in ${environment} mode`);
 };
 
 initialize();
-client.login(token);
