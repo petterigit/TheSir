@@ -50,6 +50,7 @@ module.exports = {
             setAudioResource();
             voiceConnection = joinVoiceChannel(connectionParams);
         } catch (e) {
+            interaction.editReply("Something went wrong in setting up audio..");
             return;
         }
 
@@ -77,7 +78,6 @@ const getConnectionParams = (interaction: CommandInteraction) => {
         if (connectionParams.channelId === null) {
             throw Error;
         }
-        console.log();
         connectionParams.guildId = interaction.guild.id;
         connectionParams.adapterCreator = interaction.guild.voiceAdapterCreator;
     } catch (e) {
@@ -103,21 +103,27 @@ const audioIsIdle = async (seconds: number) => {
 
 const setAudioResource = () => {
     let resource: AudioResource;
-    if (data.name === "clip") {
-        resource = createAudioResource(
-            path.join(
-                process.cwd(),
-                "/public/sounds/",
-                data.options[0].name + ".mp3"
-            )
-        );
-    } else if (data.name === "youtube") {
-        const stream = ytdl("https://www.youtube.com/watch?v=aAkMkVFwAoo", {
-            filter: "audioonly",
-        });
-        resource = createAudioResource(stream, {
-            inputType: StreamType.Arbitrary,
-        });
+    try {
+        if (data.name === "clip") {
+            resource = createAudioResource(
+                path.join(
+                    process.cwd(),
+                    "/public/sounds/",
+                    data.options[0].name + ".mp3"
+                )
+            );
+        } else if (data.name === "youtube") {
+            //const url = "https://www.youtube.com/watch?v=aAkMkVFwAoo";
+            const url = data.options[0].value as string;
+            const stream = ytdl(url, {
+                filter: "audioonly",
+            });
+            resource = createAudioResource(stream, {
+                inputType: StreamType.Arbitrary,
+            });
+        }
+    } catch (e) {
+        return e;
     }
 
     audioPlayer.play(resource);

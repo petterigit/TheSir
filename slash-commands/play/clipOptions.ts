@@ -23,6 +23,14 @@ const options: ApplicationCommandOptionData[] = [
         name: "youtube",
         description: "give url and sir shall play",
         type: ApplicationCommandOptionTypes.SUB_COMMAND,
+        options: [
+            {
+                name: "link",
+                description: "youtube link (https://www.youtube...)",
+                type: ApplicationCommandOptionTypes.STRING,
+                required: true,
+            },
+        ],
     },
 ];
 
