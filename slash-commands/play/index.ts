@@ -7,9 +7,15 @@ import {
     AudioPlayerStatus,
     VoiceConnection,
     AudioPlayer,
+    AudioResource,
 } from "@discordjs/voice";
 import { ApplicationCommandTypes } from "discord.js/typings/enums";
-import { CommandInteraction, GuildMember } from "discord.js";
+import {
+    CacheType,
+    CommandInteraction,
+    CommandInteractionOption,
+    GuildMember,
+} from "discord.js";
 import path from "path";
 
 import { VoiceConnectionParams } from "./musicTypes";
@@ -23,22 +29,27 @@ const connectionParams: VoiceConnectionParams = {
 
 let voiceConnection: VoiceConnection;
 let audioPlayer: AudioPlayer;
-let data: { name: string; type: string };
+let data: CommandInteractionOption<CacheType>;
 
 module.exports = {
     data: {
         type: ApplicationCommandTypes.CHAT_INPUT,
-        name: ["clip"],
-        description: "Plays a sound clip. Then leaves, abruptly.",
+        name: ["play"],
+        description: "Plays music from given source.",
         options: options,
     },
     async execute(interaction: CommandInteraction) {
         await interaction.deferReply();
-        getInteractionData(interaction);
-        getConnectionParams(interaction);
-        audioPlayer = createAudioPlayer();
-        setAudioResource();
-        voiceConnection = joinVoiceChannel(connectionParams);
+
+        try {
+            getInteractionData(interaction);
+            getConnectionParams(interaction);
+            audioPlayer = createAudioPlayer();
+            setAudioResource();
+            voiceConnection = joinVoiceChannel(connectionParams);
+        } catch (e) {
+            return;
+        }
 
         try {
             await audioIsPlaying(5);
@@ -48,16 +59,24 @@ module.exports = {
             await audioIsIdle(120);
         } finally {
             voiceConnection.destroy();
-            interaction.editReply("Done with clip");
         }
     },
 };
 
 const getConnectionParams = (interaction: CommandInteraction) => {
-    const member = interaction.member as GuildMember;
-    connectionParams.channelId = member.voice.channelId;
-    connectionParams.guildId = interaction.guild.id;
-    connectionParams.adapterCreator = interaction.guild.voiceAdapterCreator;
+    try {
+        const member = interaction.member as GuildMember;
+        connectionParams.channelId = member.voice.channelId;
+        if (connectionParams.channelId === null) {
+            throw Error;
+        }
+        console.log();
+        connectionParams.guildId = interaction.guild.id;
+        connectionParams.adapterCreator = interaction.guild.voiceAdapterCreator;
+    } catch (e) {
+        interaction.editReply("Join voice first");
+        return Error;
+    }
 };
 
 const voiceIsReady = async (seconds: number) => {
@@ -76,9 +95,17 @@ const audioIsIdle = async (seconds: number) => {
 };
 
 const setAudioResource = () => {
-    const resource = createAudioResource(
-        path.join(process.cwd(), "/public/sounds/", data.name + ".mp3")
-    );
+    let resource: AudioResource | undefined;
+    if (data.name === "clip") {
+        resource = createAudioResource(
+            path.join(
+                process.cwd(),
+                "/public/sounds/",
+                data.options[0].name + ".mp3"
+            )
+        );
+    }
+
     audioPlayer.play(resource);
 };
 
