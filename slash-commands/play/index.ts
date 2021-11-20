@@ -8,6 +8,7 @@ import {
     VoiceConnection,
     AudioPlayer,
     AudioResource,
+    StreamType,
 } from "@discordjs/voice";
 import { ApplicationCommandTypes } from "discord.js/typings/enums";
 import {
@@ -17,6 +18,8 @@ import {
     GuildMember,
 } from "discord.js";
 import path from "path";
+import ytdl from "ytdl-core";
+import { createReadStream } from "fs";
 
 import { VoiceConnectionParams } from "./musicTypes";
 import options from "./clipOptions";
@@ -52,11 +55,16 @@ module.exports = {
         }
 
         try {
-            await audioIsPlaying(5);
-            await voiceIsReady(5);
+            console.log("Waiting on audio");
+            await audioIsPlaying(15);
+            console.log("Waiting on voice");
+            await voiceIsReady(15);
+            console.log("Subscribeling");
             voiceConnection.subscribe(audioPlayer);
             interaction.editReply("Playing " + data.name);
-            await audioIsIdle(120);
+
+            // 5 minute max clip play-time
+            await audioIsIdle(300);
         } finally {
             voiceConnection.destroy();
         }
@@ -95,7 +103,7 @@ const audioIsIdle = async (seconds: number) => {
 };
 
 const setAudioResource = () => {
-    let resource: AudioResource | undefined;
+    let resource: any;
     if (data.name === "clip") {
         resource = createAudioResource(
             path.join(
@@ -104,6 +112,13 @@ const setAudioResource = () => {
                 data.options[0].name + ".mp3"
             )
         );
+    } else if (data.name === "youtube") {
+        const stream = ytdl("https://www.youtube.com/watch?v=aAkMkVFwAoo", {
+            filter: "audioonly",
+        });
+        resource = createAudioResource(stream, {
+            inputType: StreamType.Arbitrary,
+        });
     }
 
     audioPlayer.play(resource);

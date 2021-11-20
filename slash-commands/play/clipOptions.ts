@@ -22,7 +22,7 @@ const options: ApplicationCommandOptionData[] = [
     {
         name: "youtube",
         description: "give url and sir shall play",
-        type: ApplicationCommandOptionTypes.STRING,
+        type: ApplicationCommandOptionTypes.SUB_COMMAND,
     },
 ];
 
