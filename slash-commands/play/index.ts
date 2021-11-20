@@ -7,8 +7,8 @@ import {
     AudioPlayerStatus,
     VoiceConnection,
     AudioPlayer,
-    AudioResource,
     StreamType,
+    AudioResource,
 } from "@discordjs/voice";
 import { ApplicationCommandTypes } from "discord.js/typings/enums";
 import {
@@ -19,7 +19,6 @@ import {
 } from "discord.js";
 import path from "path";
 import ytdl from "ytdl-core";
-import { createReadStream } from "fs";
 
 import { VoiceConnectionParams } from "./musicTypes";
 import options from "./clipOptions";
@@ -103,7 +102,7 @@ const audioIsIdle = async (seconds: number) => {
 };
 
 const setAudioResource = () => {
-    let resource: any;
+    let resource: AudioResource;
     if (data.name === "clip") {
         resource = createAudioResource(
             path.join(
