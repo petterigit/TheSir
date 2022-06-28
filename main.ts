@@ -17,7 +17,7 @@ import {
 
 /* stuff */
 const prefix = "sir ";
-const environment = process.env.ENVIRONMENT;
+const environment = process.env.ENVIRONMENT ?? "development";
 
 /* Bot setup */
 client.once("ready", () => {
