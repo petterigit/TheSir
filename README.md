@@ -2,7 +2,7 @@
  It's a Discord Bot :]
  
 # Setup
-Required Node 14 if I remember correctly. Run `npm i` to install the packages, then run `npm run dev` to start the bot locally. Must set the `TOKEN` environment variable, other environment variables are optional.
+Required Node 16 if I remember correctly. Run `npm i` to install the packages, then run `npm run dev` to start the bot locally. Must set the `TOKEN` environment variable, other environment variables are optional.
 
 ## Environment variables
 - `TOKEN` Your Discord bot token, required to start the bot
