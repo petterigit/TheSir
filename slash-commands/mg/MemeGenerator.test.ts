@@ -25,7 +25,7 @@ test("generates drake meme", async () => {
 
 test("generates puh meme", async () => {
     const memeOptions: MemeOptions = {
-        name: "puhi",
+        name: "puh",
         type: "SUB_COMMAND",
         options: [
             {
