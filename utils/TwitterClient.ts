@@ -16,10 +16,10 @@ if (!TWITTERTOKEN_access_token_secret)
     console.warn("Missing twitter access token secret");
 
 const T = new Twit({
-    consumer_key: TWITTERTOKEN_consumer_key ?? placeholderKey,
-    consumer_secret: TWITTERTOKEN_consumer_secret ?? placeholderKey,
-    access_token: TWITTERTOKEN_access_token ?? placeholderKey,
-    access_token_secret: TWITTERTOKEN_access_token_secret ?? placeholderKey,
+    consumer_key: TWITTERTOKEN_consumer_key || placeholderKey,
+    consumer_secret: TWITTERTOKEN_consumer_secret || placeholderKey,
+    access_token: TWITTERTOKEN_access_token || placeholderKey,
+    access_token_secret: TWITTERTOKEN_access_token_secret || placeholderKey,
 });
 
 export default T;
