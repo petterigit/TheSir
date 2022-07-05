@@ -27,6 +27,9 @@ jobs:
         needs: test
         runs-on: ubuntu-latest
         environment: production
+        concurrency:
+            group: deploy
+            cancel-in-progress: true
         steps:
             - uses: actions/checkout@v2
 
