@@ -49,7 +49,7 @@ jobs:
                       echo "TWITTERTOKEN_consumer_secret=${{ secrets.TWITTERTOKEN_consumer_secret }}" >> .env &&
                       echo "TWITTERTOKEN_access_token=${{ secrets.TWITTERTOKEN_access_token }}" >> .env &&
                       echo "TWITTERTOKEN_access_token_secret=${{ secrets.TWITTERTOKEN_access_token_secret }}" >> .env &&
-                      docker compose up -d --build
+                      docker compose-up -d --build
                   host: ${{ secrets.REMOTE_HOST }}
                   username: ${{ secrets.REMOTE_USER }}
                   privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
