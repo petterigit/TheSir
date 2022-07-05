@@ -40,7 +40,7 @@ jobs:
                   TARGET: ${{ secrets.REMOTE_TARGET }}
 
             - name: Create .env and run Docker
-              uses: garygrossgarte/github-action-ssh@release
+              uses: garygrossgarten/github-action-ssh@release
               with:
                   command: cd ${{ secrets.REMOTE_TARGET }} &&
                       echo "TOKEN=${{ secrets.DISCORD_TOKEN }}" >> .env &&
