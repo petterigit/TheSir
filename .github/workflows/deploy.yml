@@ -2,8 +2,8 @@ name: Deploy
 
 # Deploy on every push to master bc why not
 on:
-    # push:
-    #     branches: [master]
+    push:
+        branches: [master]
     # Allow manual runs
     workflow_dispatch:
 
