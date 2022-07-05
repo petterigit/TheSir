@@ -1,4 +1,5 @@
 version: "3.9"
 services:
     discord-bot:
+        restart: unless-stopped
         build: .
