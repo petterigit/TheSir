@@ -3,7 +3,7 @@ import { DiscordClient } from "./types";
 
 /* require */
 import * as dotenv from "dotenv";
-dotenv.config({ path: __dirname + "/.env" });
+dotenv.config();
 import { intents } from "./intents";
 const client: DiscordClient = new Client({ intents: intents }) as DiscordClient;
 const token = process.env.TOKEN;
@@ -17,7 +17,7 @@ import {
 
 /* stuff */
 const prefix = "sir ";
-const environment = process.env.ENVIRONMENT;
+const environment = process.env.ENVIRONMENT ?? "development";
 
 /* Bot setup */
 client.once("ready", () => {

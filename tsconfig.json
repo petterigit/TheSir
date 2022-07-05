@@ -5,7 +5,7 @@
     "target": "es2017",
     "lib": ["es2017"],
     "sourceMap": true,
-    "outDir": "dist",
+    "outDir": "./dist",
     "esModuleInterop": true,
     "resolveJsonModule": true,
   }

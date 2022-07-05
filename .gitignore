@@ -1,3 +1,15 @@
+# Environment
 .env
+
+# VSCode
 .vs
+
+# Node
 /node_modules
+
+# Test folder
+/test/*
+!/test/README.md
+
+# Build folder
+/dist

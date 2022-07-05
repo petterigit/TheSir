@@ -1,0 +1,55 @@
+name: Deploy
+
+# Deploy on every push to master bc why not
+on:
+    # push:
+    #     branches: [master]
+    # Allow manual runs
+    workflow_dispatch:
+
+jobs:
+    # Run tests before deployment
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: npm test w/ node 16
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 16
+            - name: Install dependencies
+              run: npm ci
+            - run: npm run build --if-present
+            - run: npm test
+
+    # Deploy if tests pass
+    deploy:
+        needs: test
+        runs-on: ubuntu-latest
+        environment: production
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Deploy files
+              uses: easingthemes/ssh-deploy@v2
+              with:
+                  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+                  ARGS: "-rltgoDzvO --delete"
+                  REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+                  REMOTE_USER: ${{ secrets.REMOTE_USER }}
+                  TARGET: ${{ secrets.REMOTE_TARGET }}
+
+            - name: Create .env and run Docker
+              uses: garygrossgarte/github-action-ssh@release
+              with:
+                  command: cd ${{ secrets.REMOTE_TARGET }} &&
+                      echo "TOKEN=${{ secrets.DISCORD_TOKEN }}" >> .env &&
+                      echo "ENVIRONMENT=production" >> .env &&
+                      echo "TWITTERTOKEN_consumer_key=${{ secrets.TWITTERTOKEN_consumer_key }}" >> .env &&
+                      echo "TWITTERTOKEN_consumer_secret=${{ secrets.TWITTERTOKEN_consumer_secret }}" >> .env &&
+                      echo "TWITTERTOKEN_access_token=${{ secrets.TWITTERTOKEN_access_token }}" >> .env &&
+                      echo "TWITTERTOKEN_access_token_secret=${{ secrets.TWITTERTOKEN_access_token_secret }}" >> .env &&
+                      docker compose up -d --build
+                  host: ${{ secrets.REMOTE_HOST }}
+                  username: ${{ secrets.REMOTE_USER }}
+                  privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
