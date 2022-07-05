@@ -31,7 +31,7 @@ jobs:
             - uses: actions/checkout@v2
 
             - name: Print secrets
-              run: '[ -z "${{ secrets.DISCORD_TOKEN }}"] && echo "empty"'
+              run: '[ -z "${{ secrets.DISCORD_TOKEN }}" ] && echo "empty"'
 
             - name: Deploy files
               uses: easingthemes/ssh-deploy@v2
