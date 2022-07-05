@@ -28,6 +28,8 @@ jobs:
         runs-on: ubuntu-latest
         environment: production
         steps:
+            - name: Print secrets
+              run: echo '${{ secrets.DISCORD_TOKEN }}'
             - uses: actions/checkout@v2
 
             - name: Deploy files
