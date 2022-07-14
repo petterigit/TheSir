@@ -2,7 +2,7 @@ import path from "path";
 import {
     createCanvas,
     loadImage,
-    NodeCanvasRenderingContext2D,
+    CanvasRenderingContext2D,
     registerFont,
 } from "canvas";
 
@@ -110,7 +110,7 @@ export const generateMeme = async (
 };
 
 const matchSentenceIntoTextbox = (
-    ctx: NodeCanvasRenderingContext2D,
+    ctx: CanvasRenderingContext2D,
     text: string,
     textBox: TextBox,
     meme: MemeImage

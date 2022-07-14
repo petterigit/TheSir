@@ -8,5 +8,7 @@
     "outDir": "./dist",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-  }
+    "skipLibCheck": true
+  },
+  "include": [ "src/**/*" ],
 }

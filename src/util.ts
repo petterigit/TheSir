@@ -94,7 +94,7 @@ export const requireCommands = async <T>(
     folderName: string
 ): Promise<Collection<string, Command<T>>> => {
     const commands = new Collection<string, Command<T>>();
-    const folders = fs.readdirSync(`./${folderName}/`);
+    const folders = fs.readdirSync(`./src/${folderName}/`);
 
     for (const folder of folders) {
         const command = await import(`./${folderName}/${folder}`);

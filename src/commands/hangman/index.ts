@@ -202,6 +202,10 @@ const replyToChannel = async (message: string) => {
 };
 
 const getMessageParams = (message: Message) => {
+    if (message.channel.type === "GUILD_VOICE") {
+        return;
+    }
+
     messageParams.currentChannelID = message.channel.id;
     messageParams.messageChannel = message.channel;
     messageParams.messageContent = message.content;

@@ -1,12 +1,7 @@
-import {
-    ColorResolvable,
-    Message,
-    MessageActionRow,
-    MessageEmbed,
-} from "discord.js";
+import axios from "axios";
+import { Message, MessageActionRow, MessageEmbed } from "discord.js";
 import { MessageButtonStyles } from "discord.js/typings/enums";
 
-import fetch from "node-fetch";
 import { createButton, randomColor } from "../../util";
 
 type Food = {
@@ -19,7 +14,7 @@ type Category = {
     foods: Food[];
 };
 
-type JSONResponse = {
+type JsonResponse = {
     laseri?: Category[];
     yolo?: Category[];
 };
@@ -28,10 +23,10 @@ const ruokaa = async (message: Message) => {
     message.channel.sendTyping();
 
     try {
-        const response = await fetch(
+        const response = await axios(
             "https://skinfo.juho.space/categories.json"
         );
-        const data: JSONResponse = await response.json();
+        const data: JsonResponse = await response.data;
 
         const embed = new MessageEmbed();
         embed.setTitle("Syödään tänään");

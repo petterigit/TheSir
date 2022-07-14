@@ -1,6 +1,6 @@
-import fetch from "node-fetch";
 import sample from "lodash/sample";
 import random from "lodash/random";
+import axios from "axios";
 
 const startingDate = new Date(2012, 1, 1);
 
@@ -22,17 +22,17 @@ type Meme = {
     titleToSlug?: string;
 };
 
-type JSONResponse = {
+type JsonResponse = {
     stat: number;
     items: Meme[];
 };
 
 export const nextMeme = async (): Promise<Meme> => {
     const timestamp = randomTimestamp(startingDate, new Date());
-    const res = await fetch(
+    const res = await axios(
         "https://www.memedroid.com/memes/getGallerySurroundings/" + timestamp
     );
-    const json: JSONResponse = await res.json();
+    const json: JsonResponse = await res.data;
 
     if (json.stat != 0) {
         throw new Error("Status was not 0. Status: " + json.stat);

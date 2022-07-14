@@ -21,7 +21,7 @@ import path from "path";
 import {
     createCanvas,
     loadImage,
-    NodeCanvasRenderingContext2D,
+    CanvasRenderingContext2D,
     registerFont,
 } from "canvas";
 
@@ -94,7 +94,7 @@ export const generatePraise = async (
 };
 
 const getLines = (
-    ctx: NodeCanvasRenderingContext2D,
+    ctx: CanvasRenderingContext2D,
     text: string,
     maxWidth: number
 ) => {

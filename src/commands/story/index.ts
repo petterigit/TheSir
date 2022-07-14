@@ -1,4 +1,4 @@
-import { Message, TextBasedChannels } from "discord.js";
+import { Message, TextBasedChannel } from "discord.js";
 
 const stories: Story[] = [];
 let starting = false;
@@ -6,7 +6,7 @@ let starting = false;
 //A class for the future, maybe for adding hp or something, I dunno
 
 type Story = {
-    channel: TextBasedChannels;
+    channel: TextBasedChannel;
     state: number;
 };
 
@@ -21,7 +21,7 @@ const states = [
 ];
 
 //Finds a story from the story array
-const findStory = (channel: TextBasedChannels) => {
+const findStory = (channel: TextBasedChannel) => {
     for (let i = 0; i < stories.length; i++) {
         if (channel == stories[i].channel) {
             return i;

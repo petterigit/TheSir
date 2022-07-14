@@ -1,4 +1,7 @@
-import { generateMeme, MemeOptions } from "./MemeGenerator";
+import {
+    generateMeme,
+    MemeOptions,
+} from "../src/slash-commands/mg/MemeGenerator";
 import * as fs from "fs";
 import path from "path";
 
@@ -20,7 +23,7 @@ test("generates drake meme", async () => {
         ],
     };
     const meme = await generateMeme(memeOptions);
-    fs.writeFileSync(path.join(process.cwd(), "/test/drakeTest.jpg"), meme);
+    fs.writeFileSync(path.join(process.cwd(), "dist/drakeTest.jpg"), meme);
 });
 
 test("generates puh meme", async () => {
@@ -41,5 +44,5 @@ test("generates puh meme", async () => {
         ],
     };
     const meme = await generateMeme(memeOptions);
-    fs.writeFileSync(path.join(process.cwd(), "/test/puhiTest.jpg"), meme);
+    fs.writeFileSync(path.join(process.cwd(), "dist/puhiTest.jpg"), meme);
 });
