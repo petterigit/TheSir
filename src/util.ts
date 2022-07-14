@@ -1,12 +1,10 @@
 import * as fs from "fs";
 
-import {
-    APIInteractionGuildMember,
-    APIRole,
-    Routes,
-} from "discord-api-types/v9";
+import { APIRole } from "discord-api-types/v9";
 import {
     ApplicationCommandData,
+    ButtonInteraction,
+    CacheType,
     Collection,
     ColorResolvable,
     CommandInteraction,
@@ -19,7 +17,7 @@ import {
     Snowflake,
     User,
 } from "discord.js";
-import { Command, DiscordClient, SlashCommands } from "./types";
+import { Command, DiscordClient, SlashCommandModule } from "./types";
 
 import { MessageButtonStyles } from "discord.js/typings/enums";
 import random from "lodash/random";
@@ -90,15 +88,18 @@ export const randomColor = (): ColorResolvable => {
     return color as ColorResolvable;
 };
 
-export const requireCommands = async <T>(
+export const requireCommands = async <
+    T extends CommandInteraction<CacheType> | ButtonInteraction<CacheType>
+>(
     folderName: string
 ): Promise<Collection<string, Command<T>>> => {
     const commands = new Collection<string, Command<T>>();
     const folders = fs.readdirSync(`./src/${folderName}/`);
 
     for (const folder of folders) {
-        const command = await import(`./${folderName}/${folder}`);
-        if (command?.data?.name) {
+        const { default: command }: { default: SlashCommandModule } =
+            await import(`./${folderName}/${folder}`);
+        if (command.data?.name) {
             if (Array.isArray(command.data.name)) {
                 command.data.name.map((name) =>
                     commands.set(name, {
@@ -107,7 +108,10 @@ export const requireCommands = async <T>(
                     })
                 );
             } else {
-                commands.set(command.data.name, command);
+                commands.set(command.data.name, {
+                    ...command,
+                    data: { ...command.data, name: command.data.name },
+                });
             }
         }
     }

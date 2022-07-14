@@ -62,7 +62,7 @@ client.on("guildCreate", async (guild) => {
 
 const initialize = async () => {
     await client.login(token);
-    client.commands = await requireCommands("commands");
+    // client.commands = await requireCommands("commands");
     client.interactions = await requireCommands("interactions");
     client.slashCommands = await requireCommands("slash-commands");
     registerSlashCommands(client);

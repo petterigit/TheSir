@@ -1,6 +1,7 @@
 import * as Praise from "./praise";
 
 import {
+    ApplicationCommandOptionData,
     CommandInteraction,
     GuildMember,
     MessageAttachment,
@@ -8,7 +9,6 @@ import {
     User,
 } from "discord.js";
 import {
-    InputTypes,
     createEveryoneMention,
     createRoleMentionWithId,
     createUserMentionWithId,
@@ -18,18 +18,18 @@ import {
 } from "../../util";
 
 import { APIRole } from "discord-api-types/v9";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
+import { SlashCommandModule } from "../../types";
 
 const MESSAGE_OPTIONS = { mention: "mention", message: "message" };
-const inputs = [
+const inputs: ApplicationCommandOptionData[] = [
     {
-        type: InputTypes.Mentionable,
+        type: "MENTIONABLE",
         name: MESSAGE_OPTIONS.mention,
         description: "Who should be praised or shamed",
         required: true,
     },
     {
-        type: InputTypes.String,
+        type: "STRING",
         name: MESSAGE_OPTIONS.message,
         description: "Optional custom message",
         required: false,
@@ -87,9 +87,9 @@ const getPraiseText = (
     return messageText;
 };
 
-module.exports = {
+const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: "CHAT_INPUT",
         name: ["praise", "shame"],
         description:
             "Everyone deserves some praise (or shame) every once in a while",
@@ -99,3 +99,5 @@ module.exports = {
         await praise(message);
     },
 };
+
+export default command;
