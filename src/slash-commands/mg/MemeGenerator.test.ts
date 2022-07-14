@@ -20,7 +20,7 @@ test("generates drake meme", async () => {
         ],
     };
     const meme = await generateMeme(memeOptions);
-    fs.writeFileSync(path.join(process.cwd(), "/test/drakeTest.jpg"), meme);
+    fs.writeFileSync(path.join(process.cwd(), "src/test/drakeTest.jpg"), meme);
 });
 
 test("generates puh meme", async () => {
@@ -41,5 +41,5 @@ test("generates puh meme", async () => {
         ],
     };
     const meme = await generateMeme(memeOptions);
-    fs.writeFileSync(path.join(process.cwd(), "/test/puhiTest.jpg"), meme);
+    fs.writeFileSync(path.join(process.cwd(), "src/test/puhiTest.jpg"), meme);
 });

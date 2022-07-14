@@ -24,7 +24,7 @@
     "scripts": {
         "build": "tsc -p .",
         "start": "node dist/main.js",
-        "dev": "nodemon main.ts",
+        "dev": "nodemon src/main.ts",
         "test": "jest"
     },
     "author": "petterigit, Nikug, MaijaHeiskanen, JuhoHeiskanen, Appelsiini1, Apezkin, AleksiJarventausta",
