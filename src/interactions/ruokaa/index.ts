@@ -19,6 +19,7 @@ const participantSeparator = "\n";
 const ruokaa = async (interaction: ButtonInteraction) => {
     if (!interaction.isButton()) return;
     const restaurantParameter = interaction.customId.split(" ")[1];
+    if (!isValidRestaurant(restaurantParameter)) return;
 
     const originalEmbed = interaction.message.embeds[0];
     let participantEmbed = interaction.message.embeds[1] as MessageEmbed;
@@ -68,11 +69,11 @@ const setVote = (
     restaurant: string,
     participant: string
 ) => {
-    const userIndex = votes[restaurant]?.findIndex(
-        (vote: string) => vote === participant
-    );
+    const userIndex = votes
+        .get(restaurant)
+        ?.findIndex((vote: string) => vote === participant);
     if (userIndex >= 0) {
-        votes[restaurant].splice(userIndex, 1);
+        votes.get(restaurant).splice(userIndex, 1);
         return votes;
     }
 
@@ -128,6 +129,10 @@ const removeParticipantCount = (name: string) => {
     const restaurant = name.split(" ")[0];
     return restaurant;
 };
+
+const isValidRestaurant = (
+    restaurant: string
+): restaurant is keyof typeof idToRestaurant => restaurant in idToRestaurant;
 
 module.exports = {
     data: {

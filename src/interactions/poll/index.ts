@@ -92,7 +92,7 @@ const getSelectedField = (
 const updateField = (
     fields: EmbedField[] | APIEmbedField[],
     buttonText: string,
-    users
+    users: string[]
 ): EmbedField[] | APIEmbedField[] => {
     const value = formatUsersToField(users);
     const updatedField = createNewField(buttonText, value);
