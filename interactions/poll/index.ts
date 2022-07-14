@@ -1,4 +1,4 @@
-import { APIEmbedField } from "discord-api-types";
+import { APIEmbedField } from "discord-api-types/v9";
 import {
     ButtonInteraction,
     EmbedField,

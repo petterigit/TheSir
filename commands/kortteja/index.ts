@@ -4,7 +4,7 @@
 
 import { Message } from "discord.js";
 
-import fetch from "node-fetch";
+import axios from "axios";
 
 const cardGameUrl = "http://pelit.space";
 const newGamePath = "/g";
@@ -12,8 +12,8 @@ const newGamePath = "/g";
 const kortteja = async (message: Message) => {
     const url = `${cardGameUrl}${newGamePath}`;
     try {
-        const response = await fetch(url, { method: "POST" });
-        const json = await response.json();
+        const response = await axios(url, { method: "POST" });
+        const json = await response.data;
 
         const embed = {
             title: "Kortit ihmiskuntaa vastaan",

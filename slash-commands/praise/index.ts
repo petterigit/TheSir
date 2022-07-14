@@ -17,7 +17,7 @@ import {
     isMentionRole,
 } from "../../util";
 
-import { APIRole } from "discord-api-types";
+import { APIRole } from "discord-api-types/v9";
 import { ApplicationCommandTypes } from "discord.js/typings/enums";
 
 const MESSAGE_OPTIONS = { mention: "mention", message: "message" };

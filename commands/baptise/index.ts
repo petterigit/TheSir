@@ -4,7 +4,7 @@ import { Message } from "discord.js";
 https://bitbucket.org/nikugronberg/toripolliisi/src/master/scripts/baptise.js
 */
 
-import fetch from "node-fetch";
+import axios from "axios";
 import sample from "lodash/sample";
 
 const TITLEURL = "https://proksi.juho.space/pet-name";
@@ -12,8 +12,8 @@ const MAX_NAME_LENGTH = 32;
 
 const createPetName = async (memberName: string) => {
     try {
-        const response = await fetch(TITLEURL);
-        const data = await response.json();
+        const response = await axios(TITLEURL);
+        const data = await response.data;
         let petName = memberName;
         if (petName.length >= MAX_NAME_LENGTH - 10) {
             return petName;
