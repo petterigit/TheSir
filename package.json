@@ -4,24 +4,21 @@
     "description": "It's a discord bot. Now with features!",
     "main": "main.js",
     "dependencies": {
-        "@discordjs/voice": "^0.7.5",
-        "axios": "^0.21.2",
-        "canvas": "^2.8.0",
+        "@discordjs/voice": "^0.10.0",
+        "axios": "^0.27.2",
+        "canvas": "^2.9.3",
         "dice-roller-parser": "^0.1.8",
-        "discord-api-types": "^0.23.1",
-        "discord.js": "^13.3.1",
-        "dotenv": "^8.2.0",
+        "discord-api-types": "^0.36.1",
+        "discord.js": "^13.8.1",
+        "dotenv": "^16.0.1",
         "ffmpeg": "^0.0.4",
-        "ffmpeg-static": "^4.4.0",
-        "fs": "^0.0.2",
-        "http": "^0.0.0",
-        "libsodium-wrappers": "^0.7.9",
+        "ffmpeg-static": "^5.0.2",
+        "libsodium-wrappers": "^0.7.10",
         "lodash": "^4.17.21",
-        "node-fetch": "^2.6.7",
-        "nodemon": "^2.0.12",
-        "path": "^0.12.7",
+        "node-fetch": "^3.2.8",
+        "nodemon": "^2.0.19",
         "twit": "^2.2.11",
-        "ytdl-core": "^4.9.1"
+        "ytdl-core": "^4.11.0"
     },
     "engines": {
         "node": "16.x"
@@ -35,16 +32,14 @@
     "author": "petterigit, Nikug, MaijaHeiskanen, JuhoHeiskanen, Appelsiini1, Apezkin, AleksiJarventausta",
     "license": "ISC",
     "devDependencies": {
-        "@babel/preset-typescript": "^7.16.0",
-        "@types/jest": "^27.0.2",
-        "@types/lodash": "^4.14.173",
+        "@babel/preset-typescript": "^7.18.6",
+        "@types/lodash": "^4.14.182",
         "@types/twit": "^2.2.30",
-        "@typescript-eslint/eslint-plugin": "^4.31.1",
-        "@typescript-eslint/parser": "^4.31.1",
-        "eslint": "^7.32.0",
-        "jest": "^27.3.1",
-        "ts-jest": "^27.0.7",
-        "ts-node": "^10.4.0",
-        "typescript": "^4.4.3"
+        "@typescript-eslint/eslint-plugin": "^5.30.6",
+        "@typescript-eslint/parser": "^5.30.6",
+        "eslint": "^8.19.0",
+        "jest": "^28.1.3",
+        "ts-node": "^10.9.1",
+        "typescript": "^4.7.4"
     }
 }
