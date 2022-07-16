@@ -7,6 +7,7 @@ import {
     CommandInteraction,
     Message,
 } from "discord.js";
+import { ApplicationCommandTypes } from "discord.js/typings/enums";
 
 export interface DiscordClient extends Client {
     interactions: Interactions;
@@ -25,11 +26,12 @@ export type Command<T> = {
 
 export interface SlashCommandModule {
     data: {
-        type: "CHAT_INPUT";
+        type: ApplicationCommandTypes;
         name: string | string[];
         description: string;
         options: ApplicationCommandOptionData[];
     };
+    constants?: Record<string, string>;
     execute: (
         message: CommandInteraction | ButtonInteraction,
         client?: DiscordClient

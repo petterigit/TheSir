@@ -79,6 +79,10 @@ export const InputTypes = {
     Number: 10,
 };
 
+export const CommandTypes = {
+    SlashCommand: "CHAT_INPUT",
+};
+
 export const randomColor = (): ColorResolvable => {
     let color = "#";
     for (let i = 0; i < 3; i++) {

@@ -19,6 +19,7 @@ import {
 
 import { APIRole } from "discord-api-types/v9";
 import { SlashCommandModule } from "../../types";
+import { ApplicationCommandTypes } from "discord.js/typings/enums";
 
 const MESSAGE_OPTIONS = { mention: "mention", message: "message" };
 const inputs: ApplicationCommandOptionData[] = [
@@ -89,7 +90,7 @@ const getPraiseText = (
 
 const command: SlashCommandModule = {
     data: {
-        type: "CHAT_INPUT",
+        type: ApplicationCommandTypes.CHAT_INPUT,
         name: ["praise", "shame"],
         description:
             "Everyone deserves some praise (or shame) every once in a while",

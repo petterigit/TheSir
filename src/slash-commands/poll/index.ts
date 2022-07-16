@@ -2,12 +2,13 @@ import {
     CommandInteraction,
     MessageButton,
     MessageActionRow,
-    ColorResolvable,
 } from "discord.js";
 import { createButton } from "../../util";
 import random from "lodash/random";
 
 import { getNicknameOrName, randomColor, InputTypes } from "../../util";
+import { SlashCommandModule } from "../../types";
+import { ApplicationCommandTypes } from "discord.js/typings/enums";
 
 // Max 5 buttons per row, max 5 rows -> 25
 // -1 for question
@@ -113,9 +114,9 @@ const createInputs = (numberOfInputs: number) => {
     return inputs;
 };
 
-module.exports = {
+const command: SlashCommandModule = {
     data: {
-        type: 1,
+        type: ApplicationCommandTypes.CHAT_INPUT,
         name: COMMAND_NAME,
         description: "Create polls with your friends!",
         options: createInputs(MAX_BUTTONS),
@@ -125,3 +126,5 @@ module.exports = {
         await poll(interaction);
     },
 };
+
+export default command;
