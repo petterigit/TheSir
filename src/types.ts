@@ -29,7 +29,7 @@ export interface SlashCommandModule {
         type: ApplicationCommandTypes;
         name: string | string[];
         description: string;
-        options: ApplicationCommandOptionData[];
+        options?: ApplicationCommandOptionData[];
     };
     constants?: Record<string, string>;
     execute: (

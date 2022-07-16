@@ -1,6 +1,10 @@
 import axios from "axios";
-import { Message, MessageActionRow, MessageEmbed } from "discord.js";
-import { MessageButtonStyles } from "discord.js/typings/enums";
+import { CommandInteraction, MessageActionRow, MessageEmbed } from "discord.js";
+import {
+    ApplicationCommandTypes,
+    MessageButtonStyles,
+} from "discord.js/typings/enums";
+import { SlashCommandModule } from "../../types";
 
 import { createButton, randomColor } from "../../util";
 
@@ -19,8 +23,8 @@ type JsonResponse = {
     yolo?: Category[];
 };
 
-const ruokaa = async (message: Message) => {
-    message.channel.sendTyping();
+const ruokaa = async (interaction: CommandInteraction) => {
+    await interaction.deferReply();
 
     try {
         const response = await axios(
@@ -54,7 +58,7 @@ const ruokaa = async (message: Message) => {
         const buttonRow = new MessageActionRow();
 
         if (!yolo && !laseri) {
-            await message.channel.send({
+            await interaction.editReply({
                 content: "Ei ruokalistoja.",
             });
 
@@ -81,7 +85,7 @@ const ruokaa = async (message: Message) => {
             );
         }
 
-        await message.channel.send({
+        await interaction.editReply({
             embeds: [embed],
             components: [buttonRow],
         });
@@ -90,12 +94,15 @@ const ruokaa = async (message: Message) => {
     }
 };
 
-module.exports = {
+const command: SlashCommandModule = {
     data: {
+        type: ApplicationCommandTypes.CHAT_INPUT,
         name: ["ruokaa"],
         description: "Daily lunch planner",
     },
-    async execute(message: Message) {
+    async execute(message: CommandInteraction) {
         await ruokaa(message);
     },
 };
+
+export default command;
