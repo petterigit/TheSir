@@ -37,3 +37,13 @@ export interface SlashCommandModule {
         client?: DiscordClient
     ) => Promise<void>;
 }
+
+export interface InteractionModule {
+    data: {
+        name: string;
+    };
+    execute: (
+        message: ButtonInteraction,
+        client?: DiscordClient
+    ) => Promise<void>;
+}

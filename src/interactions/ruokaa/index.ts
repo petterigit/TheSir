@@ -4,6 +4,7 @@ import {
     EmbedField,
     MessageEmbed,
 } from "discord.js";
+import { InteractionModule } from "../../types";
 
 import { createMention } from "../../util";
 
@@ -134,7 +135,7 @@ const isValidRestaurant = (
     restaurant: string
 ): restaurant is keyof typeof idToRestaurant => restaurant in idToRestaurant;
 
-module.exports = {
+const interaction: InteractionModule = {
     data: {
         name: "ruokaa",
     },
@@ -142,3 +143,5 @@ module.exports = {
         await ruokaa(interaction);
     },
 };
+
+export default interaction;
