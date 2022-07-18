@@ -58,7 +58,7 @@ export const createButton = (
         typeof MessageButtonStyles,
         "LINK"
     > = MessageButtonStyles.PRIMARY
-) => {
+): MessageButton => {
     return new MessageButton({
         customId: id,
         label: text,
@@ -79,9 +79,7 @@ export const InputTypes = {
     Number: 10,
 };
 
-export const CommandTypes = {
-    SlashCommand: "CHAT_INPUT",
-};
+export const DiscordNumberOfChoices = 25;
 
 export const randomColor = (): ColorResolvable => {
     let color = "#";
@@ -127,7 +125,7 @@ export const executeCommand = async <T>(
     interaction: T,
     handler: Command<T>,
     client: DiscordClient
-) => {
+): Promise<void> => {
     if (!handler) return;
 
     try {
@@ -153,7 +151,7 @@ export const registerSlashCommand = async (
     client: DiscordClient,
     id: Snowflake,
     data: ApplicationCommandData[]
-) => {
+): Promise<void> => {
     await client.application.commands
         .set(data, id)
         .catch((e) => console.error(e));
