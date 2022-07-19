@@ -1,6 +1,9 @@
 import * as fs from "fs";
 
-import { APIRole } from "discord-api-types/v9";
+import {
+    APIInteractionDataResolvedGuildMember,
+    APIRole,
+} from "discord-api-types/v9";
 import {
     ApplicationCommandData,
     ButtonInteraction,
@@ -34,6 +37,9 @@ export const getNicknameOrName = (
     return member.displayName;
 };
 
+export const getMemberNicknameOrName = (member: GuildMember) =>
+    member.displayName || member.user.username;
+
 export const createUserMentionWithId = (id: string): string => `<@!${id}>`;
 export const createRoleMentionWithId = (id: string): string => `<@&${id}>`;
 export const createEveryoneMention = (): string => "@everyone";
@@ -41,12 +47,22 @@ export const createMention = (interaction: Interaction): string => {
     return `<@${interaction.member.user.id}>`;
 };
 export const isMentionGuildMember = (
-    mention: GuildMember | Role | APIRole | User
+    mention:
+        | GuildMember
+        | Role
+        | APIRole
+        | User
+        | APIInteractionDataResolvedGuildMember
 ): mention is GuildMember => {
     return (mention as GuildMember).user != null;
 };
 export const isMentionRole = (
-    mention: GuildMember | Role | APIRole | User
+    mention:
+        | GuildMember
+        | Role
+        | APIRole
+        | User
+        | APIInteractionDataResolvedGuildMember
 ): mention is Role | APIRole => {
     return (mention as Role | APIRole).name != null;
 };
