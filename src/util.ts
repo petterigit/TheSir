@@ -25,7 +25,7 @@ import { Command, DiscordClient, SlashCommandModule } from "./types";
 import { MessageButtonStyles } from "discord.js/typings/enums";
 import random from "lodash/random";
 
-export const BUTTON_STYLE_LENGTH = 5;
+export const NUMBER_OF_BOT_ACTIVITES = 5;
 
 export const getNicknameOrName = (
     message: Message | CommandInteraction
@@ -40,10 +40,10 @@ export const getNicknameOrName = (
 export const getMemberNicknameOrName = (member: GuildMember) =>
     member.displayName || member.user.username;
 
-export const createUserMentionWithId = (id: string): string => `<@!${id}>`;
-export const createRoleMentionWithId = (id: string): string => `<@&${id}>`;
-export const createEveryoneMention = (): string => "@everyone";
-export const createMention = (interaction: Interaction): string => {
+export const createUserMentionWithId = (id: string) => `<@!${id}>`;
+export const createRoleMentionWithId = (id: string) => `<@&${id}>`;
+export const createEveryoneMention = () => "@everyone";
+export const createMention = (interaction: Interaction) => {
     return `<@${interaction.member.user.id}>`;
 };
 export const isMentionGuildMember = (
@@ -82,20 +82,7 @@ export const createButton = (
     });
 };
 
-export const InputTypes = {
-    SubCommand: 1,
-    SubCommandGroup: 2,
-    String: 3,
-    Integer: 4,
-    Boolean: 5,
-    User: 6,
-    Channel: 7,
-    Role: 8,
-    Mentionable: 9,
-    Number: 10,
-};
-
-export const DiscordNumberOfChoices = 25;
+export const DISCORD_NUMBER_OF_CHOICES = 25;
 
 export const randomColor = (): ColorResolvable => {
     let color = "#";
@@ -180,7 +167,7 @@ export const rotateSisterActivities = async (
     const interval = setInterval(() => {
         //const newActivityType = _.sample(Object.values(ActivityTypes));
         //if (client.user.presence.activities[0].type != newActivityType)
-        const newActivityType = random(0, BUTTON_STYLE_LENGTH);
+        const newActivityType = random(0, NUMBER_OF_BOT_ACTIVITES);
         client.user.setPresence({
             activities: [
                 {

@@ -6,9 +6,12 @@ import {
 import { createButton } from "../../util";
 import random from "lodash/random";
 
-import { getNicknameOrName, randomColor, InputTypes } from "../../util";
+import { getNicknameOrName, randomColor } from "../../util";
 import { SlashCommandModule } from "../../types";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
+import {
+    ApplicationCommandOptionTypes,
+    ApplicationCommandTypes,
+} from "discord.js/typings/enums";
 
 // Max 5 buttons per row, max 5 rows -> 25
 // -1 for question
@@ -100,13 +103,13 @@ const createInputs = (numberOfInputs: number) => {
             required: i === 0,
         }));
     inputs.unshift({
-        type: InputTypes.String,
+        type: ApplicationCommandOptionTypes.STRING,
         name: "title",
         description: "The title of the poll",
         required: true,
     });
     inputs.push({
-        type: InputTypes.Boolean,
+        type: ApplicationCommandOptionTypes.BOOLEAN,
         name: "rainbow-mode",
         description: "🤗🌈",
         required: false,

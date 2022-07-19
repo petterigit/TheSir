@@ -19,18 +19,21 @@ import {
 
 import { APIRole } from "discord-api-types/v9";
 import { SlashCommandModule } from "../../types";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
+import {
+    ApplicationCommandOptionTypes,
+    ApplicationCommandTypes,
+} from "discord.js/typings/enums";
 
 const MESSAGE_OPTIONS = { mention: "mention", message: "message" };
 const inputs: ApplicationCommandOptionData[] = [
     {
-        type: "MENTIONABLE",
+        type: ApplicationCommandOptionTypes.MENTIONABLE,
         name: MESSAGE_OPTIONS.mention,
         description: "Who should be praised or shamed",
         required: true,
     },
     {
-        type: "STRING",
+        type: ApplicationCommandOptionTypes.STRING,
         name: MESSAGE_OPTIONS.message,
         description: "Optional custom message",
         required: false,

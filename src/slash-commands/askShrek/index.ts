@@ -9,9 +9,12 @@ import find from "lodash/find";
 import map from "lodash/map";
 import sample from "lodash/sample";
 import { SlashCommandModule } from "../../types";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
+import {
+    ApplicationCommandOptionTypes,
+    ApplicationCommandTypes,
+} from "discord.js/typings/enums";
 import _ from "lodash";
-import { DiscordNumberOfChoices } from "../../util";
+import { DISCORD_NUMBER_OF_CHOICES } from "../../util";
 
 interface Character {
     speaker: string;
@@ -48,9 +51,9 @@ function getLinesAndSendOneToDiscord(interaction: CommandInteraction) {
 }
 
 const getInputs = (): ApplicationCommandOptionData[] => {
-    const chunks = _.chunk(data.speakers, DiscordNumberOfChoices);
+    const chunks = _.chunk(data.speakers, DISCORD_NUMBER_OF_CHOICES);
     return chunks.map((chunk, index) => ({
-        type: "STRING",
+        type: ApplicationCommandOptionTypes.STRING,
         name: `character-${index + 1}`,
         choices: chunk.map((o) => ({
             name: o.speaker,

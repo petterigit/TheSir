@@ -3,7 +3,10 @@ import { ApplicationCommandOptionData, CommandInteraction } from "discord.js";
 import axios from "axios";
 import sample from "lodash/sample";
 import { SlashCommandModule } from "../../types";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
+import {
+    ApplicationCommandOptionTypes,
+    ApplicationCommandTypes,
+} from "discord.js/typings/enums";
 import { getMemberNicknameOrName, isMentionGuildMember } from "../../util";
 
 const TITLEURL = "https://proksi.juho.space/pet-name";
@@ -11,7 +14,7 @@ const MAX_NAME_LENGTH = 32;
 
 const inputs: ApplicationCommandOptionData[] = [
     {
-        type: "MENTIONABLE",
+        type: ApplicationCommandOptionTypes.MENTIONABLE,
         name: "mention",
         description: "Someone to baptise",
         required: true,
