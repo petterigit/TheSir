@@ -67,6 +67,9 @@ export const isMentionRole = (
     return (mention as Role | APIRole).name != null;
 };
 
+export const isMessage = (message: unknown): message is Message<boolean> =>
+    message instanceof Message;
+
 export const createButton = (
     id: string,
     text: string,
