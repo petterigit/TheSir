@@ -1,4 +1,6 @@
-import { Message } from "discord.js";
+import { CommandInteraction } from "discord.js";
+import { ApplicationCommandTypes } from "discord.js/typings/enums";
+import { SlashCommandModule } from "../../types";
 import T from "../../utils/TwitterClient";
 const MAX_TWEETS = 100;
 
@@ -9,42 +11,47 @@ const parameters = {
     tweet_mode: "extended",
 };
 
-const getNiiloTweet = async (message: Message) => {
+const getNiiloTweet = async (interaction: CommandInteraction) => {
+    await interaction.deferReply();
     try {
-        getTweetsAndSendOneToDiscord(message);
+        getTweetsAndSendOneToDiscord(interaction);
     } catch (error) {
-        message.channel.send("Vituiks meni!");
+        interaction.channel.send("Vituiks meni!");
         console.log(error);
     }
 };
 
-function getTweetsAndSendOneToDiscord(message: Message) {
-    if (!T) return;
+function getTweetsAndSendOneToDiscord(interaction: CommandInteraction) {
+    if (!T) {
+        interaction.editReply("Twitter client not initialized");
+        return;
+    }
 
-    T.get(path, parameters, function (err, data, response) {
+    T.get(path, parameters, function (err, data) {
         if (err) {
+            interaction.editReply("Something went wrong with Twitter");
             console.log("Requested:", "Received error from Twitter API:", err);
             return;
         }
         const tweet = getRandomTweet(data);
-        sendTweetToDiscord(tweet, message);
+        sendTweetToDiscord(tweet, interaction);
     });
 }
 
-function getRandomTweet(tweets) {
+function getRandomTweet(tweets: Record<string, any>) {
     return tweets[randomNumber(0, MAX_TWEETS)];
 }
 
-const randomNumber = (start, end) => {
+const randomNumber = (start: number, end: number) => {
     return Math.floor(Math.random() * (start - end + 1)) + end;
 };
 
-function sendTweetToDiscord(tweet, message) {
+function sendTweetToDiscord(tweet: any, interaction: CommandInteraction) {
     const embed = createAnswerMessage(tweet);
-    message.channel.send({ embed: embed });
+    interaction.editReply({ embeds: [embed] });
 }
 
-function createAnswerMessage(tweet) {
+function createAnswerMessage(tweet: any) {
     let answerMessage = {
         description:
             "Niilo22 twiittasi " +
@@ -70,14 +77,14 @@ function createAnswerMessage(tweet) {
     return answerMessage;
 }
 
-function parseDate(date) {
+function parseDate(date: string) {
     const datetime = new Date(date);
     datetime.setHours(datetime.getHours() + 2);
 
     let parsedDate = "";
 
-    const weekday = datetime.getDay().toString();
-    const month = datetime.getMonth().toString();
+    const weekday = datetime.getDay();
+    const month = datetime.getMonth();
     const day = datetime.getDate().toString();
     let hour = datetime.getHours().toString();
     if (hour.length < 2) {
@@ -104,7 +111,7 @@ function parseDate(date) {
     return parsedDate;
 }
 
-function parseTime(time) {
+function parseTime(time: string) {
     let parsedTime = "";
     if (time.length < 5) {
         parsedTime = "0" + time;
@@ -115,7 +122,7 @@ function parseTime(time) {
     return parsedTime;
 }
 
-function parseWeekday(weekday) {
+function parseWeekday(weekday: number) {
     let parsedWeekday = "";
     const weekdaysFin = [
         "sunnuntaina",
@@ -138,7 +145,7 @@ function parseWeekday(weekday) {
     return parsedWeekday;
 }
 
-function parseMonth(month) {
+function parseMonth(month: number) {
     let parsedMonth = "";
     const monthsFin = [
         "tammikuuta",
@@ -166,7 +173,7 @@ function parseMonth(month) {
     return parsedMonth;
 }
 
-function parseDay(day) {
+function parseDay(day: string) {
     let parsedDay = day;
     if (startsWithZero(day)) {
         parsedDay = removeZero(day);
@@ -175,7 +182,7 @@ function parseDay(day) {
     return parsedDay;
 }
 
-function startsWithZero(day) {
+function startsWithZero(day: string) {
     if (day.slice(0, 1) == "0") {
         return true;
     } else {
@@ -183,20 +190,23 @@ function startsWithZero(day) {
     }
 }
 
-function removeZero(day) {
+function removeZero(day: string) {
     return day.slice(1, 2);
 }
 
-function addDot(day) {
+function addDot(day: string) {
     return day + ".";
 }
 
-export default {
+const command: SlashCommandModule = {
     data: {
-        name: ["niilo22", "niilo"],
+        type: ApplicationCommandTypes.CHAT_INPUT,
+        name: ["niilo22"],
         description: "Gets the best random Niilo22 tweets",
     },
-    async execute(message: Message) {
-        await getNiiloTweet(message);
+    async execute(interaction: CommandInteraction) {
+        await getNiiloTweet(interaction);
     },
 };
+
+export default command;
