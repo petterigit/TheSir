@@ -1,6 +1,11 @@
 import T from "../../utils/TwitterClient";
 import sample from "lodash/sample";
-import { Message } from "discord.js";
+import { ApplicationCommandOptionData, CommandInteraction } from "discord.js";
+import { SlashCommandModule } from "../../types";
+import {
+    ApplicationCommandOptionTypes,
+    ApplicationCommandTypes,
+} from "discord.js/typings/enums";
 
 const MAX_TWEETS = 100;
 
@@ -11,41 +16,56 @@ const parameters = {
     tweet_mode: "extended",
 };
 
-const getUserTweet = async (message: Message) => {
+const inputs: ApplicationCommandOptionData[] = [
+    {
+        type: ApplicationCommandOptionTypes.STRING,
+        name: "name",
+        description: "Name of the Twitter user",
+        required: true,
+    },
+];
+
+const getUserTweet = async (interaction: CommandInteraction) => {
+    await interaction.deferReply();
     try {
-        const args = message.content.substring(1).split(" ");
-        const twitname = args[2];
+        const twitname = interaction.options.getString("name");
         parameters.screen_name = twitname;
-        getTweetsAndSendOneToDiscord(message);
+        getTweetsAndSendOneToDiscord(interaction);
     } catch (error) {
-        message.channel.send("Vituiks meni!");
+        interaction.editReply("Something went wrong >_<");
         console.log(error);
     }
 };
 
-function getTweetsAndSendOneToDiscord(message) {
-    if (!T) return;
+function getTweetsAndSendOneToDiscord(interaction: CommandInteraction) {
+    if (!T) {
+        interaction.editReply("No Twitter client");
+        return;
+    }
 
-    T.get(path, parameters, function (err, data, response) {
+    T.get(path, parameters, function (err, data) {
         if (err) {
             console.log("Requested:", "Received error from Twitter API:", err);
+            interaction.editReply(
+                `Probably couldn't find the user by the name: ${parameters.screen_name}`
+            );
             return;
         }
         const tweet = getRandomTweet(data);
-        sendTweetToDiscord(tweet, message);
+        sendTweetToDiscord(tweet, interaction);
     });
 }
 
-function getRandomTweet(tweets) {
+function getRandomTweet(tweets: object) {
     return sample(tweets);
 }
 
-function sendTweetToDiscord(tweet, message) {
+function sendTweetToDiscord(tweet: any, interaction: CommandInteraction) {
     const embed = createAnswerMessage(tweet);
-    message.channel.send({ embeds: [embed] });
+    interaction.editReply({ embeds: [embed] });
 }
 
-function createAnswerMessage(tweet) {
+function createAnswerMessage(tweet: any) {
     let answerMessage = {};
     if (typeof tweet === "undefined") {
         answerMessage = {
@@ -77,14 +97,14 @@ function createAnswerMessage(tweet) {
     return answerMessage;
 }
 
-function parseDate(date) {
+function parseDate(date: string) {
     const datetime = new Date(date);
     datetime.setHours(datetime.getHours() + 2);
 
     let parsedDate = "";
 
-    const weekday = datetime.getDay().toString();
-    const month = datetime.getMonth().toString();
+    const weekday = datetime.getDay();
+    const month = datetime.getMonth();
     const day = datetime.getDate().toString();
     let hour = datetime.getHours().toString();
     if (hour.length < 2) {
@@ -111,7 +131,7 @@ function parseDate(date) {
     return parsedDate;
 }
 
-function parseTime(time) {
+function parseTime(time: string) {
     let parsedTime = "";
     if (time.length < 5) {
         parsedTime = "0" + time;
@@ -122,7 +142,7 @@ function parseTime(time) {
     return parsedTime;
 }
 
-function parseWeekday(weekday) {
+function parseWeekday(weekday: number) {
     let parsedWeekday = "";
     const weekdaysFin = [
         "sunnuntaina",
@@ -145,7 +165,7 @@ function parseWeekday(weekday) {
     return parsedWeekday;
 }
 
-function parseMonth(month) {
+function parseMonth(month: number) {
     let parsedMonth = "";
     const monthsFin = [
         "tammikuuta",
@@ -173,7 +193,7 @@ function parseMonth(month) {
     return parsedMonth;
 }
 
-function parseDay(day) {
+function parseDay(day: string) {
     let parsedDay = day;
     if (startsWithZero(day)) {
         parsedDay = removeZero(day);
@@ -182,7 +202,7 @@ function parseDay(day) {
     return parsedDay;
 }
 
-function startsWithZero(day) {
+function startsWithZero(day: string) {
     if (day.slice(0, 1) == "0") {
         return true;
     } else {
@@ -190,20 +210,24 @@ function startsWithZero(day) {
     }
 }
 
-function removeZero(day) {
+function removeZero(day: string) {
     return day.slice(1, 2);
 }
 
-function addDot(day) {
+function addDot(day: string) {
     return day + ".";
 }
 
-module.exports = {
+const command: SlashCommandModule = {
     data: {
-        name: ["twit", "tweet"],
+        type: ApplicationCommandTypes.CHAT_INPUT,
+        name: ["tweet"],
         description: "Get a random tweet from any user",
+        options: inputs,
     },
-    async execute(message: Message) {
-        await getUserTweet(message);
+    async execute(interaction: CommandInteraction) {
+        await getUserTweet(interaction);
     },
 };
+
+export default command;

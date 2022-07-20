@@ -120,6 +120,7 @@ function getTweetsAndSendOneToDiscord(
 ) {
     if (!T) {
         interaction.editReply("No Twitter client");
+        return;
     }
 
     T.get(path, parameters, function (err, data) {
