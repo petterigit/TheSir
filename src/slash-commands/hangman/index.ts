@@ -1,7 +1,16 @@
-import { Message, MessageEmbed } from "discord.js";
+import {
+    ApplicationCommandOptionData,
+    CommandInteraction,
+    MessageEmbed,
+} from "discord.js";
 import { GameState, MessageParams } from "./hmTypes";
 import dictionary from "./dictionary.json";
 import { HANGMANPICS } from "./asciiArts";
+import { SlashCommandModule } from "../../types";
+import {
+    ApplicationCommandOptionTypes,
+    ApplicationCommandTypes,
+} from "discord.js/typings/enums";
 
 const TOTALGUESSES = 6;
 
@@ -11,8 +20,16 @@ const messageParams: MessageParams = {
     messageChannel: undefined,
     currentChannelID: "",
     guessCharacter: "",
-    messageContent: "",
 };
+
+const inputs: ApplicationCommandOptionData[] = [
+    {
+        type: ApplicationCommandOptionTypes.STRING,
+        name: "guess",
+        description: "Guess a letter",
+        required: false,
+    },
+];
 
 /* MAIN */
 const hangman = async () => {
@@ -20,7 +37,7 @@ const hangman = async () => {
         (game) => game.channelID == messageParams.currentChannelID
     );
 
-    if (currentGame === undefined) {
+    if (!currentGame) {
         const currentGame = setGame();
         setHangman(currentGame);
         return;
@@ -82,7 +99,7 @@ const hangman = async () => {
 
 /* GAME SETUP */
 const setGame = () => {
-    const currentGame = {
+    const currentGame: GameState = {
         channelID: messageParams.currentChannelID,
         active: true,
         guessedCharacters: [],
@@ -105,7 +122,9 @@ const setHangman = async (currentGame: GameState) => {
     // u2000 = Loooong space - here for styling & win condition checking
     const word = keys[randIndex].toLowerCase().replace(" ", "\u2000");
     currentGame.word = word;
-    currentGame.wordExplanation = dictionary[currentGame.word];
+    currentGame.wordExplanation = (dictionary as Record<string, string>)[
+        currentGame.word
+    ];
     currentGame.knownCharacters.length = currentGame.word.length;
     currentGame.knownCharacters.fill("\\_");
 
@@ -117,7 +136,7 @@ const setHangman = async (currentGame: GameState) => {
     }
 
     await replyToChannel(
-        "Hangman setup done! Type in your guesses after the 'hm' command"
+        "Hangman setup done! Guess with the 'hangman' command! Guess 0 to quit."
     );
     await updateGameStateToUser(currentGame);
 };
@@ -128,9 +147,9 @@ const removeGame = (currentGame: GameState) => {
 
 /* MESSAGE VALIDATION */
 const checkMessage = async (currentGame: GameState) => {
-    const guessString = messageParams.messageContent.substring(1).split(" ")[2];
+    const guessString = messageParams.guessCharacter;
 
-    if (guessString === undefined) {
+    if (!guessString) {
         currentGame.errorMessage =
             "Empty guess.. Try a little harder! Or quit with 'hangman 0'";
         return "error";
@@ -201,29 +220,34 @@ const replyToChannel = async (message: string) => {
     messageParams.messageChannel.send(message);
 };
 
-const getMessageParams = (message: Message) => {
-    if (message.channel.type === "GUILD_VOICE") {
+const getMessageParams = (interaction: CommandInteraction) => {
+    if (interaction.channel.type === "GUILD_VOICE") {
         return;
     }
 
-    messageParams.currentChannelID = message.channel.id;
-    messageParams.messageChannel = message.channel;
-    messageParams.messageContent = message.content;
+    messageParams.currentChannelID = interaction.channel.id;
+    messageParams.messageChannel = interaction.channel;
+    messageParams.guessCharacter = interaction.options.getString("guess");
 };
 
-module.exports = {
+const command: SlashCommandModule = {
     data: {
-        name: ["hangman", "hm"],
+        type: ApplicationCommandTypes.CHAT_INPUT,
+        name: ["hangman"],
         description: "Hangman Game",
+        options: inputs,
     },
-    async execute(message: Message) {
+    async execute(interaction: CommandInteraction) {
         try {
-            getMessageParams(message);
+            await interaction.deferReply();
+            getMessageParams(interaction);
             await hangman();
-            message.delete();
+            await interaction.deleteReply();
         } catch (e) {
             console.log(e);
             replyToChannel("Hangman encountered an error.");
         }
     },
 };
+
+export default command;

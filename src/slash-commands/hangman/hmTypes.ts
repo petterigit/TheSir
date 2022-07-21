@@ -28,5 +28,4 @@ export type MessageParams = {
         | ThreadChannel;
     currentChannelID: string;
     guessCharacter: string;
-    messageContent: string;
 };

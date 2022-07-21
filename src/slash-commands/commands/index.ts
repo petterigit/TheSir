@@ -31,8 +31,7 @@ const replyCommands = async (
                 value: command.data.description,
             })),
         };
-        await interaction.user.send({ embeds: [embed] });
-        await interaction.editReply("Check your DMs!");
+        await interaction.editReply({ embeds: [embed] });
     } catch (error) {
         await interaction.editReply("Something went wrong with the command");
         console.log(error);
