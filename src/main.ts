@@ -21,7 +21,6 @@ const environment = process.env.ENVIRONMENT ?? "development";
 
 /* Bot setup */
 client.once("ready", () => {
-    console.log("I am ready");
     client.user.setPresence({
         activities: [{ name: "My sister", type: "WATCHING" }],
         status: "online",
@@ -61,12 +60,14 @@ client.on("guildCreate", async (guild) => {
 });
 
 const initialize = async () => {
+    console.log(`Running in ${environment} mode`);
     await client.login(token);
+    console.log("Client is connected, registering commands...");
     // client.commands = await requireCommands("commands");
     client.interactions = await requireCommands("interactions");
     client.slashCommands = await requireCommands("slash-commands");
-    registerSlashCommands(client);
-    console.log(`Running in ${environment} mode`);
+    await registerSlashCommands(client);
+    console.log("Initialized 👍");
 };
 
 initialize();
