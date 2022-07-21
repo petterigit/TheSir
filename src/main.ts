@@ -63,7 +63,6 @@ const initialize = async () => {
     console.log(`Running in ${environment} mode`);
     await client.login(token);
     console.log("Client is connected, registering commands...");
-    // client.commands = await requireCommands("commands");
     client.interactions = await requireCommands("interactions");
     client.slashCommands = await requireCommands("slash-commands");
     await registerSlashCommands(client);
