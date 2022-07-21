@@ -1,5 +1,6 @@
 import { CommandInteraction, MessageAttachment } from "discord.js";
 import { ApplicationCommandTypes } from "discord.js/typings/enums";
+import { SlashCommandModule } from "../../types";
 
 import { getNicknameOrName } from "../../util";
 import { genCommandOptions, generateMeme, MemeOptions } from "./MemeGenerator";
@@ -24,7 +25,7 @@ const mg = async (interaction: CommandInteraction) => {
     }
 };
 
-module.exports = {
+const command: SlashCommandModule = {
     data: {
         type: ApplicationCommandTypes.CHAT_INPUT,
         name: ["mg"],
@@ -36,3 +37,5 @@ module.exports = {
         await mg(message);
     },
 };
+
+export default command;

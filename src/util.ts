@@ -1,12 +1,13 @@
 import * as fs from "fs";
 
 import {
-    APIInteractionGuildMember,
+    APIInteractionDataResolvedGuildMember,
     APIRole,
-    Routes,
 } from "discord-api-types/v9";
 import {
     ApplicationCommandData,
+    ButtonInteraction,
+    CacheType,
     Collection,
     ColorResolvable,
     CommandInteraction,
@@ -19,12 +20,12 @@ import {
     Snowflake,
     User,
 } from "discord.js";
-import { Command, DiscordClient, SlashCommands } from "./types";
+import { Command, DiscordClient, SlashCommandModule } from "./types";
 
 import { MessageButtonStyles } from "discord.js/typings/enums";
 import random from "lodash/random";
 
-export const BUTTON_STYLE_LENGTH = 5;
+export const NUMBER_OF_BOT_ACTIVITES = 5;
 
 export const getNicknameOrName = (
     message: Message | CommandInteraction
@@ -36,22 +37,38 @@ export const getNicknameOrName = (
     return member.displayName;
 };
 
-export const createUserMentionWithId = (id: string): string => `<@!${id}>`;
-export const createRoleMentionWithId = (id: string): string => `<@&${id}>`;
-export const createEveryoneMention = (): string => "@everyone";
-export const createMention = (interaction: Interaction): string => {
+export const getMemberNicknameOrName = (member: GuildMember) =>
+    member.displayName || member.user.username;
+
+export const createUserMentionWithId = (id: string) => `<@!${id}>`;
+export const createRoleMentionWithId = (id: string) => `<@&${id}>`;
+export const createEveryoneMention = () => "@everyone";
+export const createMention = (interaction: Interaction) => {
     return `<@${interaction.member.user.id}>`;
 };
 export const isMentionGuildMember = (
-    mention: GuildMember | Role | APIRole | User
+    mention:
+        | GuildMember
+        | Role
+        | APIRole
+        | User
+        | APIInteractionDataResolvedGuildMember
 ): mention is GuildMember => {
     return (mention as GuildMember).user != null;
 };
 export const isMentionRole = (
-    mention: GuildMember | Role | APIRole | User
+    mention:
+        | GuildMember
+        | Role
+        | APIRole
+        | User
+        | APIInteractionDataResolvedGuildMember
 ): mention is Role | APIRole => {
     return (mention as Role | APIRole).name != null;
 };
+
+export const isMessage = (message: unknown): message is Message<boolean> =>
+    message instanceof Message;
 
 export const createButton = (
     id: string,
@@ -60,7 +77,7 @@ export const createButton = (
         typeof MessageButtonStyles,
         "LINK"
     > = MessageButtonStyles.PRIMARY
-) => {
+): MessageButton => {
     return new MessageButton({
         customId: id,
         label: text,
@@ -68,18 +85,7 @@ export const createButton = (
     });
 };
 
-export const InputTypes = {
-    SubCommand: 1,
-    SubCommandGroup: 2,
-    String: 3,
-    Integer: 4,
-    Boolean: 5,
-    User: 6,
-    Channel: 7,
-    Role: 8,
-    Mentionable: 9,
-    Number: 10,
-};
+export const DISCORD_NUMBER_OF_CHOICES = 25;
 
 export const randomColor = (): ColorResolvable => {
     let color = "#";
@@ -90,15 +96,18 @@ export const randomColor = (): ColorResolvable => {
     return color as ColorResolvable;
 };
 
-export const requireCommands = async <T>(
+export const requireCommands = async <
+    T extends CommandInteraction<CacheType> | ButtonInteraction<CacheType>
+>(
     folderName: string
 ): Promise<Collection<string, Command<T>>> => {
     const commands = new Collection<string, Command<T>>();
     const folders = fs.readdirSync(`./src/${folderName}/`);
 
     for (const folder of folders) {
-        const command = await import(`./${folderName}/${folder}`);
-        if (command?.data?.name) {
+        const { default: command }: { default: SlashCommandModule } =
+            await import(`./${folderName}/${folder}`);
+        if (command.data?.name) {
             if (Array.isArray(command.data.name)) {
                 command.data.name.map((name) =>
                     commands.set(name, {
@@ -107,7 +116,10 @@ export const requireCommands = async <T>(
                     })
                 );
             } else {
-                commands.set(command.data.name, command);
+                commands.set(command.data.name, {
+                    ...command,
+                    data: { ...command.data, name: command.data.name },
+                });
             }
         }
     }
@@ -119,7 +131,7 @@ export const executeCommand = async <T>(
     interaction: T,
     handler: Command<T>,
     client: DiscordClient
-) => {
+): Promise<void> => {
     if (!handler) return;
 
     try {
@@ -145,7 +157,7 @@ export const registerSlashCommand = async (
     client: DiscordClient,
     id: Snowflake,
     data: ApplicationCommandData[]
-) => {
+): Promise<void> => {
     await client.application.commands
         .set(data, id)
         .catch((e) => console.error(e));
@@ -158,7 +170,7 @@ export const rotateSisterActivities = async (
     const interval = setInterval(() => {
         //const newActivityType = _.sample(Object.values(ActivityTypes));
         //if (client.user.presence.activities[0].type != newActivityType)
-        const newActivityType = random(0, BUTTON_STYLE_LENGTH);
+        const newActivityType = random(0, NUMBER_OF_BOT_ACTIVITES);
         client.user.setPresence({
             activities: [
                 {

@@ -32,7 +32,7 @@ export const nextMeme = async (): Promise<Meme> => {
     const res = await axios(
         "https://www.memedroid.com/memes/getGallerySurroundings/" + timestamp
     );
-    const json: JsonResponse = await res.data;
+    const json: JsonResponse = res.data;
 
     if (json.stat != 0) {
         throw new Error("Status was not 0. Status: " + json.stat);
@@ -42,7 +42,9 @@ export const nextMeme = async (): Promise<Meme> => {
     if (length <= 0) {
         throw new Error("No memes were fetched");
     }
-    return sample(json.items);
+
+    const selectedMeme = sample(json.items);
+    return selectedMeme;
 };
 
 // Makes a timestamp in Memedroid url format (10 chars long)

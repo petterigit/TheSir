@@ -37,7 +37,12 @@ const animalsFIN = [
 // *****************
 
 import T from "../../utils/TwitterClient";
-import { Message, MessageEmbed, MessageEmbedOptions } from "discord.js";
+import { ApplicationCommandOptionData, CommandInteraction } from "discord.js";
+import { SlashCommandModule } from "../../types";
+import {
+    ApplicationCommandOptionTypes,
+    ApplicationCommandTypes,
+} from "discord.js/typings/enums";
 
 const MAX_TWEETS = 100;
 
@@ -48,23 +53,28 @@ const parameters = {
     tweet_mode: "extended",
 };
 
-const wholesome = async (message: Message) => {
+const inputs: ApplicationCommandOptionData[] = [
+    {
+        type: ApplicationCommandOptionTypes.STRING,
+        name: "animal",
+        description: "Choose your wholesome content",
+        required: false,
+        choices: animalsFIN.map((animal) => ({ name: animal, value: animal })),
+    },
+];
+
+const wholesome = async (interaction: CommandInteraction) => {
+    await interaction.deferReply();
     try {
         let chosen = 0;
-        const args = message.content.substring(1).split(" ");
-        const param = args[2];
-
-        if (param == "help") {
-            let animalsString = "";
-            for (let i = 0; i < animalsFIN.length; i++) {
-                animalsString += animalsFIN[i] + "\n";
-            }
-            const help = new MessageEmbed({
-                description: "Saatavilla olevat eläimet:\n\n" + animalsString,
-            });
-            message.channel.send({ embeds: [help] });
+        const param = interaction.options.getString("animal");
+        if (param && !animalsFIN.includes(param)) {
+            console.log(param, animalsFIN);
+            interaction.editReply("Invalid animal");
             return;
-        } else if (param == "kani") {
+        }
+
+        if (param == "kani") {
             parameters.screen_name = WHS_twitters[0];
             chosen = 0;
         } else if (param == "dikdik") {
@@ -95,20 +105,27 @@ const wholesome = async (message: Message) => {
             chosen = random(0, WHS_twitters.length);
             parameters.screen_name = WHS_twitters[chosen];
         }
-        getTweetsAndSendOneToDiscord(message, chosen);
+        getTweetsAndSendOneToDiscord(interaction, chosen);
         return;
     } catch (error) {
-        message.channel.send("Vituiks meni ku Jeesuksen pääsiäinen!");
+        interaction.editReply("Vituiks meni ku Jeesuksen pääsiäinen!");
         console.log(error);
         return;
     }
 };
 
-function getTweetsAndSendOneToDiscord(message, chosen) {
-    if (!T) return;
+function getTweetsAndSendOneToDiscord(
+    interaction: CommandInteraction,
+    chosen: number
+) {
+    if (!T) {
+        interaction.editReply("No Twitter client");
+        return;
+    }
 
-    T.get(path, parameters, function (err, data, response) {
+    T.get(path, parameters, function (err, data) {
         if (err) {
+            interaction.editReply("Twitter API failure");
             console.log("Requested:", "Received error from Twitter API:", err);
             return;
         }
@@ -171,20 +188,24 @@ function getTweetsAndSendOneToDiscord(message, chosen) {
                     continue;
                 }
             }
-            message.channel.send({ embeds: [answerMessage] });
+            interaction.editReply({ embeds: [answerMessage] });
             if (media_video_url != "") {
-                message.channel.send(media_video_url);
+                interaction.editReply(media_video_url);
             }
         }
     });
 }
 
-module.exports = {
+const command: SlashCommandModule = {
     data: {
+        type: ApplicationCommandTypes.CHAT_INPUT,
         name: ["wholesome"],
         description: "Wholesome content machine",
+        options: inputs,
     },
-    async execute(message: Message) {
-        await wholesome(message);
+    async execute(interaction: CommandInteraction) {
+        await wholesome(interaction);
     },
 };
+
+export default command;

@@ -6,6 +6,7 @@ import {
     MessageEmbed,
     MessageEmbedOptions,
 } from "discord.js";
+import { InteractionModule as InteractionModule } from "../../types";
 
 import { createMention } from "../../util";
 
@@ -92,7 +93,7 @@ const getSelectedField = (
 const updateField = (
     fields: EmbedField[] | APIEmbedField[],
     buttonText: string,
-    users
+    users: string[]
 ): EmbedField[] | APIEmbedField[] => {
     const value = formatUsersToField(users);
     const updatedField = createNewField(buttonText, value);
@@ -145,7 +146,7 @@ const parseUsersFromField = (field: EmbedField | APIEmbedField) =>
     field.value.split(NAME_SEPARATOR);
 const formatUsersToField = (users: string[]) => users.join(NAME_SEPARATOR);
 
-module.exports = {
+const interaction: InteractionModule = {
     data: {
         name: "poll",
     },
@@ -153,3 +154,5 @@ module.exports = {
         await poll(interaction);
     },
 };
+
+export default interaction;
