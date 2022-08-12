@@ -8,9 +8,9 @@ import { InteractionModule } from "../../types";
 
 import { createMention } from "../../util";
 
-const idToRestaurant = {
+export const Restaurant = {
     yolo: "Yolo",
-    laser: "Laser",
+    laseri: "Laser",
     buffet: "LUT Buffet",
     tang: "Tang Capital",
     lalo: "Lalo",
@@ -28,7 +28,7 @@ const ruokaa = async (interaction: ButtonInteraction) => {
     let participantEmbed = interaction.message.embeds[1] as MessageEmbed;
     if (!participantEmbed) {
         participantEmbed = createParticipantEmbed(
-            idToRestaurant[restaurantParameter],
+            Restaurant[restaurantParameter],
             createMention(interaction)
         );
         participantEmbed.setColor(originalEmbed.color);
@@ -36,7 +36,7 @@ const ruokaa = async (interaction: ButtonInteraction) => {
         const votes = parseParticipants(participantEmbed);
         const newVotes = setVote(
             votes,
-            idToRestaurant[restaurantParameter],
+            Restaurant[restaurantParameter],
             createMention(interaction)
         );
         const newFields = setVotesToFields(newVotes);
@@ -115,7 +115,7 @@ const setVotesToFields = (votes: Collection<string, string[]>) => {
         .sort((a, b) => {
             const aName = removeParticipantCount(a.name);
             const bName = removeParticipantCount(b.name);
-            const skipName = idToRestaurant["skip"];
+            const skipName = Restaurant["skip"];
             if (aName === bName) return 0;
             if (aName === skipName) return 1;
             if (bName === skipName) return -1;
@@ -138,7 +138,7 @@ const removeParticipantCount = (name: string) => {
 
 const isValidRestaurant = (
     restaurant: string
-): restaurant is keyof typeof idToRestaurant => restaurant in idToRestaurant;
+): restaurant is keyof typeof Restaurant => restaurant in Restaurant;
 
 const interaction: InteractionModule = {
     data: {

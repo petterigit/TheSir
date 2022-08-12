@@ -4,6 +4,7 @@ import {
     ApplicationCommandTypes,
     MessageButtonStyles,
 } from "discord.js/typings/enums";
+import { Restaurant } from "../../interactions/ruokaa";
 import { SlashCommandModule } from "../../types";
 import { createButton, randomColor } from "../../util";
 
@@ -17,14 +18,14 @@ const DayMap = {
     Saturday: 6,
 };
 
-const foodConfig = {
-    [DayMap.Monday]: ["yolo", "laseri"],
-    [DayMap.Tuesday]: ["yolo", "laseri"],
-    [DayMap.Wednesday]: ["yolo", "laseri"],
-    [DayMap.Thursday]: ["yolo", "laseri", "tang"],
-    [DayMap.Friday]: ["yolo", "laseri", "lalo"],
-    [DayMap.Saturday]: ["yolo", "laseri"],
-    [DayMap.Sunday]: ["yolo", "laseri"],
+const FoodConfig = {
+    [DayMap.Monday]: [Restaurant.yolo, Restaurant.laseri],
+    [DayMap.Tuesday]: [Restaurant.yolo, Restaurant.laseri],
+    [DayMap.Wednesday]: [Restaurant.yolo, Restaurant.laseri],
+    [DayMap.Thursday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.tang],
+    [DayMap.Friday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lalo],
+    [DayMap.Saturday]: [Restaurant.yolo, Restaurant.laseri],
+    [DayMap.Sunday]: [Restaurant.yolo, Restaurant.laseri],
 };
 
 type Food = {
@@ -73,12 +74,15 @@ const lalo = (): Category => ({
 const ruokaa = async (interaction: CommandInteraction) => {
     await interaction.deferReply();
     const weekday = getWeekday();
-    const foods = foodConfig[weekday];
+    const foods = FoodConfig[weekday];
 
     try {
         let data: JsonResponse | undefined = undefined;
 
-        if (foods.includes("yolo") || foods.includes("laseri")) {
+        if (
+            foods.includes(Restaurant.yolo) ||
+            foods.includes(Restaurant.laseri)
+        ) {
             const response = await axios(
                 "https://skinfo.juho.space/categories.json"
             );
@@ -106,34 +110,34 @@ const ruokaa = async (interaction: CommandInteraction) => {
         };
 
         const buttonRow = new MessageActionRow();
+        const addButton = (restaurant: keyof typeof Restaurant) => {
+            buttonRow.addComponents(
+                createButton(
+                    generateButtonId(restaurant),
+                    Restaurant[restaurant]
+                )
+            );
+        };
 
         foods.map((food) => {
             switch (food) {
-                case "yolo":
+                case Restaurant.yolo:
                     if (!data.yolo || data.yolo.length === 0) return;
                     appendMenu(data.yolo, "Yololla:");
-                    buttonRow.addComponents(
-                        createButton("ruokaa yolo", "Yolo")
-                    );
+                    addButton("yolo");
                     break;
-                case "laseri":
+                case Restaurant.laseri:
                     if (!data.laseri || data.laseri.length === 0) return;
                     appendMenu(data.laseri, "Laserilla:");
-                    buttonRow.addComponents(
-                        createButton("ruokaa laser", "Laser")
-                    );
+                    addButton("laseri");
                     break;
-                case "tang":
+                case Restaurant.tang:
                     appendMenu([tang()], "Tang Capitalissa:");
-                    buttonRow.addComponents(
-                        createButton("ruokaa tang", "Tang Capital")
-                    );
+                    addButton("tang");
                     break;
-                case "lalo":
+                case Restaurant.lalo:
                     appendMenu([lalo()], "Lalossa:");
-                    buttonRow.addComponents(
-                        createButton("ruokaa lalo", "Lalo")
-                    );
+                    addButton("lalo");
                     break;
             }
         });
@@ -149,8 +153,8 @@ const ruokaa = async (interaction: CommandInteraction) => {
         if (buttonRow.components.length > 0) {
             buttonRow.addComponents(
                 createButton(
-                    "ruokaa skip",
-                    "Skip",
+                    generateButtonId("skip"),
+                    Restaurant.skip,
                     MessageButtonStyles.SECONDARY
                 )
             );
@@ -172,6 +176,9 @@ const getWeekday = () => {
     if (hour >= 16) day++;
     return day;
 };
+
+const generateButtonId = (restaurant: keyof typeof Restaurant) =>
+    `ruokaa ${restaurant}`;
 
 const command: SlashCommandModule = {
     data: {
