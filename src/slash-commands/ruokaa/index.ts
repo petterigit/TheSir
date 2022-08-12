@@ -5,8 +5,27 @@ import {
     MessageButtonStyles,
 } from "discord.js/typings/enums";
 import { SlashCommandModule } from "../../types";
-
 import { createButton, randomColor } from "../../util";
+
+const DayMap = {
+    Sunday: 0,
+    Monday: 1,
+    Tuesday: 2,
+    Wednesday: 3,
+    Thursday: 4,
+    Friday: 5,
+    Saturday: 6,
+};
+
+const foodConfig = {
+    [DayMap.Monday]: ["yolo", "laseri"],
+    [DayMap.Tuesday]: ["yolo", "laseri"],
+    [DayMap.Wednesday]: ["yolo", "laseri"],
+    [DayMap.Thursday]: ["yolo", "laseri", "tang"],
+    [DayMap.Friday]: ["yolo", "laseri", "lalo"],
+    [DayMap.Saturday]: ["yolo", "laseri"],
+    [DayMap.Sunday]: ["yolo", "laseri"],
+};
 
 type Food = {
     name: string;
@@ -53,12 +72,18 @@ const lalo = (): Category => ({
 
 const ruokaa = async (interaction: CommandInteraction) => {
     await interaction.deferReply();
+    const weekday = getWeekday();
+    const foods = foodConfig[weekday];
 
     try {
-        const response = await axios(
-            "https://skinfo.juho.space/categories.json"
-        );
-        const data: JsonResponse = await response.data;
+        let data: JsonResponse | undefined = undefined;
+
+        if (foods.includes("yolo") || foods.includes("laseri")) {
+            const response = await axios(
+                "https://skinfo.juho.space/categories.json"
+            );
+            data = await response.data;
+        }
 
         const embed = new MessageEmbed();
         embed.setTitle("Syödään tänään");
@@ -80,32 +105,38 @@ const ruokaa = async (interaction: CommandInteraction) => {
             embed.setTimestamp();
         };
 
-        const yolo = data.yolo && data.yolo.length > 0;
-        const laseri = data.laseri && data.laseri.length > 0;
-
         const buttonRow = new MessageActionRow();
 
-        if (laseri) {
-            appendMenu(data.laseri, "Laserilla:");
-            buttonRow.addComponents(createButton("ruokaa laser", "Laser"));
-        }
-
-        if (yolo) {
-            appendMenu(data.yolo, "Yololla:");
-            buttonRow.addComponents(createButton("ruokaa yolo", "Yolo"));
-        }
-
-        if (isThursday()) {
-            appendMenu([tang()], "Tang Capitalissa:");
-            buttonRow.addComponents(
-                createButton("ruokaa tang", "Tang Capital")
-            );
-        }
-
-        if (isFriday()) {
-            appendMenu([lalo()], "Lalossa:");
-            buttonRow.addComponents(createButton("ruokaa lalo", "Lalo"));
-        }
+        foods.map((food) => {
+            switch (food) {
+                case "yolo":
+                    if (!data.yolo || data.yolo.length === 0) return;
+                    appendMenu(data.yolo, "Yololla:");
+                    buttonRow.addComponents(
+                        createButton("ruokaa yolo", "Yolo")
+                    );
+                    break;
+                case "laseri":
+                    if (!data.laseri || data.laseri.length === 0) return;
+                    appendMenu(data.laseri, "Laserilla:");
+                    buttonRow.addComponents(
+                        createButton("ruokaa laser", "Laser")
+                    );
+                    break;
+                case "tang":
+                    appendMenu([tang()], "Tang Capitalissa:");
+                    buttonRow.addComponents(
+                        createButton("ruokaa tang", "Tang Capital")
+                    );
+                    break;
+                case "lalo":
+                    appendMenu([lalo()], "Lalossa:");
+                    buttonRow.addComponents(
+                        createButton("ruokaa lalo", "Lalo")
+                    );
+                    break;
+            }
+        });
 
         if (buttonRow.components.length === 0) {
             await interaction.editReply({
@@ -134,24 +165,12 @@ const ruokaa = async (interaction: CommandInteraction) => {
     }
 };
 
-const isThursday = () => {
+const getWeekday = () => {
     const date = new Date();
     const hour = date.getUTCHours();
-    const day = date.getUTCDay();
-    if ((day === 3 && hour >= 16) || (day === 4 && hour < 16)) {
-        return true;
-    }
-    return false;
-};
-
-const isFriday = () => {
-    const date = new Date();
-    const hour = date.getUTCHours();
-    const day = date.getUTCDay();
-    if ((day === 4 && hour >= 16) || (day === 5 && hour < 16)) {
-        return true;
-    }
-    return false;
+    let day = date.getUTCDay();
+    if (hour >= 16) day++;
+    return day;
 };
 
 const command: SlashCommandModule = {
