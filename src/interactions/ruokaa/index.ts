@@ -12,6 +12,8 @@ const idToRestaurant = {
     yolo: "Yolo",
     laser: "Laser",
     buffet: "LUT Buffet",
+    tang: "Tang Capital",
+    lalo: "Lalo",
     skip: "Skip",
 };
 
@@ -127,8 +129,11 @@ const addParticipantCount = (name: string, count: number) => {
 };
 
 const removeParticipantCount = (name: string) => {
-    const restaurant = name.split(" ")[0];
-    return restaurant;
+    const indexOfOpenParenthesis = name.lastIndexOf("(");
+    if (indexOfOpenParenthesis !== -1) {
+        return name.substring(0, indexOfOpenParenthesis).trim();
+    }
+    return name;
 };
 
 const isValidRestaurant = (

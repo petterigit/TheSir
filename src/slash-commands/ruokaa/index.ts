@@ -23,6 +23,34 @@ type JsonResponse = {
     yolo?: Category[];
 };
 
+const tang = (): Category => ({
+    category: "Buffet",
+    foods: [
+        {
+            name: "Sushia",
+            dietInfo: ["Kalaa"],
+        },
+        {
+            name: "Wokkia",
+            dietInfo: [],
+        },
+    ],
+});
+
+const lalo = (): Category => ({
+    category: "Lounas",
+    foods: [
+        {
+            name: "Börgeri",
+            dietInfo: ["Rasvaa"],
+        },
+        {
+            name: "Salaatti",
+            dietInfo: ["Terveellinen"],
+        },
+    ],
+});
+
 const ruokaa = async (interaction: CommandInteraction) => {
     await interaction.deferReply();
 
@@ -57,14 +85,6 @@ const ruokaa = async (interaction: CommandInteraction) => {
 
         const buttonRow = new MessageActionRow();
 
-        if (!yolo && !laseri) {
-            await interaction.editReply({
-                content: "Ei ruokalistoja.",
-            });
-
-            return;
-        }
-
         if (laseri) {
             appendMenu(data.laseri, "Laserilla:");
             buttonRow.addComponents(createButton("ruokaa laser", "Laser"));
@@ -73,6 +93,26 @@ const ruokaa = async (interaction: CommandInteraction) => {
         if (yolo) {
             appendMenu(data.yolo, "Yololla:");
             buttonRow.addComponents(createButton("ruokaa yolo", "Yolo"));
+        }
+
+        if (isThursday()) {
+            appendMenu([tang()], "Tang Capitalissa:");
+            buttonRow.addComponents(
+                createButton("ruokaa tang", "Tang Capital")
+            );
+        }
+
+        if (isFriday()) {
+            appendMenu([lalo()], "Lalossa:");
+            buttonRow.addComponents(createButton("ruokaa lalo", "Lalo"));
+        }
+
+        if (buttonRow.components.length === 0) {
+            await interaction.editReply({
+                content: "Ei ruokalistoja.",
+            });
+
+            return;
         }
 
         if (buttonRow.components.length > 0) {
@@ -92,6 +132,26 @@ const ruokaa = async (interaction: CommandInteraction) => {
     } catch (error) {
         console.log(error);
     }
+};
+
+const isThursday = () => {
+    const date = new Date();
+    const hour = date.getUTCHours();
+    const day = date.getUTCDay();
+    if ((day === 3 && hour >= 16) || (day === 4 && hour < 16)) {
+        return true;
+    }
+    return false;
+};
+
+const isFriday = () => {
+    const date = new Date();
+    const hour = date.getUTCHours();
+    const day = date.getUTCDay();
+    if ((day === 4 && hour >= 16) || (day === 5 && hour < 16)) {
+        return true;
+    }
+    return false;
 };
 
 const command: SlashCommandModule = {

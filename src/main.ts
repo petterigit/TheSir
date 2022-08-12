@@ -66,7 +66,7 @@ const initialize = async () => {
     client.interactions = await requireCommands("interactions");
     client.slashCommands = await requireCommands("slash-commands");
     await registerSlashCommands(client);
-    console.log("Initialized 👍");
+    console.log("Initialized 🔥🔥");
 };
 
 initialize();
