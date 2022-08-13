@@ -26,6 +26,7 @@ import { MessageButtonStyles } from "discord.js/typings/enums";
 import random from "lodash/random";
 
 export const NUMBER_OF_BOT_ACTIVITES = 5;
+export const MESSAGE_MAX_LENGTH = 2000;
 
 export const getNicknameOrName = (
     message: Message | CommandInteraction

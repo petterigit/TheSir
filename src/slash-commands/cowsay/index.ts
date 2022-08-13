@@ -5,7 +5,7 @@ import {
 } from "discord.js/typings/enums";
 import { spawn } from "node:child_process";
 import { SlashCommandModule } from "../../types";
-import { createCodeBlock } from "../../util";
+import { createCodeBlock, MESSAGE_MAX_LENGTH } from "../../util";
 import { quote } from "shell-quote";
 
 const inputs: ApplicationCommandOptionData[] = [
@@ -17,6 +17,8 @@ const inputs: ApplicationCommandOptionData[] = [
     },
 ];
 
+const Columns = 60;
+
 const errorMessage = "Cow could not be found for comment.";
 
 const cowsay = async (interaction: CommandInteraction) => {
@@ -25,27 +27,42 @@ const cowsay = async (interaction: CommandInteraction) => {
     if (!message) message = "Moo moo mothertrucker!";
 
     try {
-        const shellCommand = quote([message]);
-        const cowsayProcess = spawn("cowsay", [shellCommand], {
+        const shellText = quote([message]);
+        const cowsayProcess = spawn("cowsay", [`-W ${Columns}`, shellText], {
             shell: true,
         });
 
-        cowsayProcess.stdout.on("data", (data) => {
-            interaction.editReply({
-                content: createCodeBlock(data.toString()),
+        cowsayProcess.stdout.on("data", async (data) => {
+            const result = data.toString().substring(0, MESSAGE_MAX_LENGTH - 6);
+            const fixedResult = cowTextFix(result);
+            await interaction.editReply({
+                content: createCodeBlock(fixedResult),
             });
         });
 
-        cowsayProcess.stderr.on("data", () => {
-            interaction.editReply({
+        cowsayProcess.stderr.on("data", async () => {
+            await interaction.editReply({
                 content: errorMessage,
             });
         });
     } catch (e) {
-        interaction.editReply({
+        await interaction.editReply({
             content: errorMessage,
         });
     }
+};
+
+const cowTextFix = (text: string) => {
+    const lines = text.split("\n");
+    const fixedLines = lines.map((line) => {
+        if (line[0] === " ") return line;
+        if (line.length > Columns) {
+            const lastChar = line.at(-1);
+            return line.substring(0, Columns + 1) + " " + lastChar;
+        }
+        return line;
+    });
+    return fixedLines.join("\n");
 };
 
 const command: SlashCommandModule = {
