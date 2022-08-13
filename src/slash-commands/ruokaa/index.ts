@@ -174,6 +174,7 @@ const getWeekday = () => {
     const hour = date.getUTCHours();
     let day = date.getUTCDay();
     if (hour >= 16) day++;
+    if (day === 7) day = 0;
     return day;
 };
 
