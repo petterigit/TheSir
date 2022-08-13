@@ -46,6 +46,7 @@ export const createEveryoneMention = () => "@everyone";
 export const createMention = (interaction: Interaction) => {
     return `<@${interaction.member.user.id}>`;
 };
+export const createCodeBlock = (text: string) => "```" + text + "```";
 export const isMentionGuildMember = (
     mention:
         | GuildMember
