@@ -5,14 +5,15 @@ const cow = `\
                 ||----w |
                 ||     ||`;
 
-export const generateCowsay = (message: string, columns = 20) => {
+export const generateCowsay = (message: string, columns = 40) => {
     let bubble = generateBubble(message, columns);
     bubble += cow;
     return bubble;
 };
 
 const generateBubble = (message: string, columns: number) => {
-    const words = message.split(" ");
+    const parsedMessage = message.replace(/\n/g, " ");
+    const words = parsedMessage.split(" ");
     const parsedWords = words.reduce((acc: string[], word: string) => {
         while (word.length > columns) {
             acc.push(word.substring(0, columns));
@@ -46,10 +47,10 @@ const generateBubble = (message: string, columns: number) => {
         }
     }
 
-    let bubble = ` ${"_".repeat(longestLine + 3)}\n`;
+    let bubble = ` ${"_".repeat(longestLine + 2)}\n`;
     for (let i = 0, limit = lines.length; i < limit; i++) {
         const lineLength = lines[i].length;
-        const spacePadding = " ".repeat(longestLine - lineLength + 1);
+        const spacePadding = " ".repeat(longestLine - lineLength);
         if (limit === 1) {
             bubble += `< ${lines[i]}${spacePadding} >\n`;
         } else if (i === 0) {
@@ -60,13 +61,7 @@ const generateBubble = (message: string, columns: number) => {
             bubble += `| ${lines[i]}${spacePadding} |\n`;
         }
     }
-    bubble += ` ${"-".repeat(longestLine + 3)}\n`;
+    bubble += ` ${"-".repeat(longestLine + 2)}\n`;
 
     return bubble;
 };
-
-console.log(
-    generateCowsay(
-        `I'm having a surprisingly hard time finding an answer to this. With plain Node.JS, you can run any js file with node path/to/file.js, with CoffeeScript it's coffee hello.coffee and ES6 has babel-node hello.js. How do I do the same with Typescript? My project has a tsconfig.json which is used by Webpack/ts-loader to build a nice little bundle for the browser. I have a need for a build step run from the console before that, though, that would use some of the .ts files used in the project to generate a schema, but I can't seem to be able to run a single Typescript file without compiling the whole project. `
-    )
-);
