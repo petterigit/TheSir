@@ -1,13 +1,13 @@
 const cow = `\
-        \\   ^__^
-         \\  (oo)\\_______
-            (__)\\       )\\/\\
-                ||----w |
-                ||     ||`;
+\\   ^__^
+ \\  (oo)\\_______
+    (__)\\       )\\/\\
+        ||----w |
+        ||     ||`;
 
 export const generateCowsay = (message: string, columns = 40) => {
     let bubble = generateBubble(message, columns);
-    bubble += cow;
+    bubble += padCow(cow, columns);
     return bubble;
 };
 
@@ -64,4 +64,11 @@ const generateBubble = (message: string, columns: number) => {
     bubble += ` ${"-".repeat(longestLine + 2)}\n`;
 
     return bubble;
+};
+
+const padCow = (cow: string, columns: number) => {
+    const padding = Math.ceil(columns / 2) + 2;
+    const lines = cow.split("\n");
+    const newLines = lines.map((line) => `${" ".repeat(padding)}${line}`);
+    return newLines.join("\n");
 };
