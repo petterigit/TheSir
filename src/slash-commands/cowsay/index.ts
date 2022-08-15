@@ -7,7 +7,6 @@ import { SlashCommandModule } from "../../types";
 import { createCodeBlock, MESSAGE_MAX_LENGTH } from "../../util";
 import { generateCowsay } from "./cowsay";
 
-
 const inputs: ApplicationCommandOptionData[] = [
     {
         type: ApplicationCommandOptionTypes.STRING,
@@ -25,8 +24,6 @@ const inputs: ApplicationCommandOptionData[] = [
     },
 ];
 
-const Columns = 60;
-
 const errorMessage = "Cow could not be found for comment.";
 
 const cowsay = async (interaction: CommandInteraction) => {
@@ -40,26 +37,12 @@ const cowsay = async (interaction: CommandInteraction) => {
         const limitedCow = cowsay.substring(0, MESSAGE_MAX_LENGTH - 6);
         await interaction.editReply({
             content: createCodeBlock(limitedCow),
-
         });
     } catch (e) {
         await interaction.editReply({
             content: errorMessage,
         });
     }
-};
-
-const cowTextFix = (text: string) => {
-    const lines = text.split("\n");
-    const fixedLines = lines.map((line) => {
-        if (line[0] === " ") return line;
-        if (line.length > Columns) {
-            const lastChar = line.at(-1);
-            return line.substring(0, Columns + 1) + " " + lastChar;
-        }
-        return line;
-    });
-    return fixedLines.join("\n");
 };
 
 const command: SlashCommandModule = {
