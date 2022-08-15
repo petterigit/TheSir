@@ -7,7 +7,8 @@ const cow = `\
 
 export const generateCowsay = (message: string, columns = 40) => {
     let bubble = generateBubble(message, columns);
-    bubble += padCow(cow, columns);
+    const actualColumns = bubble.split("\n")[1].length;
+    bubble += padCow(cow, actualColumns);
     return bubble;
 };
 
@@ -67,7 +68,7 @@ const generateBubble = (message: string, columns: number) => {
 };
 
 const padCow = (cow: string, columns: number) => {
-    const padding = Math.ceil(columns / 2) + 2;
+    const padding = Math.ceil(columns / 2);
     const lines = cow.split("\n");
     const newLines = lines.map((line) => `${" ".repeat(padding)}${line}`);
     return newLines.join("\n");
