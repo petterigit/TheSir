@@ -18,6 +18,8 @@ const inputs: ApplicationCommandOptionData[] = [
         type: ApplicationCommandOptionTypes.NUMBER,
         name: "width",
         description: "How wide should the cow say?",
+        minValue: 1,
+        maxValue: 200,
         required: false,
     },
 ];
