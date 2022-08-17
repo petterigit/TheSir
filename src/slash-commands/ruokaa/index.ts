@@ -165,6 +165,7 @@ const ruokaa = async (interaction: CommandInteraction) => {
             components: [buttonRow],
         });
     } catch (error) {
+        interaction.editReply("Ei ruokalistoja.");
         console.log(error);
     }
 };
