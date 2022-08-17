@@ -83,10 +83,15 @@ const ruokaa = async (interaction: CommandInteraction) => {
             foods.includes(Restaurant.yolo) ||
             foods.includes(Restaurant.laseri)
         ) {
-            const response = await axios(
-                "https://skinfo.juho.space/categories.json"
-            );
-            data = await response.data;
+            try {
+                const response = await axios(
+                    "https://skinfo.juho.space/categories.json"
+                );
+                data = await response.data;
+            } catch (error) {
+                console.error("Fetch failed", error);
+                data = undefined;
+            }
         }
 
         const embed = new MessageEmbed();
@@ -122,12 +127,12 @@ const ruokaa = async (interaction: CommandInteraction) => {
         foods.map((food) => {
             switch (food) {
                 case Restaurant.yolo:
-                    if (!data.yolo || data.yolo.length === 0) return;
+                    if (!data?.yolo?.length) return;
                     appendMenu(data.yolo, "Yololla:");
                     addButton("yolo");
                     break;
                 case Restaurant.laseri:
-                    if (!data.laseri || data.laseri.length === 0) return;
+                    if (!data?.laseri?.length) return;
                     appendMenu(data.laseri, "Laserilla:");
                     addButton("laseri");
                     break;
