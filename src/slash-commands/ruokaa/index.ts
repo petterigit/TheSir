@@ -127,13 +127,13 @@ const ruokaa = async (interaction: CommandInteraction) => {
         foods.map((food) => {
             switch (food) {
                 case Restaurant.yolo:
-                    if (!data?.yolo || data?.yolo.length === 0) return;
-                    appendMenu(data?.yolo, "Yololla:");
+                    if (!data?.yolo?.length) return;
+                    appendMenu(data.yolo, "Yololla:");
                     addButton("yolo");
                     break;
                 case Restaurant.laseri:
-                    if (!data?.laseri || data?.laseri.length === 0) return;
-                    appendMenu(data?.laseri, "Laserilla:");
+                    if (!data?.laseri?.length) return;
+                    appendMenu(data.laseri, "Laserilla:");
                     addButton("laseri");
                     break;
                 case Restaurant.tang:
