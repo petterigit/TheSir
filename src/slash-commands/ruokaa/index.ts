@@ -19,13 +19,13 @@ const DayMap = {
 };
 
 const FoodConfig = {
-    [DayMap.Monday]: [Restaurant.yolo, Restaurant.laseri],
-    [DayMap.Tuesday]: [Restaurant.yolo, Restaurant.laseri],
-    [DayMap.Wednesday]: [Restaurant.yolo, Restaurant.laseri],
+    [DayMap.Monday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lutBuffet],
+    [DayMap.Tuesday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lutBuffet],
+    [DayMap.Wednesday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lutBuffet],
     [DayMap.Thursday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.tang],
     [DayMap.Friday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lalo],
-    [DayMap.Saturday]: [Restaurant.yolo, Restaurant.laseri],
-    [DayMap.Sunday]: [Restaurant.yolo, Restaurant.laseri],
+    [DayMap.Saturday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lutBuffet],
+    [DayMap.Sunday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lutBuffet],
 };
 
 type Food = {
@@ -41,6 +41,7 @@ type Category = {
 type JsonResponse = {
     laseri?: Category[];
     yolo?: Category[];
+    lutBuffet?: Category[];
 };
 
 const tang = (): Category => ({
@@ -81,7 +82,8 @@ const ruokaa = async (interaction: CommandInteraction) => {
 
         if (
             foods.includes(Restaurant.yolo) ||
-            foods.includes(Restaurant.laseri)
+            foods.includes(Restaurant.laseri) ||
+            foods.includes(Restaurant.lutBuffet)
         ) {
             try {
                 const response = await axios(
@@ -135,6 +137,11 @@ const ruokaa = async (interaction: CommandInteraction) => {
                     if (!data?.laseri?.length) return;
                     appendMenu(data.laseri, "Laserilla:");
                     addButton("laseri");
+                    break;
+                case Restaurant.lutBuffet:
+                    if (!data?.lutBuffet?.length) return;
+                    appendMenu(data.lutBuffet, "LUT Buffetissa:");
+                    addButton("lutBuffet");
                     break;
                 case Restaurant.tang:
                     appendMenu([tang()], "Tang Capitalissa:");
