@@ -11,7 +11,7 @@ import { createMention } from "../../util";
 export const Restaurant = {
     yolo: "Yolo",
     laseri: "Laser",
-    buffet: "LUT Buffet",
+    lutBuffet: "LUT Buffet",
     tang: "Tang Capital",
     lalo: "Lalo",
     skip: "Skip",
