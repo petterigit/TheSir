@@ -4,29 +4,10 @@ import {
     ApplicationCommandTypes,
     MessageButtonStyles,
 } from "discord.js/typings/enums";
-import { Restaurant } from "../../interactions/ruokaa";
 import { SlashCommandModule } from "../../types";
 import { createButton, randomColor } from "../../util";
-
-const DayMap = {
-    Sunday: 0,
-    Monday: 1,
-    Tuesday: 2,
-    Wednesday: 3,
-    Thursday: 4,
-    Friday: 5,
-    Saturday: 6,
-};
-
-const FoodConfig = {
-    [DayMap.Monday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lutBuffet],
-    [DayMap.Tuesday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lutBuffet],
-    [DayMap.Wednesday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lutBuffet],
-    [DayMap.Thursday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.tang],
-    [DayMap.Friday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lalo],
-    [DayMap.Saturday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lutBuffet],
-    [DayMap.Sunday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lutBuffet],
-};
+import { getConfig } from "../ruokaa-config";
+import { Restaurant, RestaurantButtons } from "./consts";
 
 type Food = {
     name: string;
@@ -75,7 +56,8 @@ const lalo = (): Category => ({
 const ruokaa = async (interaction: CommandInteraction) => {
     await interaction.deferReply();
     const weekday = getWeekday();
-    const foods = FoodConfig[weekday];
+    const config = await getConfig();
+    const foods = config[weekday];
 
     try {
         let data: JsonResponse | undefined = undefined;
@@ -117,11 +99,11 @@ const ruokaa = async (interaction: CommandInteraction) => {
         };
 
         const buttonRow = new MessageActionRow();
-        const addButton = (restaurant: keyof typeof Restaurant) => {
+        const addButton = (restaurant: keyof typeof RestaurantButtons) => {
             buttonRow.addComponents(
                 createButton(
                     generateButtonId(restaurant),
-                    Restaurant[restaurant]
+                    RestaurantButtons[restaurant]
                 )
             );
         };
@@ -166,7 +148,7 @@ const ruokaa = async (interaction: CommandInteraction) => {
             buttonRow.addComponents(
                 createButton(
                     generateButtonId("skip"),
-                    Restaurant.skip,
+                    RestaurantButtons.skip,
                     MessageButtonStyles.SECONDARY
                 )
             );
@@ -191,7 +173,7 @@ const getWeekday = () => {
     return day;
 };
 
-const generateButtonId = (restaurant: keyof typeof Restaurant) =>
+const generateButtonId = (restaurant: keyof typeof RestaurantButtons) =>
     `ruokaa ${restaurant}`;
 
 const command: SlashCommandModule = {
