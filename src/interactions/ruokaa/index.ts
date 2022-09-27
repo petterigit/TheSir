@@ -4,18 +4,10 @@ import {
     EmbedField,
     MessageEmbed,
 } from "discord.js";
+import { RestaurantButtons } from "../../slash-commands/ruokaa/consts";
 import { InteractionModule } from "../../types";
 
 import { createMention } from "../../util";
-
-export const Restaurant = {
-    yolo: "Yolo",
-    laseri: "Laser",
-    lutBuffet: "LUT Buffet",
-    tang: "Tang Capital",
-    lalo: "Lalo",
-    skip: "Skip",
-};
 
 const participantSeparator = "\n";
 
@@ -28,7 +20,7 @@ const ruokaa = async (interaction: ButtonInteraction) => {
     let participantEmbed = interaction.message.embeds[1] as MessageEmbed;
     if (!participantEmbed) {
         participantEmbed = createParticipantEmbed(
-            Restaurant[restaurantParameter],
+            RestaurantButtons[restaurantParameter],
             createMention(interaction)
         );
         participantEmbed.setColor(originalEmbed.color);
@@ -36,7 +28,7 @@ const ruokaa = async (interaction: ButtonInteraction) => {
         const votes = parseParticipants(participantEmbed);
         const newVotes = setVote(
             votes,
-            Restaurant[restaurantParameter],
+            RestaurantButtons[restaurantParameter],
             createMention(interaction)
         );
         const newFields = setVotesToFields(newVotes);
@@ -115,7 +107,7 @@ const setVotesToFields = (votes: Collection<string, string[]>) => {
         .sort((a, b) => {
             const aName = removeParticipantCount(a.name);
             const bName = removeParticipantCount(b.name);
-            const skipName = Restaurant["skip"];
+            const skipName = RestaurantButtons.skip;
             if (aName === bName) return 0;
             if (aName === skipName) return 1;
             if (bName === skipName) return -1;
@@ -138,7 +130,8 @@ const removeParticipantCount = (name: string) => {
 
 const isValidRestaurant = (
     restaurant: string
-): restaurant is keyof typeof Restaurant => restaurant in Restaurant;
+): restaurant is keyof typeof RestaurantButtons =>
+    restaurant in RestaurantButtons;
 
 const interaction: InteractionModule = {
     data: {

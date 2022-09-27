@@ -139,7 +139,7 @@ export const executeCommand = async <T>(
     try {
         await handler.execute(interaction, client);
     } catch (error) {
-        console.error(error);
+        console.error(JSON.stringify(error, null, 2));
     }
 };
 
@@ -162,7 +162,7 @@ export const registerSlashCommand = async (
 ): Promise<void> => {
     await client.application.commands
         .set(data, id)
-        .catch((e) => console.error(e));
+        .catch((e) => console.error(JSON.stringify(e, null, 2)));
 };
 
 export const rotateSisterActivities = async (
@@ -184,4 +184,9 @@ export const rotateSisterActivities = async (
         });
     }, fiveMinutes);
     return interval;
+};
+
+export const getObjectKey = <T>(obj: Record<string, T>, value: T) => {
+    const [foundKey] = Object.entries(obj).find(([, v]) => v === value);
+    return foundKey;
 };

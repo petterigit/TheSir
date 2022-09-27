@@ -9,3 +9,6 @@
 
 # Build folder
 /dist
+
+# Ruokaa config file
+ruokaa.json
