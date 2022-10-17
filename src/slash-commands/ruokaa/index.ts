@@ -7,7 +7,7 @@ import {
 import { SlashCommandModule } from "../../types";
 import { createButton, randomColor } from "../../util";
 import { getConfig } from "../ruokaa-config";
-import { Restaurant, RestaurantButtons } from "./consts";
+import { DayChangeHourUtc, Restaurant, RestaurantButtons } from "./consts";
 
 type Food = {
     name: string;
@@ -168,7 +168,7 @@ const getWeekday = () => {
     const date = new Date();
     const hour = date.getUTCHours();
     let day = date.getUTCDay();
-    if (hour >= 16) day++;
+    if (hour >= DayChangeHourUtc) day++;
     if (day === 7) day = 0;
     return day;
 };
