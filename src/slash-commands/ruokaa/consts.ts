@@ -21,6 +21,8 @@ export const DayMap = {
     Saturday: 6,
 };
 
+export const DayChangeHourUtc = 12;
+
 export type FoodConfig = Record<number, string[]>;
 
 export const ConfigFileName = "ruokaa.json";
