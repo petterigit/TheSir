@@ -176,7 +176,7 @@ export const rotateSisterActivities = async (
         client.user.setPresence({
             activities: [
                 {
-                    name: "My sister",
+                    name: "my sister",
                     type: newActivityType,
                 },
             ],
