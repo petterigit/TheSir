@@ -2,8 +2,7 @@ export const Restaurant = {
     yolo: "Yolo",
     laseri: "Laser",
     lutBuffet: "LUT Buffet",
-    tang: "Tang Capital",
-    lalo: "Lalo",
+    keskusta: "Keskusta"
 };
 
 export const RestaurantButtons = {

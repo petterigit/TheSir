@@ -25,30 +25,12 @@ type JsonResponse = {
     lutBuffet?: Category[];
 };
 
-const tang = (): Category => ({
-    category: "Buffet",
-    foods: [
-        {
-            name: "Sushia",
-            dietInfo: ["Kalaa"],
-        },
-        {
-            name: "Wokkia",
-            dietInfo: [],
-        },
-    ],
-});
-
-const lalo = (): Category => ({
+const keskusta = (): Category => ({
     category: "Lounas",
     foods: [
         {
-            name: "Börgeri",
-            dietInfo: ["Rasvaa"],
-        },
-        {
-            name: "Salaatti",
-            dietInfo: ["Terveellinen"],
+            name: "Ruokaa",
+            dietInfo: ["Syötävää"],
         },
     ],
 });
@@ -125,13 +107,9 @@ const ruokaa = async (interaction: CommandInteraction) => {
                     appendMenu(data.lutBuffet, "LUT Buffetissa:");
                     addButton("lutBuffet");
                     break;
-                case Restaurant.tang:
-                    appendMenu([tang()], "Tang Capitalissa:");
-                    addButton("tang");
-                    break;
-                case Restaurant.lalo:
-                    appendMenu([lalo()], "Lalossa:");
-                    addButton("lalo");
+                case Restaurant.keskusta:
+                    appendMenu([keskusta()], "Keskustassa:");
+                    addButton("keskusta");
                     break;
             }
         });
