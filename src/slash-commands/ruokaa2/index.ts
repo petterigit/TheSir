@@ -151,7 +151,7 @@ const ruokaa = async (interaction: CommandInteraction) => {
 
         await interaction.editReply({
             files: Object.values(ssNames).map(
-                (ss) => `src/slash-commands/ping/${ss}.png`
+                (ss) => `src/slash-commands/ruokaa2/${ss}.png`
             ),
             embeds: [embed],
             components: [buttonRow],
