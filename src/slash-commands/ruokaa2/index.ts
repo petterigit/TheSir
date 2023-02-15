@@ -1,4 +1,3 @@
-import axios from "axios";
 import { CommandInteraction, MessageActionRow, MessageEmbed } from "discord.js";
 import {
     ApplicationCommandTypes,
@@ -9,6 +8,7 @@ import { createButton, randomColor } from "../../util";
 import { getConfig } from "../ruokaa-config";
 import { DayChangeHourUtc, Restaurant, RestaurantButtons } from "./consts";
 import puppeteer, { ElementHandle, Page, ScreenshotClip } from "puppeteer";
+
 type Food = {
     name: string;
     dietInfo: string[];
@@ -17,12 +17,6 @@ type Food = {
 type Category = {
     category: string;
     foods: Food[];
-};
-
-type JsonResponse = {
-    laseri?: Category[];
-    yolo?: Category[];
-    lutBuffet?: Category[];
 };
 
 const keskusta = (): Category => ({
@@ -42,26 +36,6 @@ const ruokaa = async (interaction: CommandInteraction) => {
     const foods = config[weekday];
 
     try {
-        /*
-        let data: JsonResponse | undefined = undefined;
-
-        if (
-            foods.includes(Restaurant.yolo) ||
-            foods.includes(Restaurant.laseri) ||
-            foods.includes(Restaurant.lutBuffet)
-        ) {
-            try {
-                const response = await axios(
-                    "https://skinfo.juho.space/categories.json"
-                );
-                data = await response.data;
-            } catch (error) {
-                console.error("Fetch failed", error);
-                data = undefined;
-            }
-        }
-        */
-
         const embed = new MessageEmbed();
         embed.setTitle("Syödään tänään");
         embed.setColor(randomColor());
@@ -100,11 +74,6 @@ const ruokaa = async (interaction: CommandInteraction) => {
                 case Restaurant.laseri:
                     addButton("laseri");
                     break;
-
-                case Restaurant.lutBuffet:
-                    //addButton("lutBuffet");
-                    break;
-
                 case Restaurant.keskusta:
                     appendMenu([keskusta()], "Keskustassa:");
                     addButton("keskusta");
@@ -150,14 +119,12 @@ const ruokaa = async (interaction: CommandInteraction) => {
         await browser.close();
 
         await interaction.editReply({
-            files: Object.values(ssNames).map(
-                (ss) => `src/slash-commands/ruokaa2/${ss}.png`
-            ),
+            files: Object.values(ssNames).map((ss) => `${ss}.png`),
             embeds: [embed],
             components: [buttonRow],
         });
     } catch (error) {
-        interaction.editReply("Ei ruokalistoja.");
+        interaction.editReply(`Ei ruokalistoja. Error: ${error}`);
         console.log(error);
     }
 };
@@ -185,42 +152,6 @@ const command: SlashCommandModule = {
     },
 };
 
-const ruokaa2 = async (interaction: CommandInteraction) => {
-    await interaction.deferReply();
-
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.setViewport({ width: 1200, height: 10000 });
-
-    await aalefNavigate(page);
-
-    /* Laser */
-    await aalefSwitchMenu(page, "Ravintola Laseri");
-    const laserClip = await aalefClip(page);
-    await clip(page, laserClip, ssNames.laser);
-
-    /* Yolo */
-    await aalefSwitchMenu(page, "Ravintola YOLO");
-    const yoloClip = await aalefClip(page);
-    await clip(page, yoloClip, ssNames.yolo);
-
-    /* Close browser */
-    await browser.close();
-
-    /* Add images to reply */
-
-    try {
-        interaction.editReply({
-            files: Object.values(ssNames).map(
-                (ss) => `src/slash-commands/ruokaa2/${ss}.png`
-            ),
-        });
-    } catch (error) {
-        console.info(error);
-        interaction.editReply("Something went wrong :(");
-    }
-};
-
 const ssNames = {
     laser: "laser-ruokalista",
     yolo: "yolo-ruokalista",
@@ -233,7 +164,7 @@ const clip = async (page: Page, clip: ScreenshotClip, name: string) => {
     try {
         await page.screenshot({
             clip: clip,
-            path: `./src/slash-commands/ruokaa2/${name}.png`,
+            path: `${name}.png`,
         });
     } catch (error) {
         console.info(error);
@@ -244,47 +175,64 @@ const aalefClip = async (page: Page) => {
     console.info("Get aalef clip size");
     try {
         const top = await page.evaluate(() => {
-            const headers = document.getElementsByTagName("h3");
-            let today;
+            const headers = Array.from(document.getElementsByTagName("h3"));
             let tomorrow;
-
+            let afterTomorrow;
+            const tomorrowDate = new Date().getDate() + 1;
             for (let i = 0; i < headers.length; i++) {
                 const el = headers[i];
 
-                const tomorrowDate = new Date().getDate() + 1;
-
                 if (el.innerText.includes(tomorrowDate.toString())) {
-                    today = el.offsetTop;
-                }
-                if (el.innerText.includes((tomorrowDate + 1).toString())) {
                     tomorrow = el.offsetTop;
-                }
-                if (today && tomorrow) {
+                    if (tomorrow === 0) {
+                        // If the element is not visible, it will be 0. Skip.
+                        // Would have to check if any of the parent elements have display: none
+                        continue;
+                    }
+                    if (headers.length >= i + 1) {
+                        afterTomorrow = headers[i + 1].offsetTop;
+                    } else {
+                        afterTomorrow = tomorrow + 1200; // 1200 height if this fails
+                    }
+
                     break;
                 }
             }
 
             return {
-                today: today,
                 tomorrow: tomorrow,
+                afterTomorrow: afterTomorrow,
             };
         });
 
         if (
             !top ||
-            typeof top.today === "undefined" ||
-            typeof top.tomorrow === "undefined"
+            typeof top.tomorrow === "undefined" ||
+            typeof top.afterTomorrow === "undefined"
         ) {
             throw new Error("Top was not there");
         }
 
+        const clipHeight = top.afterTomorrow - top.tomorrow;
         console.log(top);
+        if (clipHeight <= 0) {
+            console.info(
+                "Clip height was 0 or smaller. Query selector probably failed"
+            );
+            console.info("Trying to get the height more or less right..");
+            return {
+                height: 2000,
+                width: 1200,
+                x: 0,
+                y: top.tomorrow,
+            };
+        }
 
         return {
-            height: top.tomorrow - top.today,
+            height: clipHeight,
             width: 1200,
             x: 0,
-            y: top.today,
+            y: top.tomorrow,
         };
     } catch (error) {
         console.info(error);
