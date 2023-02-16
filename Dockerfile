@@ -1,12 +1,18 @@
-from node:16
+FROM node:16
 
-run apt-get update && apt-get -y install libnss3
+RUN apt-get update && apt-get -y install \
+    libnss3 \
+    libxss1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libgtk-3-0
 
-workdir /app
-copy package*.json ./
-run npm ci
 
-copy . .
-run npm run build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
 
-cmd ["npm", "start"]
+COPY . .
+RUN npm run build
+
+CMD ["npm", "start"]
