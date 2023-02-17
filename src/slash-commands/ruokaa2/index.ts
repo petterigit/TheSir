@@ -247,8 +247,8 @@ const aalefNavigate = async (page: Page) => {
     const gdprfuckery = await page.$x("//button[contains(., 'Kiellä')]");
     (gdprfuckery[0] as ElementHandle<Element>).click();
 
-    // Wait 0.2s for this
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Wait 5s for this
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 };
 
 const aalefSwitchMenu = async (page: Page, menu: string) => {
@@ -258,8 +258,8 @@ const aalefSwitchMenu = async (page: Page, menu: string) => {
         const button = menuSelector[0] as ElementHandle<HTMLElement>;
         await button.click();
 
-        // Wait 2s for page to load properly
-        await new Promise((_) => setTimeout(_, 2000));
+        // Wait 5s for page to load properly
+        await new Promise((_) => setTimeout(_, 5000));
     } catch (error) {
         console.info(error);
     }
