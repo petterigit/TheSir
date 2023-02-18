@@ -5,6 +5,8 @@ RUN apt-get update && apt-get install -y libgbm-dev gconf-service libasound2 lib
 
 WORKDIR /app
 COPY package*.json ./
+COPY block-cookies-extension /app/block-cookies-extension
+
 RUN npm ci
 
 COPY . .
