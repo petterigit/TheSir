@@ -15,26 +15,6 @@ import { DayChangeHourUtc, Restaurant, RestaurantButtons } from "./consts";
 import puppeteer, { ElementHandle, Page, ScreenshotClip } from "puppeteer";
 import path from "path";
 
-type Food = {
-    name: string;
-    dietInfo: string[];
-};
-
-type Category = {
-    category: string;
-    foods: Food[];
-};
-
-const keskusta = (): Category => ({
-    category: "Lounas",
-    foods: [
-        {
-            name: "Ruokaa",
-            dietInfo: ["Syötävää"],
-        },
-    ],
-});
-
 const ruokaa = async (interaction: CommandInteraction) => {
     await interaction.deferReply();
     const weekday = getWeekday();
@@ -42,25 +22,9 @@ const ruokaa = async (interaction: CommandInteraction) => {
     const foods = config[weekday];
 
     try {
-        const embed = new MessageEmbed();
-        embed.setTitle("Syödään tänään");
-        embed.setColor(randomColor());
-
-        const appendMenu = (categories: Category[], header: string) => {
-            const textMenu = [];
-            for (const category of categories) {
-                textMenu.push(` - ${category.category}:`);
-                for (const food of category.foods) {
-                    let result = `   ${food.name}`;
-                    if (food.dietInfo.length > 0) {
-                        result += ` (${food.dietInfo.join("/")})`;
-                    }
-                    textMenu.push(result);
-                }
-            }
-            embed.addField(header, textMenu.join("\n"), true);
-            embed.setTimestamp();
-        };
+        const voteEmbed = new MessageEmbed();
+        voteEmbed.setTitle("Äänestä ruokapaikkaa");
+        voteEmbed.setColor(randomColor());
 
         const buttonRow = new MessageActionRow();
         const addButton = (restaurant: keyof typeof RestaurantButtons) => {
@@ -81,19 +45,10 @@ const ruokaa = async (interaction: CommandInteraction) => {
                     addButton("laseri");
                     break;
                 case Restaurant.keskusta:
-                    appendMenu([keskusta()], "Keskustassa:");
                     addButton("keskusta");
                     break;
             }
         });
-
-        if (buttonRow.components.length === 0) {
-            await interaction.editReply({
-                content: "Ei ruokalistoja.",
-            });
-
-            return;
-        }
 
         if (buttonRow.components.length > 0) {
             buttonRow.addComponents(
@@ -120,7 +75,7 @@ const ruokaa = async (interaction: CommandInteraction) => {
         });
 
         const page = await browser.newPage();
-        await page.setViewport({ width: 1200, height: 10000 });
+        await page.setViewport({ width: 1200, height: 2000 });
 
         await aalefNavigate(page);
 
@@ -141,16 +96,13 @@ const ruokaa = async (interaction: CommandInteraction) => {
         /* Close browser */
         await browser.close();
 
-        //const menus = Object.values(ssNames).map((ss) => createMenuEmbed(ss));
-        //const attachments = Object.values(ssNames).map((ss) => createMenuEmbed(ss)
-        /*
-        const attachment = new MessageAttachment("yolo-ruokalista.png");
-        const embed2 = new MessageEmbed()
-            .setImage("attachment://yolo-ruokalista.png")
-            .setTitle("Ruokalista - YOLO");
+        if (buttonRow.components.length === 0) {
+            await interaction.editReply({
+                content: "Ei ruokalistoja.",
+            });
 
-        console.log(embed2);
-        */
+            return;
+        }
 
         await interaction.editReply({
             embeds: [
