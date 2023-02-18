@@ -8,6 +8,7 @@ import { createButton, randomColor } from "../../util";
 import { getConfig } from "../ruokaa-config";
 import { DayChangeHourUtc, Restaurant, RestaurantButtons } from "./consts";
 import puppeteer, { ElementHandle, Page, ScreenshotClip } from "puppeteer";
+import path from "path";
 
 type Food = {
     name: string;
@@ -99,7 +100,22 @@ const ruokaa = async (interaction: CommandInteraction) => {
             );
         }
 
-        const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+        const pathToExtension = path.join(
+            process.cwd(),
+            "block-cookies-extension/3.4.6_0"
+        );
+
+        console.log(pathToExtension);
+
+        const browser = await puppeteer.launch({
+            headless: "new",
+            args: [
+                "--no-sandbox",
+                `--disable-extensions-except=${pathToExtension}`,
+                `--load-extension=${pathToExtension}`,
+            ],
+        });
+
         const page = await browser.newPage();
         await page.setViewport({ width: 1200, height: 10000 });
 
@@ -243,10 +259,10 @@ const aalefClip = async (page: Page) => {
 const aalefNavigate = async (page: Page) => {
     console.info("Navigate to aalef");
     await page.goto("https://www.aalef.fi/#ravintolat");
-
+    /*
     const gdprfuckery = await page.$x("//button[contains(., 'Kiellä')]");
     (gdprfuckery[0] as ElementHandle<Element>).click();
-
+    */
     // Wait 5s for this
     await new Promise((resolve) => setTimeout(resolve, 5000));
 };
