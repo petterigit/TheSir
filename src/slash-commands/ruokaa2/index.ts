@@ -66,7 +66,8 @@ const ruokaa = async (interaction: CommandInteraction) => {
         );
 
         const browser = await puppeteer.launch({
-            headless: "new",
+            headless: false, // !! HUGE !! BY SETTING THIS TO FALSE YOU CAN SEE WHAT IT DOES ON YOUR OWN COMPUTER POG !!
+            // ( and it's required server side .. )
             args: [
                 "--no-sandbox",
                 `--disable-extensions-except=${pathToExtension}`,
