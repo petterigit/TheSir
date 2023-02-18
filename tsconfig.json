@@ -12,4 +12,6 @@
     "noImplicitAny": true
   },
   "include": [ "src/**/*" ],
+  "exclude": [ ".eslintrc.js",
+  "block-cookies-extension"]
 }

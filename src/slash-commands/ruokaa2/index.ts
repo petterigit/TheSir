@@ -1,4 +1,9 @@
-import { CommandInteraction, MessageActionRow, MessageEmbed } from "discord.js";
+import {
+    CommandInteraction,
+    MessageActionRow,
+    MessageAttachment,
+    MessageEmbed,
+} from "discord.js";
 import {
     ApplicationCommandTypes,
     MessageButtonStyles,
@@ -8,26 +13,7 @@ import { createButton, randomColor } from "../../util";
 import { getConfig } from "../ruokaa-config";
 import { DayChangeHourUtc, Restaurant, RestaurantButtons } from "./consts";
 import puppeteer, { ElementHandle, Page, ScreenshotClip } from "puppeteer";
-
-type Food = {
-    name: string;
-    dietInfo: string[];
-};
-
-type Category = {
-    category: string;
-    foods: Food[];
-};
-
-const keskusta = (): Category => ({
-    category: "Lounas",
-    foods: [
-        {
-            name: "Ruokaa",
-            dietInfo: ["Syötävää"],
-        },
-    ],
-});
+import path from "path";
 
 const ruokaa = async (interaction: CommandInteraction) => {
     await interaction.deferReply();
@@ -36,25 +22,9 @@ const ruokaa = async (interaction: CommandInteraction) => {
     const foods = config[weekday];
 
     try {
-        const embed = new MessageEmbed();
-        embed.setTitle("Syödään tänään");
-        embed.setColor(randomColor());
-
-        const appendMenu = (categories: Category[], header: string) => {
-            const textMenu = [];
-            for (const category of categories) {
-                textMenu.push(` - ${category.category}:`);
-                for (const food of category.foods) {
-                    let result = `   ${food.name}`;
-                    if (food.dietInfo.length > 0) {
-                        result += ` (${food.dietInfo.join("/")})`;
-                    }
-                    textMenu.push(result);
-                }
-            }
-            embed.addField(header, textMenu.join("\n"), true);
-            embed.setTimestamp();
-        };
+        const voteEmbed = new MessageEmbed();
+        voteEmbed.setTitle("Äänestä ruokapaikkaa");
+        voteEmbed.setColor(randomColor());
 
         const buttonRow = new MessageActionRow();
         const addButton = (restaurant: keyof typeof RestaurantButtons) => {
@@ -75,19 +45,10 @@ const ruokaa = async (interaction: CommandInteraction) => {
                     addButton("laseri");
                     break;
                 case Restaurant.keskusta:
-                    appendMenu([keskusta()], "Keskustassa:");
                     addButton("keskusta");
                     break;
             }
         });
-
-        if (buttonRow.components.length === 0) {
-            await interaction.editReply({
-                content: "Ei ruokalistoja.",
-            });
-
-            return;
-        }
 
         if (buttonRow.components.length > 0) {
             buttonRow.addComponents(
@@ -99,34 +60,76 @@ const ruokaa = async (interaction: CommandInteraction) => {
             );
         }
 
-        const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+        const pathToExtension = path.join(
+            process.cwd(),
+            "block-cookies-extension/3.4.6_0"
+        );
+
+        const browser = await puppeteer.launch({
+            headless: "new",
+            args: [
+                "--no-sandbox",
+                `--disable-extensions-except=${pathToExtension}`,
+                `--load-extension=${pathToExtension}`,
+            ],
+        });
+
         const page = await browser.newPage();
-        await page.setViewport({ width: 1200, height: 10000 });
+        await page.setViewport({ width: 1200, height: 2000 });
 
         await aalefNavigate(page);
 
         /* Laser */
         await aalefSwitchMenu(page, "Ravintola Laseri");
         const laserClip = await aalefClip(page);
-        await clip(page, laserClip, ssNames.laser);
+        if (laserClip) {
+            await clip(page, laserClip, ssNames.laser.fileLoc);
+        }
 
         /* Yolo */
         await aalefSwitchMenu(page, "Ravintola YOLO");
         const yoloClip = await aalefClip(page);
-        await clip(page, yoloClip, ssNames.yolo);
+        if (yoloClip) {
+            await clip(page, yoloClip, ssNames.yolo.fileLoc);
+        }
 
         /* Close browser */
         await browser.close();
 
+        if (buttonRow.components.length === 0) {
+            await interaction.editReply({
+                content: "Ei ruokalistoja.",
+            });
+
+            return;
+        }
+
         await interaction.editReply({
-            files: Object.values(ssNames).map((ss) => `${ss}.png`),
-            embeds: [embed],
+            embeds: [
+                ...Object.values(ssNames).map((ss) => createMenuEmbed(ss)),
+            ],
+            files: [
+                ...Object.values(ssNames).map(
+                    (ss) => new MessageAttachment(ss.fileLoc, ss.filename)
+                ),
+            ],
             components: [buttonRow],
         });
     } catch (error) {
         interaction.editReply(`Ei ruokalistoja. Error: ${error}`);
         console.log(error);
     }
+};
+
+const createMenuEmbed = (ss: {
+    filename: string;
+    fileLoc: string;
+    title: string;
+}) => {
+    const embed = new MessageEmbed()
+        .setImage(`attachment://${ss.filename}`)
+        .setTitle(`Ruokalista - ${ss.title}`);
+    return embed;
 };
 
 const getWeekday = () => {
@@ -136,6 +139,20 @@ const getWeekday = () => {
     if (hour >= DayChangeHourUtc) day++;
     if (day === 7) day = 0;
     return day;
+};
+
+const getNextFinnishDay = (weekDay: number) => {
+    const nextDay = {
+        0: "Maanantai", // On sunday, give next monday's list
+        1: "Maanantai",
+        2: "Tiistai",
+        3: "Keskiviikko",
+        4: "Torstai",
+        5: "Perjantai",
+        6: "Lauantai",
+    }[weekDay];
+
+    return nextDay;
 };
 
 const generateButtonId = (restaurant: keyof typeof RestaurantButtons) =>
@@ -152,37 +169,58 @@ const command: SlashCommandModule = {
     },
 };
 
+const pathToPNG = (imageName: string) =>
+    path.join(process.cwd(), `${imageName}.png`);
+
 const ssNames = {
-    laser: "laser-ruokalista",
-    yolo: "yolo-ruokalista",
+    laser: {
+        filename: "laser-ruokalista.png",
+        fileLoc: pathToPNG("laser-ruokalista"),
+        title: "Laseri",
+    },
+    yolo: {
+        filename: "yolo-ruokalista.png",
+        fileLoc: pathToPNG("yolo-ruokalista"),
+        title: "YOLO",
+    },
 };
 
-const clip = async (page: Page, clip: ScreenshotClip, name: string) => {
+const clip = async (page: Page, clip: ScreenshotClip, fileLoc: string) => {
     console.info(
-        `Clipping ${name} with options: ${JSON.stringify(clip, undefined, 2)}`
+        `Clipping ${fileLoc} with options: ${JSON.stringify(
+            clip,
+            undefined,
+            2
+        )}`
     );
     try {
         await page.screenshot({
             clip: clip,
-            path: `${name}.png`,
+            path: `${fileLoc}`,
         });
     } catch (error) {
         console.info(error);
     }
 };
 
-const aalefClip = async (page: Page) => {
+const aalefClip = async (page: Page): Promise<ScreenshotClip | null> => {
     console.info("Get aalef clip size");
+
+    const weekDay = getWeekday();
+    const tomorrowDate = getNextFinnishDay(weekDay);
+
     try {
-        const top = await page.evaluate(() => {
+        const top = await page.evaluate((tomorrowDate: string) => {
             const headers = Array.from(document.getElementsByTagName("h3"));
             let tomorrow;
             let afterTomorrow;
-            const tomorrowDate = new Date().getDate() + 1;
+
+            // TEMPORARY
+            //const tomorrowDate = new Date().getDate() + 2;
             for (let i = 0; i < headers.length; i++) {
                 const el = headers[i];
 
-                if (el.innerText.includes(tomorrowDate.toString())) {
+                if (el.innerText.includes(tomorrowDate)) {
                     tomorrow = el.offsetTop;
                     if (tomorrow === 0) {
                         // If the element is not visible, it will be 0. Skip.
@@ -203,7 +241,7 @@ const aalefClip = async (page: Page) => {
                 tomorrow: tomorrow,
                 afterTomorrow: afterTomorrow,
             };
-        });
+        }, tomorrowDate);
 
         if (
             !top ||
@@ -236,7 +274,7 @@ const aalefClip = async (page: Page) => {
         };
     } catch (error) {
         console.info(error);
-        return { height: 2000, width: 1200, x: 0, y: 0 };
+        return null;
     }
 };
 
@@ -244,11 +282,8 @@ const aalefNavigate = async (page: Page) => {
     console.info("Navigate to aalef");
     await page.goto("https://www.aalef.fi/#ravintolat");
 
-    const gdprfuckery = await page.$x("//button[contains(., 'Kiellä')]");
-    (gdprfuckery[0] as ElementHandle<Element>).click();
-
-    // Wait 5s for this
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    // Wait 2s for page to load properly
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 };
 
 const aalefSwitchMenu = async (page: Page, menu: string) => {
@@ -258,8 +293,8 @@ const aalefSwitchMenu = async (page: Page, menu: string) => {
         const button = menuSelector[0] as ElementHandle<HTMLElement>;
         await button.click();
 
-        // Wait 5s for page to load properly
-        await new Promise((_) => setTimeout(_, 5000));
+        // Wait 2s for page to load properly
+        await new Promise((_) => setTimeout(_, 2000));
     } catch (error) {
         console.info(error);
     }

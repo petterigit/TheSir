@@ -24,10 +24,11 @@
         "node": "16.x"
     },
     "scripts": {
-        "build": "tsc -p .",
+        "build": "tsc -p . && npm run copy-chrome-extension-to-build",
         "start": "node dist/main.js",
         "dev": "nodemon src/main.ts",
-        "test": "jest"
+        "test": "jest",
+        "copy-chrome-extension-to-build": "cp block-cookies-extension dist -r"
     },
     "author": "petterigit, Nikug, MaijaHeiskanen, JuhoHeiskanen, Appelsiini1, Apezkin, AleksiJarventausta",
     "license": "ISC",
