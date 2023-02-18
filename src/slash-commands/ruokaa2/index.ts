@@ -141,6 +141,20 @@ const getWeekday = () => {
     return day;
 };
 
+const getNextFinnishDay = (weekDay: number) => {
+    const nextDay = {
+        0: "Maanantai", // On sunday, give next monday's list
+        1: "Maanantai",
+        2: "Tiistai",
+        3: "Keskiviikko",
+        4: "Torstai",
+        5: "Perjantai",
+        6: "Lauantai",
+    }[weekDay];
+
+    return nextDay;
+};
+
 const generateButtonId = (restaurant: keyof typeof RestaurantButtons) =>
     `ruokaa ${restaurant}`;
 
@@ -191,18 +205,22 @@ const clip = async (page: Page, clip: ScreenshotClip, fileLoc: string) => {
 
 const aalefClip = async (page: Page): Promise<ScreenshotClip | null> => {
     console.info("Get aalef clip size");
+
+    const weekDay = getWeekday();
+    const tomorrowDate = getNextFinnishDay(weekDay);
+
     try {
-        const top = await page.evaluate(() => {
+        const top = await page.evaluate((tomorrowDate: string) => {
             const headers = Array.from(document.getElementsByTagName("h3"));
             let tomorrow;
             let afterTomorrow;
 
             // TEMPORARY
-            const tomorrowDate = new Date().getDate() + 2;
+            //const tomorrowDate = new Date().getDate() + 2;
             for (let i = 0; i < headers.length; i++) {
                 const el = headers[i];
 
-                if (el.innerText.includes(tomorrowDate.toString())) {
+                if (el.innerText.includes(tomorrowDate)) {
                     tomorrow = el.offsetTop;
                     if (tomorrow === 0) {
                         // If the element is not visible, it will be 0. Skip.
@@ -223,7 +241,7 @@ const aalefClip = async (page: Page): Promise<ScreenshotClip | null> => {
                 tomorrow: tomorrow,
                 afterTomorrow: afterTomorrow,
             };
-        });
+        }, tomorrowDate);
 
         if (
             !top ||
