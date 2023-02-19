@@ -1,11 +1,11 @@
 import { CommandInteraction } from "discord.js";
 import { ApplicationCommandTypes } from "discord.js/typings/enums";
 import { SlashCommandModule } from "../../types";
-import { createVoteEmbed } from "./embed/voteEmbed";
 import { createButtonRow } from "./components/buttonRow";
 import { createMenuEmbeds } from "./embed/menus";
 import { createMenuAttachments } from "./file/menuAttachments";
 import { getAalefClips } from "./getAalefClips";
+import { createKeskustaEmbed } from "./embed/keskustaEmbed";
 
 const command: SlashCommandModule = {
     data: {
@@ -32,13 +32,13 @@ const ruokaa = async (interaction: CommandInteraction) => {
     }
 
     try {
-        const voteEmbed = await createVoteEmbed();
+        const keskustaEmbed = createKeskustaEmbed();
         const buttonRow = await createButtonRow();
         const menuEmbeds = createMenuEmbeds();
         const menuAttachments = createMenuAttachments();
 
         await interaction.editReply({
-            embeds: [...menuEmbeds, voteEmbed],
+            embeds: [...menuEmbeds, keskustaEmbed],
             files: menuAttachments,
             components: [buttonRow],
         });
