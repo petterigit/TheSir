@@ -1,4 +1,5 @@
 import path from "path";
+import { getConfig } from "../ruokaa-config";
 import { DayChangeHourUtc } from "./consts";
 
 export const getWeekday = () => {
@@ -8,6 +9,13 @@ export const getWeekday = () => {
     if (hour >= DayChangeHourUtc) day++;
     if (day === 7) day = 0;
     return day;
+};
+
+export const getWeekdayConfig = async () => {
+    const weekday = getWeekday();
+    const config = await getConfig();
+    const foods = config[weekday];
+    return foods;
 };
 
 export const getNextFinnishDay = (weekDay: number) => {

@@ -1,7 +1,40 @@
-import { ElementHandle, Page, ScreenshotClip } from "puppeteer";
+import { Browser, ElementHandle, Page, ScreenshotClip } from "puppeteer";
 import { ssNames } from "./consts";
 import { launchPuppeteer, screenShot } from "./puppeteerUtils";
 import { getNextFinnishDay, getWeekday } from "./utils";
+
+export const getYoloClip = async () => {
+    const { browser, page } = await getPage();
+    await aalefNavigate(page);
+    await aalefSwitchMenu(page, "Ravintola YOLO");
+    const yoloClip = await aalefClip(page);
+    if (yoloClip) {
+        await screenShot(page, yoloClip, ssNames.yolo.fileLoc);
+    }
+
+    await browser.close();
+};
+
+export const getLaserClip = async () => {
+    const { browser, page } = await getPage();
+    await aalefNavigate(page);
+    await aalefSwitchMenu(page, "Ravintola Laseri");
+    const laserClip = await aalefClip(page);
+    if (laserClip) {
+        await screenShot(page, laserClip, ssNames.laser.fileLoc);
+    }
+
+    await browser.close();
+};
+
+const getPage = async (): Promise<{ browser: Browser; page: Page }> => {
+    const browser = await launchPuppeteer();
+
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1200, height: 2000 });
+
+    return { browser, page };
+};
 
 export const getAalefClips = async () => {
     const browser = await launchPuppeteer();

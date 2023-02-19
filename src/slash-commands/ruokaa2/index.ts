@@ -5,7 +5,9 @@ import { createVoteEmbed } from "./embed/voteEmbed";
 import { createButtonRow } from "./components/buttonRow";
 import { createMenuEmbeds } from "./embed/menus";
 import { createMenuAttachments } from "./file/menuAttachments";
-import { getAalefClips } from "./getAalefClips";
+import { getLaserClip, getYoloClip } from "./getAalefClips";
+import { getWeekdayConfig } from "./utils";
+import { Restaurant } from "./consts";
 
 const command: SlashCommandModule = {
     data: {
@@ -20,11 +22,21 @@ const command: SlashCommandModule = {
 
 const ruokaa = async (interaction: CommandInteraction) => {
     await interaction.deferReply();
+    const config = await getWeekdayConfig();
 
     try {
-        getAalefClips();
+        for (const restaurant of config) {
+            switch (restaurant.toLowerCase()) {
+                case Restaurant.yolo.toLowerCase():
+                    await getYoloClip();
+                    break;
+                case Restaurant.laseri.toLowerCase():
+                    await getLaserClip();
+                    break;
+            }
+        }
     } catch (error) {
-        interaction.editReply(
+        await interaction.editReply(
             "Something went wrong while getting menus. Sorry :|"
         );
         console.error(error);

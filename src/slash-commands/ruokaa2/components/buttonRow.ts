@@ -1,51 +1,30 @@
 import { MessageActionRow } from "discord.js";
 import { MessageButtonStyles } from "discord.js/typings/enums";
 import { createButton } from "../../../util";
-import { getConfig } from "../../ruokaa-config";
-import { Restaurant, RestaurantButtons } from "../consts";
-import { getWeekday } from "../utils";
+import { RestaurantButtons } from "../consts";
+import { getWeekdayConfig } from "../utils";
 
-const generateButtonId = (restaurant: keyof typeof RestaurantButtons) =>
-    `ruokaa ${restaurant}`;
+const generateButtonId = (restaurant: string) => `ruokaa ${restaurant}`;
 
 export const createButtonRow = async () => {
     const buttonRow = new MessageActionRow();
-    const weekday = getWeekday();
-    const config = await getConfig();
-    const foods = config[weekday];
+    const foods = await getWeekdayConfig();
 
-    const addButton = (restaurant: keyof typeof RestaurantButtons) => {
+    const addButton = (restaurant: string) => {
         buttonRow.addComponents(
-            createButton(
-                generateButtonId(restaurant),
-                RestaurantButtons[restaurant]
-            )
+            createButton(generateButtonId(restaurant), restaurant)
         );
     };
 
-    foods.forEach((food) => {
-        switch (food) {
-            case Restaurant.yolo:
-                addButton("yolo");
-                break;
-            case Restaurant.laseri:
-                addButton("laseri");
-                break;
-            case Restaurant.keskusta:
-                addButton("keskusta");
-                break;
-        }
-    });
+    foods.forEach((food) => addButton(food));
 
-    if (buttonRow.components.length > 0) {
-        buttonRow.addComponents(
-            createButton(
-                generateButtonId("skip"),
-                RestaurantButtons.skip,
-                MessageButtonStyles.SECONDARY
-            )
-        );
-    }
+    buttonRow.addComponents(
+        createButton(
+            generateButtonId("skip"),
+            RestaurantButtons.skip,
+            MessageButtonStyles.SECONDARY
+        )
+    );
 
     return buttonRow;
 };
