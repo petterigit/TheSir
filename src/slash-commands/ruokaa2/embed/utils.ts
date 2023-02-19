@@ -1,12 +1,12 @@
 import { MessageEmbed } from "discord.js";
-import { getFilename } from "../getAalefClips";
-import fs from "fs";
 
-export const createMenuEmbed = (restaurant: string) => {
-    const filename = getFilename(restaurant);
-    if (!fs.existsSync(filename)) return;
+export const createMenuEmbed = (ss: {
+    filename: string;
+    fileLoc: string;
+    title: string;
+}) => {
     const embed = new MessageEmbed()
-        .setImage(`attachment://${getFilename(restaurant)}`)
-        .setTitle(`Ruokalista - ${restaurant}`);
+        .setImage(`attachment://${ss.filename}`)
+        .setTitle(`Ruokalista - ${ss.title}`);
     return embed;
 };

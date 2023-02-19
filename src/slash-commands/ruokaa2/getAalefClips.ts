@@ -1,11 +1,7 @@
 import { Browser, ElementHandle, Page, ScreenshotClip } from "puppeteer";
-import { ssNames, Restaurant } from "./consts";
+import { ssNames } from "./consts";
 import { launchPuppeteer, screenShot } from "./puppeteerUtils";
-import { getNextFinnishDay, getWeekday, pathToFile } from "./utils";
-
-export const getFilename = (name: string) => `${name}-food-list.png`;
-const PageWidth = 800;
-const PageHeight = 800;
+import { getNextFinnishDay, getWeekday } from "./utils";
 
 export const getYoloClip = async () => {
     const { browser, page } = await getPage();
@@ -13,11 +9,7 @@ export const getYoloClip = async () => {
     await aalefSwitchMenu(page, "Ravintola YOLO");
     const yoloClip = await aalefClip(page);
     if (yoloClip) {
-        await screenShot(
-            page,
-            yoloClip,
-            pathToFile(getFilename(Restaurant.yolo))
-        );
+        await screenShot(page, yoloClip, ssNames.yolo.fileLoc);
     }
 
     await browser.close();
@@ -29,11 +21,7 @@ export const getLaserClip = async () => {
     await aalefSwitchMenu(page, "Ravintola Laseri");
     const laserClip = await aalefClip(page);
     if (laserClip) {
-        await screenShot(
-            page,
-            laserClip,
-            pathToFile(getFilename(Restaurant.laseri))
-        );
+        await screenShot(page, laserClip, ssNames.laser.fileLoc);
     }
 
     await browser.close();
@@ -43,7 +31,7 @@ const getPage = async (): Promise<{ browser: Browser; page: Page }> => {
     const browser = await launchPuppeteer();
 
     const page = await browser.newPage();
-    await page.setViewport({ width: PageWidth, height: PageHeight });
+    await page.setViewport({ width: 1200, height: 2000 });
 
     return { browser, page };
 };
@@ -52,7 +40,7 @@ export const getAalefClips = async () => {
     const browser = await launchPuppeteer();
 
     const page = await browser.newPage();
-    await page.setViewport({ width: PageWidth, height: PageHeight });
+    await page.setViewport({ width: 1200, height: 2000 });
 
     await aalefNavigate(page);
 
@@ -130,8 +118,8 @@ const aalefClip = async (page: Page): Promise<ScreenshotClip | null> => {
             );
             console.info("Trying to get the height more or less right..");
             return {
-                height: PageHeight,
-                width: PageWidth,
+                height: 2000,
+                width: 1200,
                 x: 0,
                 y: top.tomorrow,
             };
@@ -139,7 +127,7 @@ const aalefClip = async (page: Page): Promise<ScreenshotClip | null> => {
 
         return {
             height: clipHeight,
-            width: PageHeight,
+            width: 1200,
             x: 0,
             y: top.tomorrow,
         };

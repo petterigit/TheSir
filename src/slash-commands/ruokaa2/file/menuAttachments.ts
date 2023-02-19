@@ -1,18 +1,9 @@
 import { MessageAttachment } from "discord.js";
-import { getFilename } from "../getAalefClips";
-import fs from "fs";
-import { pathToFile } from "../utils";
+import { ssNames } from "../consts";
 
-export const createMenuAttachments = (
-    restaurants: string[]
-): MessageAttachment[] => {
-    const attachments = restaurants.map((restaurant) => {
-        const filename = getFilename(restaurant);
-        if (!fs.existsSync(filename)) return;
-        return new MessageAttachment(
-            pathToFile(getFilename(restaurant)),
-            getFilename(restaurant)
-        );
-    });
-    return attachments.filter((attachment) => attachment);
+export const createMenuAttachments = () => {
+    const attachments = Object.values(ssNames).map(
+        (ss) => new MessageAttachment(ss.fileLoc, ss.filename)
+    );
+    return attachments;
 };
