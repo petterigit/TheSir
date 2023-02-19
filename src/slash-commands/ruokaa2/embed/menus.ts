@@ -1,8 +1,7 @@
-import { ssNames } from "../consts";
 import { createMenuEmbed } from "./utils";
 
-export const createMenuEmbeds = () => {
-    const menus = Object.values(ssNames).map((ss) => createMenuEmbed(ss));
+export const createMenuEmbeds = (restaurants: string[]) => {
+    const menus = restaurants.map((restaurant) => createMenuEmbed(restaurant));
 
-    return menus;
+    return menus.filter((menu) => menu);
 };

@@ -32,5 +32,5 @@ export const getNextFinnishDay = (weekDay: number) => {
     return nextDay;
 };
 
-export const pathToPNG = (imageName: string) =>
-    path.join(process.cwd(), `${imageName}.png`);
+export const pathToFile = (imageName: string) =>
+    path.join(process.cwd(), imageName);

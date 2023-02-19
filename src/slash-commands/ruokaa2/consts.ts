@@ -1,4 +1,4 @@
-import { pathToPNG } from "./utils";
+import { pathToFile } from "./utils";
 
 export const Restaurant = {
     yolo: "Yolo",
@@ -57,12 +57,12 @@ export const DefaultFoodConfig: FoodConfig = {
 export const ssNames = {
     laser: {
         filename: "laser-ruokalista.png",
-        fileLoc: pathToPNG("laser-ruokalista"),
+        fileLoc: pathToFile("laser-ruokalista"),
         title: "Laseri",
     },
     yolo: {
         filename: "yolo-ruokalista.png",
-        fileLoc: pathToPNG("yolo-ruokalista"),
+        fileLoc: pathToFile("yolo-ruokalista"),
         title: "YOLO",
     },
 };

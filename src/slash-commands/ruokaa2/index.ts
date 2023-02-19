@@ -46,8 +46,8 @@ const ruokaa = async (interaction: CommandInteraction) => {
     try {
         const voteEmbed = await createVoteEmbed();
         const buttonRow = await createButtonRow();
-        const menuEmbeds = createMenuEmbeds();
-        const menuAttachments = createMenuAttachments();
+        const menuEmbeds = createMenuEmbeds(config);
+        const menuAttachments = createMenuAttachments(config);
 
         await interaction.editReply({
             embeds: [...menuEmbeds, voteEmbed],
@@ -55,7 +55,7 @@ const ruokaa = async (interaction: CommandInteraction) => {
             components: [buttonRow],
         });
     } catch (error) {
-        interaction.editReply(`Ei ruokalistoja. Error: ${error}`);
+        await interaction.editReply(`Ei ruokalistoja. Error: ${error}`);
         console.error(error);
         return;
     }
