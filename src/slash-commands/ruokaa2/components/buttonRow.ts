@@ -4,7 +4,7 @@ import { createButton } from "../../../util";
 import { RestaurantButtons } from "../consts";
 
 const generateButtonId = (restaurant: keyof typeof RestaurantButtons) =>
-    `ruokaa ${restaurant}`;
+    `ruokaa2 ${restaurant}`;
 
 const addButton = (
     buttonRow: MessageActionRow,
