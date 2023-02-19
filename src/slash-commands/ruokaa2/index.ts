@@ -27,6 +27,8 @@ const ruokaa = async (interaction: CommandInteraction) => {
         interaction.editReply(
             "Something went wrong while getting menus. Sorry :|"
         );
+        console.error(error);
+        return;
     }
 
     try {
@@ -42,7 +44,8 @@ const ruokaa = async (interaction: CommandInteraction) => {
         });
     } catch (error) {
         interaction.editReply(`Ei ruokalistoja. Error: ${error}`);
-        console.log(error);
+        console.error(error);
+        return;
     }
 };
 
