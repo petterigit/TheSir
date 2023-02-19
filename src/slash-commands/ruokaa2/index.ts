@@ -22,9 +22,9 @@ const ruokaa = async (interaction: CommandInteraction) => {
     await interaction.deferReply();
 
     try {
-        getAalefClips();
+        await getAalefClips();
     } catch (error) {
-        interaction.editReply(
+        await interaction.editReply(
             "Something went wrong while getting menus. Sorry :|"
         );
         console.error(error);
@@ -43,7 +43,7 @@ const ruokaa = async (interaction: CommandInteraction) => {
             components: [buttonRow],
         });
     } catch (error) {
-        interaction.editReply(`Ei ruokalistoja. Error: ${error}`);
+        await interaction.editReply(`Ei ruokalistoja. Error: ${error}`);
         console.error(error);
         return;
     }

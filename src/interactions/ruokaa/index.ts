@@ -14,18 +14,23 @@ const participantSeparator = "\n";
 const ruokaa = async (interaction: ButtonInteraction) => {
     if (!interaction.isButton()) return;
     const restaurantParameter = interaction.customId.split(" ")[1];
+    console.log(restaurantParameter);
     if (!isValidRestaurant(restaurantParameter)) return;
 
-    const originalEmbed = interaction.message.embeds[0];
-    let participantEmbed = interaction.message.embeds[1] as MessageEmbed;
-    if (!participantEmbed) {
+    let participantEmbed = interaction.message.embeds.at(-1) as MessageEmbed;
+    const color = participantEmbed.color;
+    const otherEmbeds = interaction.message.embeds.slice(
+        0,
+        interaction.message.embeds.length - 1
+    );
+    const votes = parseParticipants(participantEmbed);
+    if (!participantEmbed || votes.size === 0) {
         participantEmbed = createParticipantEmbed(
             RestaurantButtons[restaurantParameter],
             createMention(interaction)
         );
-        participantEmbed.setColor(originalEmbed.color);
+        participantEmbed.setColor(color);
     } else {
-        const votes = parseParticipants(participantEmbed);
         const newVotes = setVote(
             votes,
             RestaurantButtons[restaurantParameter],
@@ -36,7 +41,8 @@ const ruokaa = async (interaction: ButtonInteraction) => {
     }
 
     interaction.update({
-        embeds: [originalEmbed, participantEmbed],
+        embeds: [...otherEmbeds, participantEmbed],
+        attachments: [],
     });
 };
 

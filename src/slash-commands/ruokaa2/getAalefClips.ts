@@ -3,11 +3,14 @@ import { ssNames } from "./consts";
 import { launchPuppeteer, screenShot } from "./puppeteerUtils";
 import { getNextFinnishDay, getWeekday } from "./utils";
 
+const PageWidth = 800;
+const PageHeight = 2000;
+
 export const getAalefClips = async () => {
     const browser = await launchPuppeteer();
 
     const page = await browser.newPage();
-    await page.setViewport({ width: 1200, height: 2000 });
+    await page.setViewport({ width: PageWidth, height: PageHeight });
 
     await aalefNavigate(page);
 
@@ -85,8 +88,8 @@ const aalefClip = async (page: Page): Promise<ScreenshotClip | null> => {
             );
             console.info("Trying to get the height more or less right..");
             return {
-                height: 2000,
-                width: 1200,
+                width: PageWidth,
+                height: PageHeight,
                 x: 0,
                 y: top.tomorrow,
             };
@@ -94,7 +97,7 @@ const aalefClip = async (page: Page): Promise<ScreenshotClip | null> => {
 
         return {
             height: clipHeight,
-            width: 1200,
+            width: PageWidth,
             x: 0,
             y: top.tomorrow,
         };
