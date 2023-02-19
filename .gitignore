@@ -12,3 +12,6 @@
 
 # Ruokaa config file
 ruokaa.json
+
+# Menu PNG files
+*.png

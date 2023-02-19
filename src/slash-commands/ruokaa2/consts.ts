@@ -1,8 +1,10 @@
+import { pathToPNG } from "./utils";
+
 export const Restaurant = {
     yolo: "Yolo",
     laseri: "Laser",
     lutBuffet: "LUT Buffet",
-    keskusta: "Keskusta"
+    keskusta: "Keskusta",
 };
 
 export const RestaurantButtons = {
@@ -50,4 +52,17 @@ export const DefaultFoodConfig: FoodConfig = {
         Restaurant.lutBuffet,
     ],
     [DayMap.Sunday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lutBuffet],
+};
+
+export const ssNames = {
+    laser: {
+        filename: "laser-ruokalista.png",
+        fileLoc: pathToPNG("laser-ruokalista"),
+        title: "Laseri",
+    },
+    yolo: {
+        filename: "yolo-ruokalista.png",
+        fileLoc: pathToPNG("yolo-ruokalista"),
+        title: "YOLO",
+    },
 };
