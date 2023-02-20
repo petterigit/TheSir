@@ -65,4 +65,9 @@ export const ssNames = {
         fileLoc: pathToPNG("yolo-ruokalista"),
         title: "YOLO",
     },
+    lutBuffet: {
+        filename: "lut-buffet.png",
+        fileLoc: pathToPNG("lut-buffet"),
+        title: "LUT-Buffet",
+    },
 };

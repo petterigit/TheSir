@@ -1,35 +1,30 @@
-import { ElementHandle, Page, ScreenshotClip } from "puppeteer";
-import { ssNames } from "./consts";
-import { launchPuppeteer, screenShot } from "./puppeteerUtils";
-import { getNextFinnishDay, getWeekday } from "./utils";
+import { Browser, Page, ScreenshotClip } from "puppeteer";
+import { ssNames } from "../consts";
+import { clickButton, navigateToPage, screenShot } from "../puppeteerUtils";
+import { getWeekday, getNextFinnishDay } from "../utils";
 
 const PageWidth = 800;
 const PageHeight = 2000;
 
-export const getAalefClips = async () => {
-    const browser = await launchPuppeteer();
-
+export const getAalefClips = async (browser: Browser) => {
     const page = await browser.newPage();
     await page.setViewport({ width: PageWidth, height: PageHeight });
 
-    await aalefNavigate(page);
+    await navigateToPage(page, "https://www.aalef.fi/#ravintolat");
 
     /* Laser */
-    await aalefSwitchMenu(page, "Ravintola Laseri");
+    await clickButton(page, "Ravintola Laseri");
     const laserClip = await aalefClip(page);
     if (laserClip) {
         await screenShot(page, laserClip, ssNames.laser.fileLoc);
     }
 
     /* Yolo */
-    await aalefSwitchMenu(page, "Ravintola YOLO");
+    await clickButton(page, "Ravintola YOLO");
     const yoloClip = await aalefClip(page);
     if (yoloClip) {
         await screenShot(page, yoloClip, ssNames.yolo.fileLoc);
     }
-
-    /* Close browser */
-    await browser.close();
 };
 
 const aalefClip = async (page: Page): Promise<ScreenshotClip | null> => {
@@ -104,27 +99,5 @@ const aalefClip = async (page: Page): Promise<ScreenshotClip | null> => {
     } catch (error) {
         console.info(error);
         return null;
-    }
-};
-
-const aalefNavigate = async (page: Page) => {
-    console.info("Navigate to aalef");
-    await page.goto("https://www.aalef.fi/#ravintolat");
-
-    // Wait 2s for page to load properly
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-};
-
-const aalefSwitchMenu = async (page: Page, menu: string) => {
-    console.info("Switch aalef menu to", menu);
-    try {
-        const menuSelector = await page.$x(`//button[contains(., '${menu}')]`);
-        const button = menuSelector[0] as ElementHandle<HTMLElement>;
-        await button.click();
-
-        // Wait 2s for page to load properly
-        await new Promise((_) => setTimeout(_, 2000));
-    } catch (error) {
-        console.info(error);
     }
 };

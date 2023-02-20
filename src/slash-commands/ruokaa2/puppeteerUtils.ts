@@ -1,5 +1,5 @@
 import path from "path";
-import puppeteer, { Page, ScreenshotClip } from "puppeteer";
+import puppeteer, { ElementHandle, Page, ScreenshotClip } from "puppeteer";
 
 export const launchPuppeteer = async () => {
     const pathToExtension = path.join(
@@ -39,5 +39,41 @@ export const screenShot = async (
         });
     } catch (error) {
         console.error(error);
+    }
+};
+
+export const navigateToPage = async (page: Page, url: string) => {
+    await page.goto(url, {
+        waitUntil: "load",
+    });
+};
+
+/**
+ *
+ * @param page
+ * @param textContent
+ * @param element Override if button is not an html button element
+ */
+export const clickButton = async (
+    page: Page,
+    textContent: string,
+    element?: string
+) => {
+    console.log("Click button with text content", textContent);
+
+    const el = element ?? "button";
+
+    try {
+        const buttonSelector = await page.$x(
+            `//${el}[contains(., '${textContent}')]`
+        );
+        const button = buttonSelector[0] as ElementHandle<HTMLElement>;
+
+        await button.click();
+
+        // Wait 2s for page to load properly
+        await new Promise((_) => setTimeout(_, 2000));
+    } catch (error) {
+        console.log(error);
     }
 };
