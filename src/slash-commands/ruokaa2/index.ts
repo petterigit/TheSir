@@ -4,8 +4,10 @@ import { SlashCommandModule } from "../../types";
 import { createButtonRow } from "./components/buttonRow";
 import { createMenuEmbeds } from "./embed/menus";
 import { createMenuAttachments } from "./file/menuAttachments";
-import { getAalefClips } from "./getAalefClips";
 import { createKeskustaEmbed } from "./embed/keskustaEmbed";
+import { getAalefClips } from "./menus/getAalefClips";
+import { launchPuppeteer } from "./puppeteerUtils";
+import { getLutBuffetClip } from "./menus/getLutBuffetClip";
 
 const command: SlashCommandModule = {
     data: {
@@ -22,7 +24,12 @@ const ruokaa = async (interaction: CommandInteraction) => {
     await interaction.deferReply();
 
     try {
-        await getAalefClips();
+        const browser = await launchPuppeteer();
+
+        await getAalefClips(browser);
+        await getLutBuffetClip(browser);
+
+        await browser.close();
     } catch (error) {
         await interaction.editReply(
             "Something went wrong while getting menus. Sorry :|"
