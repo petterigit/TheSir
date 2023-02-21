@@ -84,7 +84,7 @@ const aalefClip = async (page: Page): Promise<ScreenshotClip | null> => {
             console.info("Trying to get the height more or less right..");
             return {
                 width: PageWidth,
-                height: PageHeight,
+                height: 600,
                 x: 0,
                 y: top.tomorrow,
             };

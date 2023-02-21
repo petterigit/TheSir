@@ -8,6 +8,7 @@ import { createKeskustaEmbed } from "./embed/keskustaEmbed";
 import { getAalefClips } from "./menus/getAalefClips";
 import { launchPuppeteer } from "./puppeteerUtils";
 import { getLutBuffetClip } from "./menus/getLutBuffetClip";
+import { getRossoClips } from "./menus/getRossoClips";
 
 const command: SlashCommandModule = {
     data: {
@@ -28,6 +29,7 @@ const ruokaa = async (interaction: CommandInteraction) => {
 
         await getAalefClips(browser);
         await getLutBuffetClip(browser);
+        await getRossoClips(browser);
 
         await browser.close();
     } catch (error) {
