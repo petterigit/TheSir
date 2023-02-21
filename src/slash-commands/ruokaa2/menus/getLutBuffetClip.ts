@@ -1,11 +1,7 @@
 import { Browser, Page, ScreenshotClip } from "puppeteer";
 import { ssNames } from "../consts";
 import { clickButton, navigateToPage, screenShot } from "../puppeteerUtils";
-import {
-    getWeekday,
-    getNextFinnishDay,
-    getNextFinnishDayShort,
-} from "../utils";
+import { getWeekday, getNextFinnishDayShort } from "../utils";
 
 const PageWidth = 800;
 const PageHeight = 2000;
@@ -33,73 +29,29 @@ export const getLutBuffetClip = async (browser: Browser) => {
 const lutBuffetClip = async (page: Page): Promise<ScreenshotClip | null> => {
     console.info("Get lut buffet clip size");
 
-    const weekDay = getWeekday();
-    const tomorrowDate = getNextFinnishDay(weekDay);
-
     try {
-        const top = await page.evaluate((tomorrowDate: string) => {
-            const divs = Array.from(document.getElementsByTagName("div"));
-            let start;
-            let end;
-
-            for (let i = 0; i < divs.length; i++) {
-                const el = divs[i];
-
-                if (
-                    el.innerText
-                        .toLowerCase()
-                        .includes(tomorrowDate.toLowerCase())
-                ) {
-                    start = el.offsetTop;
-                    break;
-                }
-            }
+        const sizes = await page.evaluate(() => {
+            const topImg = document.getElementsByTagName("img")[0];
 
             const spans = Array.from(document.getElementsByTagName("span"));
+            let end;
             for (let i = 0; i < spans.length; i++) {
                 const el = spans[i];
 
                 if (el.innerText.includes("Ruokavaliot")) {
-                    end = el.offsetTop;
+                    end = el.getBoundingClientRect().top;
                     break;
                 }
             }
 
-            return {
-                start: start,
-                end: end,
-            };
-        }, tomorrowDate);
-
-        console.info(top);
-
-        if (
-            !top ||
-            typeof top.start === "undefined" ||
-            typeof top.end === "undefined"
-        ) {
-            throw new Error("Top was not there");
-        }
-
-        const clipHeight = top.end - top.start;
-        if (clipHeight <= 0) {
-            console.info(
-                "Clip height was 0 or smaller. Query selector probably failed"
-            );
-            console.info("Trying to get the height more or less right..");
-            return {
-                width: PageWidth,
-                height: PageHeight,
-                x: 0,
-                y: top.start,
-            };
-        }
+            return { start: topImg.offsetHeight, end: end };
+        });
 
         return {
-            height: clipHeight,
+            height: sizes.end - sizes.start,
             width: PageWidth,
             x: 0,
-            y: top.start,
+            y: sizes.start,
         };
     } catch (error) {
         console.info(error);
