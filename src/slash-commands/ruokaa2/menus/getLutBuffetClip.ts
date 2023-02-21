@@ -21,9 +21,6 @@ export const getLutBuffetClip = async (browser: Browser) => {
     if (clip) {
         await screenShot(page, clip, ssNames.lutBuffet.fileLoc);
     }
-
-    /* Close browser */
-    await browser.close();
 };
 
 const lutBuffetClip = async (page: Page): Promise<ScreenshotClip | null> => {

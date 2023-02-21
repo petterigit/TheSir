@@ -70,4 +70,9 @@ export const ssNames = {
         fileLoc: pathToPNG("lut-buffet"),
         title: "LUT-Buffet",
     },
+    rosso: {
+        filename: "rosso.png",
+        fileLoc: pathToPNG("rosso"),
+        title: "Rosso",
+    },
 };
