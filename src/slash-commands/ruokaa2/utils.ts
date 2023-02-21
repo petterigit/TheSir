@@ -24,5 +24,19 @@ export const getNextFinnishDay = (weekDay: number) => {
     return nextDay;
 };
 
+export const getNextFinnishDayShort = (weekDay: number) => {
+    const nextDay = {
+        0: "su",
+        1: "ma",
+        2: "ti",
+        3: "ke",
+        4: "to",
+        5: "pe",
+        6: "la",
+    }[weekDay];
+
+    return nextDay;
+};
+
 export const pathToPNG = (imageName: string) =>
     path.join(process.cwd(), `${imageName}.png`);

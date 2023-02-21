@@ -1,7 +1,11 @@
 import { Browser, Page, ScreenshotClip } from "puppeteer";
 import { ssNames } from "../consts";
 import { clickButton, navigateToPage, screenShot } from "../puppeteerUtils";
-import { getWeekday, getNextFinnishDay } from "../utils";
+import {
+    getWeekday,
+    getNextFinnishDay,
+    getNextFinnishDayShort,
+} from "../utils";
 
 const PageWidth = 800;
 const PageHeight = 2000;
@@ -15,7 +19,7 @@ export const getLutBuffetClip = async (browser: Browser) => {
         "https://fi.jamix.cloud/apps/menu/?anro=97383&k=1&mt=4"
     );
 
-    await clickButton(page, "ti", "span");
+    await clickButton(page, getNextFinnishDayShort(getWeekday()), "span");
 
     const clip = await lutBuffetClip(page);
     if (clip) {
