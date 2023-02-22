@@ -13,8 +13,8 @@ import { getRossoClips } from "./menus/getRossoClips";
 const command: SlashCommandModule = {
     data: {
         type: ApplicationCommandTypes.CHAT_INPUT,
-        name: ["ruokaa2"],
-        description: "Daily lunch planner (highly experimental version)",
+        name: ["ruokaa-keskusta"],
+        description: "Daily lunch planner for keskusta restaurants",
     },
     async execute(message: CommandInteraction) {
         await ruokaa(message);
