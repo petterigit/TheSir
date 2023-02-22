@@ -7,6 +7,7 @@ import { createMenuAttachments } from "./file/menuAttachments";
 import { createTextEmbeds } from "./embed/textEmbeds";
 import { launchPuppeteer } from "../../utils/ruokaa-utils/puppeteerUtils";
 import { getRossoClips } from "./menus/getRossoClips";
+import { createEmptyVotingEmbed } from "../../utils/interactionUtils";
 
 const command: SlashCommandModule = {
     data: {
@@ -45,6 +46,12 @@ const ruokaa = async (interaction: CommandInteraction) => {
         await interaction.editReply({
             embeds: [...menuEmbeds, ...textEmbeds],
             files: menuAttachments,
+        });
+
+        const votingEmbed = createEmptyVotingEmbed();
+
+        await interaction.followUp({
+            embeds: [votingEmbed],
             components: [...buttonRows],
         });
     } catch (error) {

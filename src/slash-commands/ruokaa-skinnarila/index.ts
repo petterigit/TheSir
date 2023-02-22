@@ -1,6 +1,7 @@
 import { CommandInteraction } from "discord.js";
 import { ApplicationCommandTypes } from "discord.js/typings/enums";
 import { SlashCommandModule } from "../../types";
+import { createEmptyVotingEmbed } from "../../utils/interactionUtils";
 import { launchPuppeteer } from "../../utils/ruokaa-utils/puppeteerUtils";
 import { createButtonRow } from "./components/buttonRow";
 import { createMenuEmbeds } from "./embed/menus";
@@ -45,6 +46,12 @@ const ruokaa = async (interaction: CommandInteraction) => {
         await interaction.editReply({
             embeds: [...menuEmbeds],
             files: menuAttachments,
+        });
+
+        const votingEmbed = createEmptyVotingEmbed();
+
+        await interaction.followUp({
+            embeds: [votingEmbed],
             components: [buttonRow],
         });
     } catch (error) {

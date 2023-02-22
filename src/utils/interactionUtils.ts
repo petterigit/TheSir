@@ -2,7 +2,6 @@ import {
     ButtonInteraction,
     Collection,
     EmbedField,
-    MessageAttachment,
     MessageEmbed,
 } from "discord.js";
 import { createMention } from "../util";
@@ -15,13 +14,7 @@ export const ruokaaInteraction = async (interaction: ButtonInteraction) => {
 
     const restaurantParameter = interaction.customId.split(" ")[1];
 
-    console.log("ruokaa-skinnarila interaction param: ", restaurantParameter);
-
-    const messageAttachments = interaction.message.attachments as Collection<
-        string,
-        MessageAttachment
-    >;
-    const messageAttachmentArray = Array.from(messageAttachments.values());
+    console.log("ruokaa interaction param: ", restaurantParameter);
 
     const messageEmbeds = interaction.message.embeds;
 
@@ -30,14 +23,12 @@ export const ruokaaInteraction = async (interaction: ButtonInteraction) => {
     );
 
     if (!participantEmbed) {
-        const freshParticipantEmbed = createParticipantEmbed(
+        const participantEmbed = createParticipantEmbed(
             restaurantParameter,
             createMention(interaction)
         );
-
         interaction.update({
-            embeds: [...messageEmbeds, freshParticipantEmbed],
-            attachments: messageAttachmentArray,
+            embeds: [participantEmbed],
         });
         return;
     }
@@ -53,9 +44,15 @@ export const ruokaaInteraction = async (interaction: ButtonInteraction) => {
     participantEmbed.setFields(newFields);
 
     interaction.update({
-        embeds: messageEmbeds,
-        attachments: messageAttachmentArray,
+        embeds: [participantEmbed],
     });
+};
+
+export const createEmptyVotingEmbed = () => {
+    const embed = new MessageEmbed();
+    embed.setTitle(voteTitle);
+    embed.setColor(11342935);
+    return embed;
 };
 
 const createParticipantEmbed = (restaurant: string, participant: string) => {
