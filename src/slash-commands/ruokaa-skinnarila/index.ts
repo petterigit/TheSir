@@ -1,20 +1,19 @@
 import { CommandInteraction } from "discord.js";
 import { ApplicationCommandTypes } from "discord.js/typings/enums";
 import { SlashCommandModule } from "../../types";
+import { createEmptyVotingEmbed } from "../../utils/interactionUtils";
+import { launchPuppeteer } from "../../utils/ruokaa-utils/puppeteerUtils";
 import { createButtonRow } from "./components/buttonRow";
 import { createMenuEmbeds } from "./embed/menus";
 import { createMenuAttachments } from "./file/menuAttachments";
-import { createKeskustaEmbed } from "./embed/keskustaEmbed";
 import { getAalefClips } from "./menus/getAalefClips";
-import { launchPuppeteer } from "./puppeteerUtils";
 import { getLutBuffetClip } from "./menus/getLutBuffetClip";
-import { getRossoClips } from "./menus/getRossoClips";
 
 const command: SlashCommandModule = {
     data: {
         type: ApplicationCommandTypes.CHAT_INPUT,
-        name: ["ruokaa2"],
-        description: "Daily lunch planner (highly experimental version)",
+        name: ["ruokaa-skinnarila"],
+        description: "Daily lunch planner for Skinnarila restaurants",
     },
     async execute(message: CommandInteraction) {
         await ruokaa(message);
@@ -29,7 +28,6 @@ const ruokaa = async (interaction: CommandInteraction) => {
 
         await getAalefClips(browser);
         await getLutBuffetClip(browser);
-        await getRossoClips(browser);
 
         await browser.close();
     } catch (error) {
@@ -41,14 +39,19 @@ const ruokaa = async (interaction: CommandInteraction) => {
     }
 
     try {
-        const keskustaEmbed = createKeskustaEmbed();
         const buttonRow = await createButtonRow();
         const menuEmbeds = createMenuEmbeds();
         const menuAttachments = createMenuAttachments();
 
         await interaction.editReply({
-            embeds: [...menuEmbeds, keskustaEmbed],
+            embeds: [...menuEmbeds],
             files: menuAttachments,
+        });
+
+        const votingEmbed = createEmptyVotingEmbed();
+
+        await interaction.followUp({
+            embeds: [votingEmbed],
             components: [buttonRow],
         });
     } catch (error) {

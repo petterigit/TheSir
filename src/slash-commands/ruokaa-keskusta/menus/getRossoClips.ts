@@ -1,7 +1,13 @@
 import { Browser, Page, ScreenshotClip } from "puppeteer";
+import {
+    getNextFinnishDay,
+    getWeekday,
+} from "../../../utils/ruokaa-utils/generalUtils";
 import { ssNames } from "../consts";
-import { navigateToPage, screenShot } from "../puppeteerUtils";
-import { getNextFinnishDay, getWeekday } from "../utils";
+import {
+    navigateToPage,
+    screenShot,
+} from "../../../utils/ruokaa-utils/puppeteerUtils";
 
 const PageWidth = 1600;
 const PageHeight = 2000;
