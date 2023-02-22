@@ -5,9 +5,7 @@ import { createButtonRow } from "./components/buttonRow";
 import { createMenuEmbeds } from "./embed/menus";
 import { createMenuAttachments } from "./file/menuAttachments";
 import { createKeskustaEmbed } from "./embed/keskustaEmbed";
-import { getAalefClips } from "./menus/getAalefClips";
-import { launchPuppeteer } from "./puppeteerUtils";
-import { getLutBuffetClip } from "./menus/getLutBuffetClip";
+import { launchPuppeteer } from "../../utils/ruokaa-utils/puppeteerUtils";
 import { getRossoClips } from "./menus/getRossoClips";
 
 const command: SlashCommandModule = {
@@ -27,8 +25,6 @@ const ruokaa = async (interaction: CommandInteraction) => {
     try {
         const browser = await launchPuppeteer();
 
-        await getAalefClips(browser);
-        await getLutBuffetClip(browser);
         await getRossoClips(browser);
 
         await browser.close();

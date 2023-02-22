@@ -1,16 +1,4 @@
-import { pathToPNG } from "./utils";
-
-export const Restaurant = {
-    yolo: "Yolo",
-    laseri: "Laser",
-    lutBuffet: "LUT Buffet",
-    keskusta: "Keskusta",
-};
-
-export const RestaurantButtons = {
-    ...Restaurant,
-    skip: "Skip",
-};
+import { pathToPNG } from "../../utils/ruokaa-utils/generalUtils";
 
 export const DayMap = {
     Sunday: 0,
@@ -23,36 +11,6 @@ export const DayMap = {
 };
 
 export const DayChangeHourUtc = 12;
-
-export type FoodConfig = Record<number, string[]>;
-
-export const ConfigFileName = "ruokaa.json";
-
-export const DefaultFoodConfig: FoodConfig = {
-    [DayMap.Monday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lutBuffet],
-    [DayMap.Tuesday]: [
-        Restaurant.yolo,
-        Restaurant.laseri,
-        Restaurant.lutBuffet,
-    ],
-    [DayMap.Wednesday]: [
-        Restaurant.yolo,
-        Restaurant.laseri,
-        Restaurant.lutBuffet,
-    ],
-    [DayMap.Thursday]: [
-        Restaurant.yolo,
-        Restaurant.laseri,
-        Restaurant.lutBuffet,
-    ],
-    [DayMap.Friday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lutBuffet],
-    [DayMap.Saturday]: [
-        Restaurant.yolo,
-        Restaurant.laseri,
-        Restaurant.lutBuffet,
-    ],
-    [DayMap.Sunday]: [Restaurant.yolo, Restaurant.laseri, Restaurant.lutBuffet],
-};
 
 export const ssNames = {
     laser: {
@@ -69,10 +27,5 @@ export const ssNames = {
         filename: "lut-buffet.png",
         fileLoc: pathToPNG("lut-buffet"),
         title: "LUT-Buffet",
-    },
-    rosso: {
-        filename: "rosso.png",
-        fileLoc: pathToPNG("rosso"),
-        title: "Rosso",
     },
 };

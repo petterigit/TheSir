@@ -8,7 +8,6 @@ export const createButtonRow = async () => {
     addButton(buttonRow, "yolo");
     addButton(buttonRow, "laseri");
     addButton(buttonRow, "lutBuffet");
-    addButton(buttonRow, "keskusta", MessageButtonStyles.SECONDARY);
     addButton(buttonRow, "skip", MessageButtonStyles.DANGER);
 
     return buttonRow;
