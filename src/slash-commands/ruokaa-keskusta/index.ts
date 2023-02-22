@@ -1,10 +1,10 @@
 import { CommandInteraction } from "discord.js";
 import { ApplicationCommandTypes } from "discord.js/typings/enums";
 import { SlashCommandModule } from "../../types";
-import { createButtonRow } from "./components/buttonRow";
+import { createButtonRows } from "./components/buttonRow";
 import { createMenuEmbeds } from "./embed/menus";
 import { createMenuAttachments } from "./file/menuAttachments";
-import { createKeskustaEmbed } from "./embed/keskustaEmbed";
+import { createTextEmbeds } from "./embed/textEmbeds";
 import { launchPuppeteer } from "../../utils/ruokaa-utils/puppeteerUtils";
 import { getRossoClips } from "./menus/getRossoClips";
 
@@ -37,15 +37,15 @@ const ruokaa = async (interaction: CommandInteraction) => {
     }
 
     try {
-        const keskustaEmbed = createKeskustaEmbed();
-        const buttonRow = await createButtonRow();
+        const textEmbeds = createTextEmbeds();
+        const buttonRows = await createButtonRows();
         const menuEmbeds = createMenuEmbeds();
         const menuAttachments = createMenuAttachments();
 
         await interaction.editReply({
-            embeds: [...menuEmbeds, keskustaEmbed],
+            embeds: [...menuEmbeds, ...textEmbeds],
             files: menuAttachments,
-            components: [buttonRow],
+            components: [...buttonRows],
         });
     } catch (error) {
         await interaction.editReply(`Ei ruokalistoja. Error: ${error}`);

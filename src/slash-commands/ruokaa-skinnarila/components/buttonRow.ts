@@ -5,10 +5,15 @@ import { addButton } from "../../../utils/ruokaa-utils/componentUtils";
 export const createButtonRow = async () => {
     const buttonRow = new MessageActionRow();
 
-    addButton(buttonRow, "yolo");
-    addButton(buttonRow, "laseri");
-    addButton(buttonRow, "lutBuffet");
-    addButton(buttonRow, "skip", MessageButtonStyles.DANGER);
+    addButton(buttonRow, "Yolo", "ruokaa-skinnarila");
+    addButton(buttonRow, "Laseri", "ruokaa-skinnarila");
+    addButton(buttonRow, "Lut-Buffet", "ruokaa-skinnarila");
+    addButton(
+        buttonRow,
+        "Skip",
+        "ruokaa-skinnarila",
+        MessageButtonStyles.DANGER
+    );
 
     return buttonRow;
 };
