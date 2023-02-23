@@ -52,8 +52,8 @@ const getDayClip = async (page: Page): Promise<ScreenshotClip | null> => {
                     start = rect.y;
                     width = rect.width;
                     x = rect.x;
-                    if (headers.length >= i + 1) {
-                        end = headers[i + 1].getBoundingClientRect().top;
+                    if (el.parentElement) {
+                        end = el.parentElement.getBoundingClientRect().bottom;
                     } else {
                         end = start + 200;
                     }
