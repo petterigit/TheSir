@@ -1,4 +1,5 @@
-import { MessageEmbed } from "discord.js";
+import { MessageAttachment, MessageEmbed } from "discord.js";
+import fs from "node:fs";
 
 export const createMenuEmbed = (ss: {
     filename: string;
@@ -9,4 +10,12 @@ export const createMenuEmbed = (ss: {
         .setImage(`attachment://${ss.filename}`)
         .setTitle(`Ruokalista - ${ss.title}`);
     return embed;
+};
+
+export const createAttachment = (fileloc: string, filename?: string) => {
+    if (!fs.existsSync(fileloc)) {
+        return undefined;
+    }
+
+    return new MessageAttachment(fileloc, filename);
 };
