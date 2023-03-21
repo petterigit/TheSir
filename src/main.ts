@@ -16,7 +16,6 @@ import {
 } from "./util";
 
 /* stuff */
-const prefix = "sir ";
 const environment = process.env.ENVIRONMENT ?? "development";
 
 /* Bot setup */
@@ -26,18 +25,6 @@ client.once("ready", () => {
         status: "online",
     });
     rotateSisterActivities(client);
-});
-
-/* Handle messages */
-client.on("messageCreate", async (message: Message) => {
-    if (!message.content.startsWith(prefix)) return;
-    let args = message.content.substring(1).split(" ");
-    const cmd = args[1];
-
-    args = args.splice(1);
-
-    const commandHandler = client.commands.get(cmd);
-    executeCommand(message, commandHandler, client);
 });
 
 /* Handle interactions */
