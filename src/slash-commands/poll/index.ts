@@ -4,6 +4,7 @@ import {
     ActionRowBuilder,
     ApplicationCommandOptionType,
     ApplicationCommandType,
+    EmbedBuilder,
 } from "discord.js";
 import { createButton } from "../../util";
 import random from "lodash/random";
@@ -35,11 +36,10 @@ const poll = async (interaction: ChatInputCommandInteraction) => {
         content: `${user} started a poll!`,
         components: actionRows,
         embeds: [
-            {
-                title: title,
-                color: randomColor() as number,
-                timestamp: new Date().toString(),
-            },
+            new EmbedBuilder()
+                .setTitle(title)
+                .setColor(randomColor())
+                .setTimestamp(),
         ],
     });
 };

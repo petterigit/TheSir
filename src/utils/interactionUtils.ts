@@ -4,7 +4,7 @@ import {
     EmbedField,
     EmbedBuilder,
 } from "discord.js";
-import { createMention } from "../util";
+import { createMention, randomColor } from "../util";
 const participantSeparator = "\n";
 
 const voteTitle = "Äänestä ruokapaikkaa";
@@ -51,7 +51,7 @@ export const ruokaaInteraction = async (interaction: ButtonInteraction) => {
 export const createEmptyVotingEmbed = () => {
     const embed = new EmbedBuilder();
     embed.setTitle(voteTitle);
-    embed.setColor(11342935);
+    embed.setColor(randomColor());
     return embed;
 };
 
@@ -59,7 +59,7 @@ const createParticipantEmbed = (restaurant: string, participant: string) => {
     const embed = new EmbedBuilder();
     embed.setTitle(voteTitle);
     embed.addFields({ name: restaurant, value: participant, inline: true });
-    embed.setColor(11342935);
+    embed.setColor(randomColor());
     return embed;
 };
 
@@ -67,7 +67,7 @@ const parseParticipants = (
     embed: EmbedBuilder
 ): Collection<string, string[]> => {
     const collection = new Collection<string, string[]>();
-    embed.data.fields.forEach((field) => {
+    embed.data.fields?.forEach((field) => {
         const participants = field.value.split(participantSeparator);
         const fieldName = removeParticipantCount(field.name);
         collection.set(fieldName, participants);

@@ -76,7 +76,7 @@ const parseParticipants = (
     embed: EmbedBuilder
 ): Collection<string, string[]> => {
     const collection = new Collection<string, string[]>();
-    embed.data.fields.forEach((field) => {
+    embed.data.fields?.forEach((field) => {
         const participants = field.value.split(participantSeparator);
         const fieldName = removeParticipantCount(field.name);
         collection.set(fieldName, participants);
