@@ -23,4 +23,4 @@ COPY . .
 RUN npm run build
 
 ENV DISPLAY :99
-CMD Xvfb :99 -screen 0 1024x768x16 & npm start
+CMD killall xvfb & Xvfb :99 -screen 0 1024x768x16 & npm start
