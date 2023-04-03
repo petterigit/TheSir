@@ -13,7 +13,7 @@ import {
 import {
     ApplicationCommandType,
     CacheType,
-    CommandInteraction,
+    ChatInputCommandInteraction,
     CommandInteractionOption,
     GuildMember,
 } from "discord.js";
@@ -41,7 +41,7 @@ const command: SlashCommandModule = {
         description: "Plays music from given source.",
         options: options,
     },
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
 
         try {
@@ -72,7 +72,7 @@ const command: SlashCommandModule = {
     },
 };
 
-const getConnectionParams = (interaction: CommandInteraction) => {
+const getConnectionParams = (interaction: ChatInputCommandInteraction) => {
     try {
         const member = interaction.member as GuildMember;
         connectionParams.channelId = member.voice.channelId;
@@ -130,7 +130,7 @@ const setAudioResource = () => {
     audioPlayer.play(resource);
 };
 
-const getInteractionData = (interaction: CommandInteraction) => {
+const getInteractionData = (interaction: ChatInputCommandInteraction) => {
     data = interaction.options.data[0];
 };
 

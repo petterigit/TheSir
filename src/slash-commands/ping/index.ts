@@ -1,4 +1,7 @@
-import { ApplicationCommandType, CommandInteraction } from "discord.js";
+import {
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+} from "discord.js";
 import { SlashCommandModule } from "../../types";
 
 const command: SlashCommandModule = {
@@ -7,7 +10,7 @@ const command: SlashCommandModule = {
         name: ["ping"],
         description: "Ping!",
     },
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         await interaction.reply("Pong!");
     },
 };

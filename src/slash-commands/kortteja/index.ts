@@ -2,7 +2,10 @@
 /* MAIN kortteja(message)
  */
 
-import { ApplicationCommandType, CommandInteraction } from "discord.js";
+import {
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+} from "discord.js";
 
 import axios from "axios";
 import { SlashCommandModule } from "../../types";
@@ -10,7 +13,7 @@ import { SlashCommandModule } from "../../types";
 const cardGameUrl = "http://pelit.space";
 const newGamePath = "/g";
 
-const kortteja = async (interaction: CommandInteraction) => {
+const kortteja = async (interaction: ChatInputCommandInteraction) => {
     await interaction.deferReply();
     const url = `${cardGameUrl}${newGamePath}`;
     try {
@@ -37,7 +40,7 @@ const command: SlashCommandModule = {
         name: "cards-against-humankind",
         description: "Create a new game of Cards Against Humankind",
     },
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         await kortteja(interaction);
     },
 };

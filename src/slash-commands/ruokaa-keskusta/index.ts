@@ -1,4 +1,7 @@
-import { ApplicationCommandType, CommandInteraction } from "discord.js";
+import {
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+} from "discord.js";
 import { SlashCommandModule } from "../../types";
 import { createButtonRows } from "./components/buttonRow";
 import { createMenuEmbeds } from "./embed/menus";
@@ -14,12 +17,12 @@ const command: SlashCommandModule = {
         name: ["ruokaa-keskusta"],
         description: "Daily lunch planner for keskusta restaurants",
     },
-    async execute(message: CommandInteraction) {
+    async execute(message: ChatInputCommandInteraction) {
         await ruokaa(message);
     },
 };
 
-const ruokaa = async (interaction: CommandInteraction) => {
+const ruokaa = async (interaction: ChatInputCommandInteraction) => {
     await interaction.deferReply();
 
     try {

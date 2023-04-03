@@ -1,6 +1,6 @@
 import {
     ApplicationCommandType,
-    CommandInteraction,
+    ChatInputCommandInteraction,
     MessageEditOptions,
 } from "discord.js";
 import { SlashCommandModule } from "../../types";
@@ -13,7 +13,7 @@ const emoji = {
     rageface: "658413628403351617",
 };
 
-const getMeme = async (interaction: CommandInteraction) => {
+const getMeme = async (interaction: ChatInputCommandInteraction) => {
     await interaction.deferReply();
     try {
         const res = await nextMeme();
@@ -72,7 +72,7 @@ const command: SlashCommandModule = {
         description:
             "Gets a random meme from a collection of over a million memes (they are all bad)",
     },
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         await getMeme(interaction);
     },
 };
