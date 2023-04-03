@@ -2,10 +2,10 @@ import {
     ButtonInteraction,
     Collection,
     EmbedField,
-    MessageAttachment,
-    MessageEmbed,
+    Attachment,
+    EmbedBuilder,
 } from "discord.js";
-import { RestaurantButtons } from "../../slash-commands/ruokaa/consts";
+import { RestaurantButtons } from "./consts";
 import { InteractionModule } from "../../types";
 
 import { createMention } from "../../util";
@@ -25,14 +25,14 @@ const ruokaa = async (interaction: ButtonInteraction) => {
 
     const messageAttachments = interaction.message.attachments as Collection<
         string,
-        MessageAttachment
+        Attachment
     >;
     const messageAttachmentArray = Array.from(messageAttachments.values());
 
     const messageEmbeds = interaction.message.embeds;
 
-    const participantEmbed = (messageEmbeds as MessageEmbed[]).find(
-        (embed) => embed.title === voteTitle
+    const participantEmbed = EmbedBuilder.from(
+        messageEmbeds.find((embed) => embed.title === voteTitle)
     );
 
     if (!participantEmbed) {
@@ -43,7 +43,7 @@ const ruokaa = async (interaction: ButtonInteraction) => {
 
         interaction.update({
             embeds: [...messageEmbeds, freshParticipantEmbed],
-            attachments: messageAttachmentArray,
+            files: messageAttachmentArray,
         });
         return;
     }
@@ -60,23 +60,23 @@ const ruokaa = async (interaction: ButtonInteraction) => {
 
     interaction.update({
         embeds: messageEmbeds,
-        attachments: messageAttachmentArray,
+        files: messageAttachmentArray,
     });
 };
 
 const createParticipantEmbed = (restaurant: string, participant: string) => {
-    const embed = new MessageEmbed();
+    const embed = new EmbedBuilder();
     embed.setTitle(voteTitle);
-    embed.addField(restaurant, participant, true);
+    embed.addFields({ name: restaurant, value: participant, inline: true });
     embed.setColor(11342935);
     return embed;
 };
 
 const parseParticipants = (
-    embed: MessageEmbed
+    embed: EmbedBuilder
 ): Collection<string, string[]> => {
     const collection = new Collection<string, string[]>();
-    embed.fields.forEach((field) => {
+    embed.data.fields.forEach((field) => {
         const participants = field.value.split(participantSeparator);
         const fieldName = removeParticipantCount(field.name);
         collection.set(fieldName, participants);

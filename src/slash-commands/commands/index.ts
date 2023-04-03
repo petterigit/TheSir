@@ -1,5 +1,4 @@
-import { CommandInteraction } from "discord.js";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
+import { ApplicationCommandType, CommandInteraction } from "discord.js";
 import { DiscordClient, SlashCommandModule, SlashCommands } from "../../types";
 
 const filterUnique = (commands: SlashCommands) => {
@@ -40,7 +39,7 @@ const replyCommands = async (
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["commands", "help", "tasukete"],
         description: "Lists all commands",
     },

@@ -11,18 +11,17 @@ import {
     Collection,
     ColorResolvable,
     CommandInteraction,
-    ExcludeEnum,
     GuildMember,
     Interaction,
     Message,
-    MessageButton,
+    ButtonBuilder,
     Role,
     Snowflake,
     User,
+    ButtonStyle,
 } from "discord.js";
 import { Command, DiscordClient, SlashCommandModule } from "./types";
 
-import { MessageButtonStyles } from "discord.js/typings/enums";
 import random from "lodash/random";
 
 export const NUMBER_OF_BOT_ACTIVITES = 5;
@@ -75,12 +74,9 @@ export const isMessage = (message: unknown): message is Message<boolean> =>
 export const createButton = (
     id: string,
     text: string,
-    style: ExcludeEnum<
-        typeof MessageButtonStyles,
-        "LINK"
-    > = MessageButtonStyles.PRIMARY
-): MessageButton => {
-    return new MessageButton({
+    style: Exclude<ButtonStyle, "LINK"> = ButtonStyle.Primary
+): ButtonBuilder => {
+    return new ButtonBuilder({
         customId: id,
         label: text,
         style: style,

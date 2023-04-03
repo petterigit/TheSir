@@ -1,13 +1,14 @@
-import { ApplicationCommandOptionData, CommandInteraction } from "discord.js";
 import {
-    ApplicationCommandOptionTypes,
-    ApplicationCommandTypes,
-} from "discord.js/typings/enums";
+    ApplicationCommandOptionData,
+    ApplicationCommandOptionType,
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+} from "discord.js";
 import { SlashCommandModule } from "../../types";
 
 const inputs: ApplicationCommandOptionData[] = [
     {
-        type: ApplicationCommandOptionTypes.INTEGER,
+        type: ApplicationCommandOptionType.Integer,
         name: "size",
         description: "Size of the pops",
         minValue: 1,
@@ -16,7 +17,7 @@ const inputs: ApplicationCommandOptionData[] = [
     },
 ];
 
-const pop = async (interaction: CommandInteraction) => {
+const pop = async (interaction: ChatInputCommandInteraction) => {
     await interaction.deferReply();
     try {
         let pops = "\u2800\n";
@@ -43,12 +44,12 @@ const pop = async (interaction: CommandInteraction) => {
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["pop"],
         description: "Virtual bubblewrap",
         options: inputs,
     },
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         await pop(interaction);
     },
 };

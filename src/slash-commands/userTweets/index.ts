@@ -1,11 +1,12 @@
 import T from "../../utils/TwitterClient";
 import sample from "lodash/sample";
-import { ApplicationCommandOptionData, CommandInteraction } from "discord.js";
-import { SlashCommandModule } from "../../types";
 import {
-    ApplicationCommandOptionTypes,
-    ApplicationCommandTypes,
-} from "discord.js/typings/enums";
+    ApplicationCommandOptionData,
+    ApplicationCommandOptionType,
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+} from "discord.js";
+import { SlashCommandModule } from "../../types";
 
 const MAX_TWEETS = 100;
 
@@ -18,14 +19,14 @@ const parameters = {
 
 const inputs: ApplicationCommandOptionData[] = [
     {
-        type: ApplicationCommandOptionTypes.STRING,
+        type: ApplicationCommandOptionType.String,
         name: "name",
         description: "Name of the Twitter user",
         required: true,
     },
 ];
 
-const getUserTweet = async (interaction: CommandInteraction) => {
+const getUserTweet = async (interaction: ChatInputCommandInteraction) => {
     await interaction.deferReply();
     try {
         const twitname = interaction.options.getString("name");
@@ -37,7 +38,9 @@ const getUserTweet = async (interaction: CommandInteraction) => {
     }
 };
 
-function getTweetsAndSendOneToDiscord(interaction: CommandInteraction) {
+function getTweetsAndSendOneToDiscord(
+    interaction: ChatInputCommandInteraction
+) {
     if (!T) {
         interaction.editReply("No Twitter client");
         return;
@@ -60,7 +63,10 @@ function getRandomTweet(tweets: object) {
     return sample(tweets);
 }
 
-function sendTweetToDiscord(tweet: any, interaction: CommandInteraction) {
+function sendTweetToDiscord(
+    tweet: any,
+    interaction: ChatInputCommandInteraction
+) {
     const embed = createAnswerMessage(tweet);
     interaction.editReply({ embeds: [embed] });
 }
@@ -220,12 +226,12 @@ function addDot(day: string) {
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["tweet"],
         description: "Get a random tweet from any user",
         options: inputs,
     },
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         await getUserTweet(interaction);
     },
 };

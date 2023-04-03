@@ -11,6 +11,7 @@ import {
     AudioResource,
 } from "@discordjs/voice";
 import {
+    ApplicationCommandType,
     CacheType,
     CommandInteraction,
     CommandInteractionOption,
@@ -22,7 +23,6 @@ import ytdl from "ytdl-core";
 import { VoiceConnectionParams } from "./musicTypes";
 import options from "./clipOptions";
 import { SlashCommandModule } from "../../types";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
 
 const connectionParams: VoiceConnectionParams = {
     channelId: "",
@@ -36,7 +36,7 @@ let data: CommandInteractionOption<CacheType>;
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["play"],
         description: "Plays music from given source.",
         options: options,

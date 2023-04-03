@@ -1,5 +1,4 @@
-import { CommandInteraction } from "discord.js";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
+import { ApplicationCommandType, CommandInteraction } from "discord.js";
 import { SlashCommandModule } from "../../types";
 import { createEmptyVotingEmbed } from "../../utils/interactionUtils";
 import { launchPuppeteer } from "../../utils/ruokaa-utils/puppeteerUtils";
@@ -11,7 +10,7 @@ import { getLutBuffetClip } from "./menus/getLutBuffetClip";
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["ruokaa-skinnarila"],
         description: "Daily lunch planner for Skinnarila restaurants",
     },

@@ -1,5 +1,4 @@
-import { CommandInteraction } from "discord.js";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
+import { ApplicationCommandType, CommandInteraction } from "discord.js";
 import { SlashCommandModule } from "../../types";
 import T from "../../utils/TwitterClient";
 const MAX_TWEETS = 100;
@@ -200,7 +199,7 @@ function addDot(day: string) {
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["niilo22"],
         description: "Gets the best random Niilo22 tweets",
     },

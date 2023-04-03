@@ -3,8 +3,7 @@ import {
     ButtonInteraction,
     EmbedField,
     InteractionUpdateOptions,
-    MessageEmbed,
-    MessageEmbedOptions,
+    Embed,
 } from "discord.js";
 import { InteractionModule as InteractionModule } from "../../types";
 
@@ -30,15 +29,11 @@ const handleVote = (
     buttonText: string,
     user: string
 ) => {
-    const pollEmbed = interaction.message.embeds[0] as MessageEmbed;
+    const pollEmbed = interaction.message.embeds[0] as Embed;
     return setVote(pollEmbed, buttonText, user);
 };
 
-const setVote = (
-    embed: MessageEmbed,
-    buttonText: string,
-    user: string
-): MessageEmbedOptions => {
+const setVote = (embed: Embed, buttonText: string, user: string): Embed => {
     const fields = removeAnswerCounts(embed.fields);
     const selectedField = getSelectedField(fields, buttonText);
 
@@ -60,7 +55,7 @@ const setVote = (
     const sortedFields: EmbedField[] = formattedFields.sort(
         fieldComparator
     ) as EmbedField[];
-    return new MessageEmbed({ ...embed, fields: sortedFields });
+    return { ...embed, fields: sortedFields } as Embed;
 };
 
 const removeAnswerCounts = (

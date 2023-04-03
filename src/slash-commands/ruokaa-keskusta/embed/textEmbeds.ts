@@ -1,11 +1,11 @@
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 
 export const createTextEmbeds = () => {
-    const lalo = new MessageEmbed()
+    const lalo = new EmbedBuilder()
         .setTitle(`Lalo`)
         .setDescription("Burgeria. Nam!");
 
-    const luckies = new MessageEmbed()
+    const luckies = new EmbedBuilder()
         .setTitle(`Luckie's`)
         .setDescription("Sushia. Nam!");
 

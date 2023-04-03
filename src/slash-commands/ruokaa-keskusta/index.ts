@@ -1,5 +1,4 @@
-import { CommandInteraction } from "discord.js";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
+import { ApplicationCommandType, CommandInteraction } from "discord.js";
 import { SlashCommandModule } from "../../types";
 import { createButtonRows } from "./components/buttonRow";
 import { createMenuEmbeds } from "./embed/menus";
@@ -11,7 +10,7 @@ import { createEmptyVotingEmbed } from "../../utils/interactionUtils";
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["ruokaa-keskusta"],
         description: "Daily lunch planner for keskusta restaurants",
     },

@@ -15,10 +15,11 @@ const fiiliskierros = async (message: Message) => {
                     .then(() =>
                         message.channel
                             .send(`Yrittäisit edes.`)
-                            .then(() =>
-                                message.channel.send(
-                                    `sir fiilikset possu @member`
-                                )
+                            .then(
+                                async () =>
+                                    await message.channel.send(
+                                        `sir fiilikset possu @member`
+                                    )
                             )
                     );
             }

@@ -1,9 +1,9 @@
-import { MessageAttachment } from "discord.js";
+import { AttachmentBuilder } from "discord.js";
 import { createAttachment } from "../../../utils/ruokaa-utils/embedUtils";
 import { ssNames } from "../consts";
 
 export const createMenuAttachments = () => {
-    const attachments: MessageAttachment[] = [];
+    const attachments: AttachmentBuilder[] = [];
     Object.values(ssNames).forEach((ss) => {
         const attachment = createAttachment(ss.fileLoc, ss.filename);
 

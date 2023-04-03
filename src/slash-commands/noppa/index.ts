@@ -1,23 +1,26 @@
 import { DiceRoller } from "dice-roller-parser";
-import { ApplicationCommandOptionData, CommandInteraction } from "discord.js";
 import {
-    ApplicationCommandOptionTypes,
-    ApplicationCommandTypes,
-} from "discord.js/typings/enums";
+    ApplicationCommandOptionData,
+    ApplicationCommandOptionType,
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+} from "discord.js";
 import { SlashCommandModule } from "../../types";
 
 const diceRoller = new DiceRoller();
 
 const inputs: ApplicationCommandOptionData[] = [
     {
-        type: ApplicationCommandOptionTypes.STRING,
+        type: ApplicationCommandOptionType.String,
         name: "formula",
         description: "Roll20 dice formula",
         required: true,
     },
 ];
 
-const noppa = async (interaction: CommandInteraction): Promise<void> => {
+const noppa = async (
+    interaction: ChatInputCommandInteraction
+): Promise<void> => {
     await interaction.deferReply();
     const dieString = interaction.options.getString("formula");
     if (!dieString) {
@@ -42,12 +45,12 @@ const noppa = async (interaction: CommandInteraction): Promise<void> => {
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["dice"],
         description: "Roll a dice!",
         options: inputs,
     },
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         await noppa(interaction);
     },
 };

@@ -1,5 +1,8 @@
-import { CommandInteraction, WebhookEditMessageOptions } from "discord.js";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
+import {
+    ApplicationCommandType,
+    CommandInteraction,
+    MessageEditOptions,
+} from "discord.js";
 import { SlashCommandModule } from "../../types";
 import { isMessage } from "../../util";
 
@@ -18,7 +21,7 @@ const getMeme = async (interaction: CommandInteraction) => {
 
         const date = new Date(res.timestamp * 1000);
 
-        let options: WebhookEditMessageOptions = {};
+        let options: MessageEditOptions = {};
         const formattedDate = `${date.getDate()}.${
             date.getMonth() + 1
         }.${date.getFullYear()}`;
@@ -64,7 +67,7 @@ const getMeme = async (interaction: CommandInteraction) => {
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["meme"],
         description:
             "Gets a random meme from a collection of over a million memes (they are all bad)",

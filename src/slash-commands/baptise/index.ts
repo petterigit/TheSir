@@ -1,12 +1,13 @@
-import { ApplicationCommandOptionData, CommandInteraction } from "discord.js";
+import {
+    ApplicationCommandOptionData,
+    ApplicationCommandOptionType,
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+} from "discord.js";
 
 import axios from "axios";
 import sample from "lodash/sample";
 import { SlashCommandModule } from "../../types";
-import {
-    ApplicationCommandOptionTypes,
-    ApplicationCommandTypes,
-} from "discord.js/typings/enums";
 import { getMemberNicknameOrName, isMentionGuildMember } from "../../util";
 
 const TITLEURL = "https://proksi.juho.space/pet-name";
@@ -14,14 +15,14 @@ const MAX_NAME_LENGTH = 32;
 
 const inputs: ApplicationCommandOptionData[] = [
     {
-        type: ApplicationCommandOptionTypes.MENTIONABLE,
+        type: ApplicationCommandOptionType.Mentionable,
         name: "mention",
         description: "Someone to baptise",
         required: true,
     },
 ];
 
-const startBaptise = async (interaction: CommandInteraction) => {
+const startBaptise = async (interaction: ChatInputCommandInteraction) => {
     await interaction.deferReply();
     const member = interaction.options.getMentionable("mention");
     if (!member || !isMentionGuildMember(member)) {
@@ -73,12 +74,12 @@ const createPetName = async (memberName: string) => {
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["baptise"],
         description: "Give people a new and unique nickname",
         options: inputs,
     },
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         await startBaptise(interaction);
     },
 };

@@ -1,5 +1,8 @@
-import { CommandInteraction, MessageAttachment } from "discord.js";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
+import {
+    ApplicationCommandType,
+    CommandInteraction,
+    AttachmentBuilder,
+} from "discord.js";
 import { SlashCommandModule } from "../../types";
 
 import { getNicknameOrName } from "../../util";
@@ -12,7 +15,9 @@ const mg = async (interaction: CommandInteraction) => {
 
     try {
         const buffer = await generateMeme(data);
-        const attachment = new MessageAttachment(buffer, "reaction.jpg");
+        const attachment = new AttachmentBuilder(buffer).setName(
+            "reaction.jpg"
+        );
         interaction.editReply({
             content: `${memer} created a ${data.name} meme!`,
             files: [attachment],
@@ -27,7 +32,7 @@ const mg = async (interaction: CommandInteraction) => {
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["mg"],
         description:
             "Everyone deserves some praise (or shame) every once in a while",

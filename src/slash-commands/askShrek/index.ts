@@ -1,7 +1,9 @@
 import {
     ApplicationCommandOptionData,
-    CommandInteraction,
-    MessageEmbed,
+    ApplicationCommandOptionType,
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+    EmbedBuilder,
 } from "discord.js";
 import * as data from "./shrek.json";
 import join from "lodash/join";
@@ -9,10 +11,6 @@ import find from "lodash/find";
 import map from "lodash/map";
 import sample from "lodash/sample";
 import { SlashCommandModule } from "../../types";
-import {
-    ApplicationCommandOptionTypes,
-    ApplicationCommandTypes,
-} from "discord.js/typings/enums";
 import _ from "lodash";
 import { DISCORD_NUMBER_OF_CHOICES } from "../../util";
 
@@ -21,7 +19,7 @@ interface Character {
     lines: string[];
 }
 
-const askShrek = async (interaction: CommandInteraction) => {
+const askShrek = async (interaction: ChatInputCommandInteraction) => {
     try {
         await interaction.deferReply();
         getLinesAndSendOneToDiscord(interaction);
@@ -33,7 +31,7 @@ const askShrek = async (interaction: CommandInteraction) => {
     }
 };
 
-function getLinesAndSendOneToDiscord(interaction: CommandInteraction) {
+function getLinesAndSendOneToDiscord(interaction: ChatInputCommandInteraction) {
     const characterChoice = getCharacterChoice(interaction);
 
     const characters: Character[] = data.speakers;
@@ -52,18 +50,20 @@ function getLinesAndSendOneToDiscord(interaction: CommandInteraction) {
 
 const getInputs = (): ApplicationCommandOptionData[] => {
     const chunks = _.chunk(data.speakers, DISCORD_NUMBER_OF_CHOICES);
-    return chunks.map((chunk, index) => ({
-        type: ApplicationCommandOptionTypes.STRING,
-        name: `character-${index + 1}`,
-        choices: chunk.map((o) => ({
-            name: o.speaker,
-            value: o.speaker,
-        })),
-        description: "Ask from characters",
-    }));
+    return chunks.map(
+        (chunk, index): ApplicationCommandOptionData => ({
+            type: ApplicationCommandOptionType.String,
+            name: `character-${index + 1}`,
+            choices: chunk.map((o) => ({
+                name: o.speaker,
+                value: o.speaker,
+            })),
+            description: "Ask from characters",
+        })
+    );
 };
 
-const getCharacterChoice = (interaction: CommandInteraction) => {
+const getCharacterChoice = (interaction: ChatInputCommandInteraction) => {
     const inputs = getInputs();
     for (const input of inputs) {
         const value = interaction.options.getString(input.name);
@@ -74,10 +74,10 @@ const getCharacterChoice = (interaction: CommandInteraction) => {
 };
 
 function sendCharacterNotFound(
-    interaction: CommandInteraction,
+    interaction: ChatInputCommandInteraction,
     name: string | null = null
 ) {
-    const embed = new MessageEmbed();
+    const embed = new EmbedBuilder();
     if (name) {
         embed.setTitle("Could not find character with name: " + name);
     } else {
@@ -86,21 +86,19 @@ function sendCharacterNotFound(
 
     const allSpeakers: Character[] = data.speakers;
     const speakers = join(map(allSpeakers, "speaker"), ", ");
-    embed
-        .setColor("#ff0000")
-        .addField(
-            "usage: select some character as a parameter",
-            "available characters:\n" + speakers
-        );
+    embed.setColor("#ff0000").addFields({
+        name: "usage: select some character as a parameter",
+        value: "available characters:\n" + speakers,
+    });
 
     interaction.editReply({ embeds: [embed] });
 }
 
 function sendAnswerToDiscord(
-    interaction: CommandInteraction,
+    interaction: ChatInputCommandInteraction,
     answer: Character
 ) {
-    const embed = new MessageEmbed();
+    const embed = new EmbedBuilder();
     embed.setTitle(answer.speaker + " answered:");
     embed.setDescription(sample(answer.lines));
     interaction.editReply({ embeds: [embed] });
@@ -108,12 +106,12 @@ function sendAnswerToDiscord(
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["ask"],
         description: "Ask for advice from the most beloved ogre",
         options: getInputs(),
     },
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         await askShrek(interaction);
     },
 };

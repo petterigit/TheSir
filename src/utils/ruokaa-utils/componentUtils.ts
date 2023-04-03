@@ -1,21 +1,20 @@
-import { MessageActionRow, ExcludeEnum } from "discord.js";
-import { MessageButtonStyles } from "discord.js/typings/enums";
+import { ButtonStyle, ActionRowBuilder } from "discord.js";
 import { createButton } from "../../util";
 
 const generateButtonId = (idPrefix: string, restaurant: string) =>
     `${idPrefix} ${restaurant}`;
 
 export const addButton = (
-    buttonRow: MessageActionRow,
+    buttonRow: ActionRowBuilder,
     restaurant: string,
     idPrefix: string,
-    style?: ExcludeEnum<typeof MessageButtonStyles, "LINK">
+    style?: Exclude<ButtonStyle, "LINK">
 ) => {
     buttonRow.addComponents(
         createButton(
             generateButtonId(idPrefix, restaurant),
             restaurant,
-            style ?? MessageButtonStyles.PRIMARY
+            style ?? ButtonStyle.Primary
         )
     );
 };
