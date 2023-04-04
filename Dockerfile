@@ -1,4 +1,4 @@
-FROM node:16-bullseye-slim
+FROM node:18-bullseye-slim
 
 RUN apt-get update && \
 apt-get install -y libgbm-dev gconf-service libasound2 \
@@ -10,7 +10,9 @@ libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 \
 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 \
 libxss1 libxtst6 ca-certificates fonts-liberation \
 libappindicator1 libnss3 lsb-release xdg-utils wget \
-xvfb x11vnc x11-xkb-utils xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic x11-apps
+xvfb x11vnc x11-xkb-utils xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic x11-apps \
+psmisc
+
 
 
 WORKDIR /app
@@ -23,4 +25,4 @@ COPY . .
 RUN npm run build
 
 ENV DISPLAY :99
-CMD Xvfb :99 -screen 0 1024x768x16 & npm start
+CMD killall xvfb & Xvfb :99 -screen 0 1024x768x16 & npm start

@@ -1,21 +1,22 @@
-import { ApplicationCommandOptionData, CommandInteraction } from "discord.js";
 import {
-    ApplicationCommandOptionTypes,
-    ApplicationCommandTypes,
-} from "discord.js/typings/enums";
+    ApplicationCommandOptionData,
+    ApplicationCommandOptionType,
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+} from "discord.js";
 import { SlashCommandModule } from "../../types";
 import { createUserMentionWithId, isMentionGuildMember } from "../../util";
 
 const inputs: ApplicationCommandOptionData[] = [
     {
-        type: ApplicationCommandOptionTypes.MENTIONABLE,
+        type: ApplicationCommandOptionType.Mentionable,
         name: "user",
         description: "Someone to poke",
         required: true,
     },
 ];
 
-const poke = async (interaction: CommandInteraction) => {
+const poke = async (interaction: ChatInputCommandInteraction) => {
     await interaction.deferReply();
     try {
         const user = interaction.options.getMentionable("user");
@@ -36,12 +37,12 @@ const poke = async (interaction: CommandInteraction) => {
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["poke"],
         description: "Poke your friends and family!",
         options: inputs,
     },
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         await poke(interaction);
     },
 };

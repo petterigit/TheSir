@@ -1,8 +1,10 @@
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
-import { CommandInteraction } from "discord.js";
+import {
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+} from "discord.js";
 import { getNicknameOrName } from "../../util";
 
-const f = async (interaction: CommandInteraction) => {
+const f = async (interaction: ChatInputCommandInteraction) => {
     await interaction.deferReply();
     const user = getNicknameOrName(interaction);
     const msg = `${user} has paid their respects`;
@@ -13,11 +15,11 @@ const f = async (interaction: CommandInteraction) => {
 
 module.exports = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["f"],
         description: "F in the chat bois",
     },
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         await f(interaction);
     },
 };

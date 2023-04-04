@@ -37,12 +37,13 @@ const animalsFIN = [
 // *****************
 
 import T from "../../utils/TwitterClient";
-import { ApplicationCommandOptionData, CommandInteraction } from "discord.js";
-import { SlashCommandModule } from "../../types";
 import {
-    ApplicationCommandOptionTypes,
-    ApplicationCommandTypes,
-} from "discord.js/typings/enums";
+    ApplicationCommandOptionData,
+    ApplicationCommandOptionType,
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+} from "discord.js";
+import { SlashCommandModule } from "../../types";
 
 const MAX_TWEETS = 100;
 
@@ -55,7 +56,7 @@ const parameters = {
 
 const inputs: ApplicationCommandOptionData[] = [
     {
-        type: ApplicationCommandOptionTypes.STRING,
+        type: ApplicationCommandOptionType.String,
         name: "animal",
         description: "Choose your wholesome content",
         required: false,
@@ -63,7 +64,7 @@ const inputs: ApplicationCommandOptionData[] = [
     },
 ];
 
-const wholesome = async (interaction: CommandInteraction) => {
+const wholesome = async (interaction: ChatInputCommandInteraction) => {
     await interaction.deferReply();
     try {
         let chosen = 0;
@@ -115,7 +116,7 @@ const wholesome = async (interaction: CommandInteraction) => {
 };
 
 function getTweetsAndSendOneToDiscord(
-    interaction: CommandInteraction,
+    interaction: ChatInputCommandInteraction,
     chosen: number
 ) {
     if (!T) {
@@ -198,12 +199,12 @@ function getTweetsAndSendOneToDiscord(
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["wholesome"],
         description: "Wholesome content machine",
         options: inputs,
     },
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         await wholesome(interaction);
     },
 };

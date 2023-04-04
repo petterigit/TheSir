@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageEmbed, TextChannel } from "discord.js";
+import { GuildMember, Message, EmbedBuilder, TextChannel } from "discord.js";
 
 import sample from "lodash/sample";
 
@@ -32,7 +32,7 @@ const sus = async (message: Message) => {
         return;
     }
 
-    const embed = new MessageEmbed();
+    const embed = new EmbedBuilder();
 
     if (!message.guild) {
         return;
@@ -49,7 +49,7 @@ const sus = async (message: Message) => {
         embed
             .setColor("#ff0000")
             .setTitle(`${targetName} was not The Impostor.`)
-            .setFooter("1 Impostor remains.");
+            .setFooter({ text: "1 Impostor remains." });
     }
 
     await message.reply({ embeds: [embed] });

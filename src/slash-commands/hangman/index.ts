@@ -1,16 +1,16 @@
 import {
     ApplicationCommandOptionData,
-    CommandInteraction,
-    MessageEmbed,
+    ApplicationCommandOptionType,
+    ApplicationCommandType,
+    ChannelType,
+    ChatInputCommandInteraction,
+    EmbedBuilder,
+    TextChannel,
 } from "discord.js";
 import { GameState, MessageParams } from "./hmTypes";
 import dictionary from "./dictionary.json";
 import { HANGMANPICS } from "./asciiArts";
 import { SlashCommandModule } from "../../types";
-import {
-    ApplicationCommandOptionTypes,
-    ApplicationCommandTypes,
-} from "discord.js/typings/enums";
 
 const TOTALGUESSES = 6;
 
@@ -24,7 +24,7 @@ const messageParams: MessageParams = {
 
 const inputs: ApplicationCommandOptionData[] = [
     {
-        type: ApplicationCommandOptionTypes.STRING,
+        type: ApplicationCommandOptionType.String,
         name: "guess",
         description: "Guess a letter",
         required: false,
@@ -200,7 +200,7 @@ const updateGameStateToUser = async (currentGame: GameState) => {
         gameStateString = gameStateString + "\n" + currentGame.errorMessage;
     }
 
-    const embed = new MessageEmbed();
+    const embed = new EmbedBuilder();
     embed.setDescription(gameStateString);
     embed.setTitle("HANGMAN");
     if (currentGame.hangmanMessage === undefined) {
@@ -220,24 +220,24 @@ const replyToChannel = async (message: string) => {
     messageParams.messageChannel.send(message);
 };
 
-const getMessageParams = (interaction: CommandInteraction) => {
-    if (interaction.channel.type === "GUILD_VOICE") {
+const getMessageParams = (interaction: ChatInputCommandInteraction) => {
+    if (interaction.channel.type === ChannelType.GuildVoice) {
         return;
     }
 
     messageParams.currentChannelID = interaction.channel.id;
-    messageParams.messageChannel = interaction.channel;
+    messageParams.messageChannel = interaction.channel as TextChannel;
     messageParams.guessCharacter = interaction.options.getString("guess");
 };
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["hangman"],
         description: "Hangman Game",
         options: inputs,
     },
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         try {
             await interaction.deferReply();
             getMessageParams(interaction);

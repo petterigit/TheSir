@@ -2,9 +2,9 @@ import {
     ButtonInteraction,
     Collection,
     EmbedField,
-    MessageEmbed,
+    EmbedBuilder,
 } from "discord.js";
-import { createMention } from "../util";
+import { createMention, randomColor } from "../util";
 const participantSeparator = "\n";
 
 const voteTitle = "Äänestä ruokapaikkaa";
@@ -18,8 +18,8 @@ export const ruokaaInteraction = async (interaction: ButtonInteraction) => {
 
     const messageEmbeds = interaction.message.embeds;
 
-    const participantEmbed = (messageEmbeds as MessageEmbed[]).find(
-        (embed) => embed.title === voteTitle
+    const participantEmbed = EmbedBuilder.from(
+        messageEmbeds.find((embed) => embed.title === voteTitle)
     );
 
     if (!participantEmbed) {
@@ -49,25 +49,25 @@ export const ruokaaInteraction = async (interaction: ButtonInteraction) => {
 };
 
 export const createEmptyVotingEmbed = () => {
-    const embed = new MessageEmbed();
+    const embed = new EmbedBuilder();
     embed.setTitle(voteTitle);
-    embed.setColor(11342935);
+    embed.setColor(randomColor());
     return embed;
 };
 
 const createParticipantEmbed = (restaurant: string, participant: string) => {
-    const embed = new MessageEmbed();
+    const embed = new EmbedBuilder();
     embed.setTitle(voteTitle);
-    embed.addField(restaurant, participant, true);
-    embed.setColor(11342935);
+    embed.addFields({ name: restaurant, value: participant, inline: true });
+    embed.setColor(randomColor());
     return embed;
 };
 
 const parseParticipants = (
-    embed: MessageEmbed
+    embed: EmbedBuilder
 ): Collection<string, string[]> => {
     const collection = new Collection<string, string[]>();
-    embed.fields.forEach((field) => {
+    embed.data.fields?.forEach((field) => {
         const participants = field.value.split(participantSeparator);
         const fieldName = removeParticipantCount(field.name);
         collection.set(fieldName, participants);

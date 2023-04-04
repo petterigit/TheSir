@@ -2,11 +2,13 @@ import * as Praise from "./praise";
 
 import {
     ApplicationCommandOptionData,
-    CommandInteraction,
+    ChatInputCommandInteraction,
     GuildMember,
-    MessageAttachment,
+    AttachmentBuilder,
     Role,
     User,
+    ApplicationCommandOptionType,
+    ApplicationCommandType,
 } from "discord.js";
 import {
     createEveryoneMention,
@@ -19,28 +21,24 @@ import {
 
 import { APIRole } from "discord-api-types/v9";
 import { SlashCommandModule } from "../../types";
-import {
-    ApplicationCommandOptionTypes,
-    ApplicationCommandTypes,
-} from "discord.js/typings/enums";
 
 const MESSAGE_OPTIONS = { mention: "mention", message: "message" };
 const inputs: ApplicationCommandOptionData[] = [
     {
-        type: ApplicationCommandOptionTypes.MENTIONABLE,
+        type: ApplicationCommandOptionType.Mentionable,
         name: MESSAGE_OPTIONS.mention,
         description: "Who should be praised or shamed",
         required: true,
     },
     {
-        type: ApplicationCommandOptionTypes.STRING,
+        type: ApplicationCommandOptionType.String,
         name: MESSAGE_OPTIONS.message,
         description: "Optional custom message",
         required: false,
     },
 ];
 
-const praise = async (interaction: CommandInteraction) => {
+const praise = async (interaction: ChatInputCommandInteraction) => {
     await interaction.deferReply();
     const mention = interaction.options.getMentionable(
         MESSAGE_OPTIONS.mention
@@ -60,7 +58,7 @@ const praise = async (interaction: CommandInteraction) => {
         return;
     }
 
-    const attachment = new MessageAttachment(buffer, "reaction.jpg");
+    const attachment = new AttachmentBuilder(buffer).setName("reaction.jpg");
 
     try {
         interaction.editReply({ content: praiseText, files: [attachment] });
@@ -70,7 +68,7 @@ const praise = async (interaction: CommandInteraction) => {
 };
 
 const getPraiseText = (
-    interaction: CommandInteraction,
+    interaction: ChatInputCommandInteraction,
     mention: GuildMember | Role | APIRole | User,
     shouldShame: boolean
 ) => {
@@ -93,13 +91,13 @@ const getPraiseText = (
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["praise", "shame"],
         description:
             "Everyone deserves some praise (or shame) every once in a while",
         options: inputs,
     },
-    async execute(message: CommandInteraction) {
+    async execute(message: ChatInputCommandInteraction) {
         await praise(message);
     },
 };

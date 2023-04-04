@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { ActivityType, Client } from "discord.js";
 import { DiscordClient } from "./types";
 
 /* require */
@@ -21,7 +21,7 @@ const environment = process.env.ENVIRONMENT ?? "development";
 /* Bot setup */
 client.once("ready", () => {
     client.user.setPresence({
-        activities: [{ name: "My sister", type: "WATCHING" }],
+        activities: [{ name: "My sister", type: ActivityType.Watching }],
         status: "online",
     });
     rotateSisterActivities(client);

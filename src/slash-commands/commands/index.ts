@@ -1,5 +1,7 @@
-import { CommandInteraction } from "discord.js";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
+import {
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+} from "discord.js";
 import { DiscordClient, SlashCommandModule, SlashCommands } from "../../types";
 
 const filterUnique = (commands: SlashCommands) => {
@@ -16,7 +18,7 @@ const filterUnique = (commands: SlashCommands) => {
 };
 
 const replyCommands = async (
-    interaction: CommandInteraction,
+    interaction: ChatInputCommandInteraction,
     client: DiscordClient
 ) => {
     await interaction.deferReply({ ephemeral: true });
@@ -40,11 +42,14 @@ const replyCommands = async (
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["commands", "help", "tasukete"],
         description: "Lists all commands",
     },
-    async execute(interaction: CommandInteraction, client: DiscordClient) {
+    async execute(
+        interaction: ChatInputCommandInteraction,
+        client: DiscordClient
+    ) {
         await replyCommands(interaction, client);
     },
 };

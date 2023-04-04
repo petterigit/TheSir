@@ -1,13 +1,13 @@
 import {
     ApplicationCommandData,
     ApplicationCommandOptionData,
+    ApplicationCommandType,
     ButtonInteraction,
     Client,
     Collection,
     CommandInteraction,
     Message,
 } from "discord.js";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
 
 export interface DiscordClient extends Client {
     interactions: Interactions;
@@ -26,7 +26,7 @@ export type Command<T> = {
 
 export interface SlashCommandModule {
     data: {
-        type: ApplicationCommandTypes;
+        type: ApplicationCommandType;
         name: string | string[];
         description: string;
         options?: ApplicationCommandOptionData[];

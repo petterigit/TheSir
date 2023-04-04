@@ -1,21 +1,22 @@
-import { ApplicationCommandOptionData, CommandInteraction } from "discord.js";
 import {
-    ApplicationCommandOptionTypes,
-    ApplicationCommandTypes,
-} from "discord.js/typings/enums";
+    ApplicationCommandOptionData,
+    ApplicationCommandOptionType,
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+} from "discord.js";
 import { SlashCommandModule } from "../../types";
 import { createCodeBlock, MESSAGE_MAX_LENGTH } from "../../util";
 import { generateCowsay } from "./cowsay";
 
 const inputs: ApplicationCommandOptionData[] = [
     {
-        type: ApplicationCommandOptionTypes.STRING,
+        type: ApplicationCommandOptionType.String,
         name: "message",
         description: "What does the cow say?",
         required: false,
     },
     {
-        type: ApplicationCommandOptionTypes.NUMBER,
+        type: ApplicationCommandOptionType.Number,
         name: "width",
         description: "How wide should the cow say?",
         minValue: 1,
@@ -26,7 +27,7 @@ const inputs: ApplicationCommandOptionData[] = [
 
 const errorMessage = "Cow could not be found for comment.";
 
-const cowsay = async (interaction: CommandInteraction) => {
+const cowsay = async (interaction: ChatInputCommandInteraction) => {
     await interaction.deferReply();
     let message = interaction.options.getString("message");
     const columns = interaction.options.getNumber("width");
@@ -47,12 +48,12 @@ const cowsay = async (interaction: CommandInteraction) => {
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["cowsay"],
         description: "Moo?",
         options: inputs,
     },
-    async execute(message: CommandInteraction) {
+    async execute(message: ChatInputCommandInteraction) {
         await cowsay(message);
     },
 };

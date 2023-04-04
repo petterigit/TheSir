@@ -1,5 +1,7 @@
-import { CommandInteraction } from "discord.js";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
+import {
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+} from "discord.js";
 import { SlashCommandModule } from "../../types";
 import T from "../../utils/TwitterClient";
 const MAX_TWEETS = 100;
@@ -11,7 +13,7 @@ const parameters = {
     tweet_mode: "extended",
 };
 
-const getNiiloTweet = async (interaction: CommandInteraction) => {
+const getNiiloTweet = async (interaction: ChatInputCommandInteraction) => {
     await interaction.deferReply();
     try {
         getTweetsAndSendOneToDiscord(interaction);
@@ -21,7 +23,9 @@ const getNiiloTweet = async (interaction: CommandInteraction) => {
     }
 };
 
-function getTweetsAndSendOneToDiscord(interaction: CommandInteraction) {
+function getTweetsAndSendOneToDiscord(
+    interaction: ChatInputCommandInteraction
+) {
     if (!T) {
         interaction.editReply("Twitter client not initialized");
         return;
@@ -46,7 +50,10 @@ const randomNumber = (start: number, end: number) => {
     return Math.floor(Math.random() * (start - end + 1)) + end;
 };
 
-function sendTweetToDiscord(tweet: any, interaction: CommandInteraction) {
+function sendTweetToDiscord(
+    tweet: any,
+    interaction: ChatInputCommandInteraction
+) {
     const embed = createAnswerMessage(tweet);
     interaction.editReply({ embeds: [embed] });
 }
@@ -200,11 +207,11 @@ function addDot(day: string) {
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["niilo22"],
         description: "Gets the best random Niilo22 tweets",
     },
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         await getNiiloTweet(interaction);
     },
 };

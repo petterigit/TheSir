@@ -1,5 +1,7 @@
-import { CommandInteraction } from "discord.js";
-import { ApplicationCommandTypes } from "discord.js/typings/enums";
+import {
+    ApplicationCommandType,
+    ChatInputCommandInteraction,
+} from "discord.js";
 import { SlashCommandModule } from "../../types";
 import { createButtonRows } from "./components/buttonRow";
 import { createMenuEmbeds } from "./embed/menus";
@@ -11,16 +13,16 @@ import { createEmptyVotingEmbed } from "../../utils/interactionUtils";
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: ["ruokaa-keskusta"],
         description: "Daily lunch planner for keskusta restaurants",
     },
-    async execute(message: CommandInteraction) {
+    async execute(message: ChatInputCommandInteraction) {
         await ruokaa(message);
     },
 };
 
-const ruokaa = async (interaction: CommandInteraction) => {
+const ruokaa = async (interaction: ChatInputCommandInteraction) => {
     await interaction.deferReply();
 
     try {

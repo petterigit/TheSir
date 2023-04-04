@@ -7,8 +7,10 @@ import {
 } from "canvas";
 
 import memes from "./texts/memes.json";
-import { ApplicationCommandOptionData } from "discord.js";
-import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
+import {
+    ApplicationCommandOptionData,
+    ApplicationCommandOptionType,
+} from "discord.js";
 
 registerFont(
     path.join(process.cwd(), "/public/fonts/PressStart2P-Regular.ttf"),
@@ -143,12 +145,12 @@ export const genCommandOptions = (): ApplicationCommandOptionData[] => {
             const option: ApplicationCommandOptionData = {
                 name: meme.name,
                 description: meme.description,
-                type: ApplicationCommandOptionTypes.SUB_COMMAND,
+                type: ApplicationCommandOptionType.Subcommand,
                 options: meme.textBoxes.map((textbox) => {
                     return {
                         name: textbox.name,
                         description: textbox.description,
-                        type: ApplicationCommandOptionTypes.STRING,
+                        type: ApplicationCommandOptionType.String,
                         required: true,
                     };
                 }),

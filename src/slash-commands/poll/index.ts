@@ -1,17 +1,16 @@
 import {
-    CommandInteraction,
-    MessageButton,
-    MessageActionRow,
+    ChatInputCommandInteraction,
+    ButtonBuilder,
+    ActionRowBuilder,
+    ApplicationCommandOptionType,
+    ApplicationCommandType,
+    EmbedBuilder,
 } from "discord.js";
 import { createButton } from "../../util";
 import random from "lodash/random";
 
 import { getNicknameOrName, randomColor } from "../../util";
 import { SlashCommandModule } from "../../types";
-import {
-    ApplicationCommandOptionTypes,
-    ApplicationCommandTypes,
-} from "discord.js/typings/enums";
 
 // Max 5 buttons per row, max 5 rows -> 25
 // -1 for question
@@ -25,7 +24,7 @@ const constants = {
     commandName: COMMAND_NAME,
 };
 
-const poll = async (interaction: CommandInteraction) => {
+const poll = async (interaction: ChatInputCommandInteraction) => {
     await interaction.deferReply();
     const buttons = createButtons(interaction);
     const actionRows = createActionRows(buttons);
@@ -37,23 +36,24 @@ const poll = async (interaction: CommandInteraction) => {
         content: `${user} started a poll!`,
         components: actionRows,
         embeds: [
-            {
-                title: title,
-                color: randomColor(),
-                timestamp: new Date(),
-            },
+            new EmbedBuilder()
+                .setTitle(title)
+                .setColor(randomColor())
+                .setTimestamp(),
         ],
     });
 };
 
-const createActionRows = (buttons: MessageButton[]) => {
-    const actionRows = [];
+const createActionRows = (
+    buttons: ButtonBuilder[]
+): ActionRowBuilder<ButtonBuilder>[] => {
+    const actionRows: ActionRowBuilder<ButtonBuilder>[] = [];
     for (
         let i = 0, limit = buttons.length;
         i < limit;
         i += MAX_BUTTONS_PER_ROW
     ) {
-        const actionRow = new MessageActionRow();
+        const actionRow = new ActionRowBuilder<ButtonBuilder>();
         const row = buttons.slice(i, i + MAX_BUTTONS_PER_ROW);
         row.map((button) => actionRow.addComponents(button));
         actionRows.push(actionRow);
@@ -61,7 +61,7 @@ const createActionRows = (buttons: MessageButton[]) => {
     return actionRows;
 };
 
-const createButtons = (interaction: CommandInteraction) => {
+const createButtons = (interaction: ChatInputCommandInteraction) => {
     const indexes = Array(MAX_BUTTONS)
         .fill(0)
         .map((_, i) => i);
@@ -103,13 +103,13 @@ const createInputs = (numberOfInputs: number) => {
             required: i === 0,
         }));
     inputs.unshift({
-        type: ApplicationCommandOptionTypes.STRING,
+        type: ApplicationCommandOptionType.String,
         name: "title",
         description: "The title of the poll",
         required: true,
     });
     inputs.push({
-        type: ApplicationCommandOptionTypes.BOOLEAN,
+        type: ApplicationCommandOptionType.Boolean,
         name: "rainbow-mode",
         description: "🤗🌈",
         required: false,
@@ -119,13 +119,13 @@ const createInputs = (numberOfInputs: number) => {
 
 const command: SlashCommandModule = {
     data: {
-        type: ApplicationCommandTypes.CHAT_INPUT,
+        type: ApplicationCommandType.ChatInput,
         name: COMMAND_NAME,
         description: "Create polls with your friends!",
         options: createInputs(MAX_BUTTONS),
     },
     constants: constants,
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         await poll(interaction);
     },
 };
