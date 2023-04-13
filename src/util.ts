@@ -19,6 +19,7 @@ import {
     Snowflake,
     User,
     ButtonStyle,
+    HexColorString,
 } from "discord.js";
 import { Command, DiscordClient, SlashCommandModule } from "./types";
 
@@ -86,12 +87,7 @@ export const createButton = (
 export const DISCORD_NUMBER_OF_CHOICES = 25;
 
 export const randomColor = (): ColorResolvable => {
-    let color = "#";
-    for (let i = 0; i < 3; i++) {
-        color += random(0, 255).toString(16);
-    }
-
-    return color as ColorResolvable;
+    return "Random";
 };
 
 export const requireCommands = async <
