@@ -19,7 +19,6 @@ import {
     Snowflake,
     User,
     ButtonStyle,
-    HexColorString,
 } from "discord.js";
 import { Command, DiscordClient, SlashCommandModule } from "./types";
 
