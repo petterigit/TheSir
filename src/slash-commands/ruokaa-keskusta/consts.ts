@@ -9,10 +9,13 @@ export const ssNames = {
 };
 
 export const restaurants = {
+    kitchen: "The Kitchen",
+    kattavaKonttori: "Kattava Konttori",
+    kattavaSaimaa: "Kattava Saimaa",
     lalo: "Lalo",
     luckies: "Luckie's",
     rosso: "Rosso",
-    random: "Random",
+    miku: "Miku",
     any: "Mikä vaan",
     other: "Muu keskustarafla",
     toimistolounas: "Toimistolounas",

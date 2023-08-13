@@ -4,11 +4,7 @@ import {
 } from "discord.js";
 import { SlashCommandModule } from "../../types";
 import { createButtonRows } from "./components/buttonRow";
-import { createMenuEmbeds } from "./embed/menus";
-import { createMenuAttachments } from "./file/menuAttachments";
 import { createTextEmbeds } from "./embed/textEmbeds";
-import { launchPuppeteer } from "../../utils/ruokaa-utils/puppeteerUtils";
-import { getRossoClips } from "./menus/getRossoClips";
 import { createEmptyVotingEmbed } from "../../utils/interactionUtils";
 
 const command: SlashCommandModule = {
@@ -44,14 +40,19 @@ const ruokaa = async (interaction: ChatInputCommandInteraction) => {
     try {
         const textEmbeds = createTextEmbeds();
         const buttonRows = await createButtonRows();
-        const menuEmbeds = createMenuEmbeds();
 
         /* No menu screenshots for now :]
+        const menuEmbeds = createMenuEmbeds();
         const menuAttachments = createMenuAttachments();
         */
 
         await interaction.editReply({
-            embeds: [...menuEmbeds, ...textEmbeds],
+            embeds: [
+                /* No menu screenshots for now :]
+                ...menuEmbeds,
+                */
+                ...textEmbeds,
+            ],
             /* No menu screenshots for now :]
             files: menuAttachments,
             */
@@ -61,7 +62,7 @@ const ruokaa = async (interaction: ChatInputCommandInteraction) => {
 
         await interaction.followUp({
             embeds: [votingEmbed],
-            components: [...buttonRows],
+            components: buttonRows,
         });
     } catch (error) {
         await interaction.editReply(`Ei ruokalistoja. Error: ${error}`);

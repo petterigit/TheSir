@@ -5,7 +5,6 @@ import {
     EmbedBuilder,
 } from "discord.js";
 import { createMention, randomColor } from "../util";
-import { restaurants } from "../slash-commands/ruokaa-keskusta/consts";
 const participantSeparator = "\n";
 
 const voteTitle = "Äänestä ruokapaikkaa";
@@ -13,7 +12,10 @@ const voteTitle = "Äänestä ruokapaikkaa";
 export const ruokaaInteraction = async (interaction: ButtonInteraction) => {
     if (!interaction.isButton()) return;
 
-    const restaurantParameter = interaction.customId.split(" ")[1];
+    const restaurantParameter = interaction.customId
+        .split(" ")
+        .splice(1)
+        .join(" ");
 
     console.log("ruokaa interaction param: ", restaurantParameter);
 
@@ -35,11 +37,9 @@ export const ruokaaInteraction = async (interaction: ButtonInteraction) => {
 
     const votes = parseParticipants(participantEmbed);
 
-    const isRandomVote = restaurantParameter === restaurants.random;
-
     const newVotes = setVote(
         votes,
-        !isRandomVote ? restaurantParameter : getRandomRestaurant(),
+        restaurantParameter,
         createMention(interaction)
     );
 
@@ -146,9 +146,3 @@ const removeParticipantCount = (name: string) => {
     }
     return name;
 };
-
-// It works, trust me bro
-const getRandomRestaurant = () =>
-    Object.values(restaurants)
-        .filter((r) => r !== restaurants.random)
-        .at(Math.random() * (Object.values(restaurants).length - 1));
