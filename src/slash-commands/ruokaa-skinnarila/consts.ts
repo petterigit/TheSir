@@ -13,11 +13,13 @@ export const DayMap = {
 export const DayChangeHourUtc = 12;
 
 export const ssNames = {
+    /* Laser is kill :c
     laser: {
         filename: "laser-ruokalista.png",
         fileLoc: pathToPNG("laser-ruokalista"),
         title: "Laseri",
     },
+    */
     yolo: {
         filename: "yolo-ruokalista.png",
         fileLoc: pathToPNG("yolo-ruokalista"),

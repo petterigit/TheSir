@@ -38,5 +38,34 @@ export const getNextFinnishDayShort = (weekDay: number) => {
     return nextDay;
 };
 
+export const getNextEnglishDayShort = (weekDay: number) => {
+    const nextDay = {
+        0: "Sun",
+        1: "Mon",
+        2: "Tue",
+        3: "Wed",
+        4: "Thu",
+        5: "Fri",
+        6: "Sat",
+    }[weekDay];
+
+    return nextDay;
+};
+
 export const pathToPNG = (imageName: string) =>
     path.join(process.cwd(), `${imageName}.png`);
+
+export const getCurrentWeekNumber = () => {
+    const currentDate = new Date();
+    const startDate = new Date(currentDate.getFullYear(), 0, 1);
+    const days = Math.floor(
+        (currentDate.getUTCMilliseconds() - startDate.getUTCMilliseconds()) /
+            (24 * 60 * 60 * 1000)
+    );
+
+    const weekNumber = Math.ceil(days / 7);
+
+    // Display the calculated result
+    console.log("Week number of " + currentDate + " is :   " + weekNumber);
+    return weekNumber;
+};

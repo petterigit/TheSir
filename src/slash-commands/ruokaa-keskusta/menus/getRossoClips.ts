@@ -38,7 +38,7 @@ const getDayClip = async (page: Page): Promise<ScreenshotClip | null> => {
         const finnishDate = getNextFinnishDay(date);
 
         const sizes = await page.evaluate((tomorrowDate: string) => {
-            const headers = Array.from(document.getElementsByTagName("h2"));
+            const headers = Array.from(document.getElementsByTagName("h3"));
             let start;
             let end;
             let width;

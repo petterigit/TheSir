@@ -69,6 +69,11 @@ export const clickButton = async (
         );
         const button = buttonSelector[0] as ElementHandle<HTMLElement>;
 
+        if (!button) {
+            throw new Error(
+                `Could not find button to click for ${element} element containing text ${textContent}`
+            );
+        }
         await button.click();
 
         // Wait 2s for page to load properly

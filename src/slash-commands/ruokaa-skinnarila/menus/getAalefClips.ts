@@ -5,7 +5,6 @@ import {
 } from "../../../utils/ruokaa-utils/generalUtils";
 import {
     navigateToPage,
-    clickButton,
     screenShot,
 } from "../../../utils/ruokaa-utils/puppeteerUtils";
 import { ssNames } from "../consts";
@@ -20,14 +19,18 @@ export const getAalefClips = async (browser: Browser) => {
     await navigateToPage(page, "https://www.aalef.fi/#ravintolat");
 
     /* Laser */
+    /* Laser is kill :c
     await clickButton(page, "Ravintola Laseri");
     const laserClip = await aalefClip(page);
     if (laserClip) {
         await screenShot(page, laserClip, ssNames.laser.fileLoc);
     }
+    */
 
     /* Yolo */
-    await clickButton(page, "Ravintola YOLO");
+
+    // await clickButton(page, "Ravintola YOLO");
+
     const yoloClip = await aalefClip(page);
     if (yoloClip) {
         await screenShot(page, yoloClip, ssNames.yolo.fileLoc);
@@ -46,8 +49,6 @@ const aalefClip = async (page: Page): Promise<ScreenshotClip | null> => {
             let tomorrow;
             let afterTomorrow;
 
-            // TEMPORARY
-            //const tomorrowDate = new Date().getDate() + 2;
             for (let i = 0; i < headers.length; i++) {
                 const el = headers[i];
 

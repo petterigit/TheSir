@@ -1,6 +1,6 @@
 import { Browser, Page, ScreenshotClip } from "puppeteer";
 import {
-    getNextFinnishDayShort,
+    getNextEnglishDayShort,
     getWeekday,
 } from "../../../utils/ruokaa-utils/generalUtils";
 import {
@@ -21,7 +21,7 @@ export const getLutBuffetClip = async (browser: Browser) => {
         "https://fi.jamix.cloud/apps/menu/?anro=97383&k=1&mt=4"
     );
 
-    await clickButton(page, getNextFinnishDayShort(getWeekday()), "span");
+    await clickButton(page, getNextEnglishDayShort(getWeekday()), "span");
 
     const clip = await lutBuffetClip(page);
     if (clip) {
@@ -45,6 +45,12 @@ const lutBuffetClip = async (page: Page): Promise<ScreenshotClip | null> => {
                     end = el.getBoundingClientRect().top;
                     break;
                 }
+            }
+
+            if (!end) {
+                throw new Error(
+                    `Could not find an end point for lut buffet clip at ${document.URL}`
+                );
             }
 
             return { start: topImg.offsetHeight, end: end };

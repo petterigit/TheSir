@@ -25,6 +25,7 @@ const command: SlashCommandModule = {
 const ruokaa = async (interaction: ChatInputCommandInteraction) => {
     await interaction.deferReply();
 
+    /* No menu screenshots for now :]
     try {
         const browser = await launchPuppeteer();
 
@@ -38,16 +39,22 @@ const ruokaa = async (interaction: ChatInputCommandInteraction) => {
         console.error(error);
         return;
     }
+    */
 
     try {
         const textEmbeds = createTextEmbeds();
         const buttonRows = await createButtonRows();
         const menuEmbeds = createMenuEmbeds();
+
+        /* No menu screenshots for now :]
         const menuAttachments = createMenuAttachments();
+        */
 
         await interaction.editReply({
             embeds: [...menuEmbeds, ...textEmbeds],
+            /* No menu screenshots for now :]
             files: menuAttachments,
+            */
         });
 
         const votingEmbed = createEmptyVotingEmbed();
