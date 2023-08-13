@@ -42,7 +42,7 @@ Lounaan hinta 13,90€
         new EmbedBuilder()
             .setTitle("Miku")
             .setDescription(
-                "Ihan tosi söpöt seinät. Ala carte. Hintaan jotain 13-14.50€. 😻😻"
+                "Ihan tosi söpöt seinät. Ala carte. Hintaan jotain 13-14.50€. 😻"
             )
             .setURL("https://www.facebook.com/CafeMikuLPR/"),
     ];
