@@ -125,14 +125,23 @@ export const getRandomCard = async () => {
 
 const setHangman = async (currentGame: GameState) => {
     const hmCard = await getRandomCard();
-    currentGame.word = hmCard.name.toLowerCase().replace(" ", "\u2000"); // u2000 = Loooong space - here for styling & win condition checking
+    const word = hmCard.name;
+
+    currentGame.word = word.toLowerCase(); // u2000 = Loooong space - here for styling & win condition checking
+
     currentGame.wordExplanation = hmCard.scryfall_uri;
+
     currentGame.knownCharacters.length = currentGame.word.length;
     currentGame.knownCharacters.fill("\\_");
 
     let i = hmCard.name.length;
+
     while (i--) {
-        if ("-_`'\u2000".includes(hmCard.name[i])) {
+        if (hmCard.name[i] === " ") {
+            currentGame.knownCharacters[i] = "\u2000";
+            continue;
+        }
+        if ("-_`', ".includes(hmCard.name[i])) {
             currentGame.knownCharacters[i] = currentGame.word[i];
         }
     }
