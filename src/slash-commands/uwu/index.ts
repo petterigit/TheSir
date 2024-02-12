@@ -22,7 +22,8 @@ const uwu = async (interaction: ChatInputCommandInteraction) => {
     try {
         const message = interaction.options.getString("message");
         const owo = owoify(message, "uvu");
-        interaction.editReply(owo);
+        const uwu = owo.replace("`", "\\`").replace("_", "\\_");
+        interaction.editReply(uwu.substring(0, 2000));
     } catch (error) {
         interaction.editReply("Something went wrong uwu");
         console.log(error);
