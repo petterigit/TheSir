@@ -1,17 +1,16 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "es2017",
-    "lib": ["es2017"],
-    "sourceMap": true,
-    "outDir": "./dist",
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "noImplicitAny": true
-  },
-  "include": [ "src/**/*" ],
-  "exclude": [ ".eslintrc.js",
-  "block-cookies-extension"]
+    "compilerOptions": {
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "esnext",
+        "lib": ["esnext"],
+        "sourceMap": true,
+        "outDir": "./dist",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "noImplicitAny": true
+    },
+    "include": ["src/**/*"],
+    "exclude": [".eslintrc.js", "block-cookies-extension"]
 }

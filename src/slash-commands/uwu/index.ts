@@ -21,13 +21,14 @@ const uwu = async (interaction: ChatInputCommandInteraction) => {
 
     try {
         const message = interaction.options.getString("message");
-        const owo = owoify(message, "uvu");
+        const owo = owoify(message ?? "", "uvu");
         const uwu = owo
-            .replace("`", "\\`")
-            .replace("_", "\\_")
-            .replace("*", "\\*")
-            .replace("|", "\\|")
-            .replace("-", "\\-");
+            .replaceAll("\\", "\\\u200b")
+            .replaceAll("`", "\\`")
+            .replaceAll("_", "\\_")
+            .replaceAll("*", "\\*")
+            .replaceAll("|", "\\|")
+            .replaceAll("-", "\\-");
         interaction.editReply(uwu.substring(0, 2000));
     } catch (error) {
         interaction.editReply("Something went wrong uwu");
