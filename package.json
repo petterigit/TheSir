@@ -15,6 +15,7 @@
         "libsodium-wrappers": "^0.7.11",
         "lodash": "^4.17.21",
         "nodemon": "^2.0.22",
+        "owoify-js": "^2.0.0",
         "puppeteer": "^19.8.3",
         "shell-quote": "^1.8.0",
         "twit": "^2.2.11",
