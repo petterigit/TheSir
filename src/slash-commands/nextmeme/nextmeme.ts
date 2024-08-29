@@ -1,12 +1,11 @@
 import sample from "lodash/sample";
 import random from "lodash/random";
-import axios from "axios";
 import {
     launchPuppeteer,
     navigateToPage,
 } from "../../utils/ruokaa-utils/puppeteerUtils";
 
-const startingDate = new Date(2012, 1, 1);
+const startingDate = new Date(2022, 1, 1);
 
 type Meme = {
     ID?: number;
