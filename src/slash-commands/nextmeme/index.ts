@@ -35,7 +35,7 @@ const getMeme = async (interaction: ChatInputCommandInteraction) => {
             options = { embeds: [embed] };
 
             // Video
-        } else if (res.type === 2) {
+        } else if (res.type === 2 || res.type === 3) {
             options = {
                 content: `Originally posted in ${formattedDate}: ${res.url}`,
             };
