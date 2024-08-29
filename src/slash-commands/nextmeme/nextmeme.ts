@@ -5,7 +5,7 @@ import {
     navigateToPage,
 } from "../../utils/ruokaa-utils/puppeteerUtils";
 
-const startingDate = new Date(2022, 1, 1);
+const startingDate = new Date(2012, 1, 1);
 
 type Meme = {
     ID?: number;
